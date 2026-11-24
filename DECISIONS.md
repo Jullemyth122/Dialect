@@ -2,12 +2,18 @@
 
 Newest first. Each entry: date, decision, reason. "Proposed" means not yet confirmed by the developer.
 
+## 2026-11-24: Kill rule 1 split into two tests
+The merged rule ("beat the better single AI call by 0.6 points") could not be passed: the score tops out at +1.0, so against a baseline scoring 0.4 or more it would need more than a perfect score. New rule: the evolved network must (a) beat the forced single AI call by at least 0.6 points per mapping, and (b) beat the single AI call allowed to say "please check" with a 95% bootstrap interval above zero and no more confident wrong answers per 100. Both on at least 200 held-out mappings. Fixed before the spike, as before. See PLAN.md section 5.
+
+## 2026-11-24: Jullemyth122/Dialect is the official repo
+The developer named it the main repo. The team's fork (znex07/DialectCognizantHackaton) merges into it after its facts are checked.
+
 ## 2026-11-24: Merge of the team's review (branch `docs/update-11-24-26` on znex07/DialectCognizantHackaton)
 The team ran a Gemini audit of the plan and rewrote PLAN, DECISIONS and README. We merged it into this repo as follows.
 
 **Kept (now in PLAN.md):**
 - Transfer reported as S1a (repeat codes) and S1b (new codes); the kill rule uses S1b. Otherwise "recovery" could be the agent just remembering approved codes.
-- A fourth comparison: one AI call told it may say "please check". The kill rule compares against the better of the two single AI calls.
+- A fourth comparison: one AI call told it may say "please check". The kill rule compares against both single AI calls (rule tightened again below the same day).
 - MIMIC `d_labitems` has no units. We fixed this with the real recorded units from the demo's lab events (170 of 269 coded names), not by assuming US units.
 - MIMIC data is used for testing only, never in prompts or published network files, so ODbL share-alike stays in its own folder.
 - The review workbench ends with a FHIR R4 ConceptMap and CSV download.
@@ -51,7 +57,7 @@ The challenge repo's validation step is still a TODO. A validator scores under T
 The hard deadline is Mon 11 Jan 2027 8:00 am PST, which is midnight Manila time going into Tue 12 Jan. Submitting a day early leaves room for upload or Devpost problems.
 
 ## 2026-11-23: Kill-rule numbers fixed before the spike
-Contender 3 (evolved network) must beat contender 2 (one LLM call with retrieval) by at least 0.6 mean points per mapping on at least 200 held-out mappings, and the transfer test must show a drop of at least 10 accuracy points at a new site with at least half recovered after adapting. Fixed now so the result cannot be argued after the fact. See PLAN.md section 5. *[Tightened on 24 Nov: the comparison is against the better of the forced AI call and the AI call allowed to say "please check", and transfer is measured on new codes only (S1b).]*
+Contender 3 (evolved network) must beat contender 2 (one LLM call with retrieval) by at least 0.6 mean points per mapping on at least 200 held-out mappings, and the transfer test must show a drop of at least 10 accuracy points at a new site with at least half recovered after adapting. Fixed now so the result cannot be argued after the fact. See PLAN.md section 5. *[Tightened on 24 Nov: two tests, against the forced AI call (+0.6) and the AI call allowed to say "please check" (a clear measured win), and transfer is measured on new codes only (S1b).]*
 
 ## 2026-11-23 (proposed): TypeScript, Node scripts, Vite for the sites
 The browser runtime has to be JavaScript, the same stack as the developer's previous project, and Python is not installed on the dev machine. Confirm at G1, unless the spec dictates a specific runtime.

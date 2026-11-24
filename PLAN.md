@@ -63,7 +63,7 @@ Every feature from both reviews, sorted. **Must** items are the entry. **Should*
 | **Should** | S3 lab system switch | Shows it asks instead of applying stale mappings |
 | **Could** | Local AI model option (OpenAI-compatible server on the analyst's own computer) | Real hospitals would want it, but it needs server setup (`OLLAMA_ORIGINS` for Ollama), Chrome may ask permission before a website reaches the computer it runs on, and judges won't have it. Optional only |
 | **Could** | Script that checks `docs/facts.md` against `results.json` | Nice; a manual check before submitting does the same job |
-| **Could** | Error ranges on results (bootstrap 95% intervals) and a cost chart | Strengthens the numbers |
+| **Could** | Error ranges on every published result and a cost chart (the kill rule's one bootstrap interval is already Must, in the scorer) | Strengthens the numbers |
 | **Could** | Drift report download for S3 | Only if S3 is built |
 | **Could** | NANDA Index registration | Discovery without hard-coded links |
 | **Stretch** | Hospital C, S4 public health intake (eICU names), S5 a second industry, validator v2 live checks | Cut on 24 Nov. Do not start them before 3 Jan |
@@ -109,9 +109,12 @@ P4 falls over Christmas, Rizal Day and New Year, and has the most new work. If B
 - [ ] Clear the remaining checks in [docs/data-and-scenarios.md](docs/data-and-scenarios.md): MSH-11 values, a source for SI vs conventional units, LOINC synonym fields, a web check that our fictional hospital names are not real.
 - [ ] Clear every CHECK item in [research/challenge-requirements.md](research/challenge-requirements.md), including everyone's age (18+).
 - [ ] Spot-check 5 cited sources yourself.
+- [ ] **Run the challenge's own example site locally** (clone cognizant-ai-labs/agentic-web, follow its README, load one example network in the browser). One hour. Nobody on the team has touched nsDeploy yet; finding its quirks now is cheaper than on 6 Dec.
+- [ ] **Start the practitioner outreach now:** message 3 to 5 hospital IT, HIMS or lab informatics people (school contacts, LinkedIn) asking for a 10-minute chat in December. Replies take weeks; the quote is due in P4.
+- [ ] Agree who builds what (section 9, question 5).
 
 ### P1 Spike (Thu 26 to Sat 28 Nov)
-- [ ] **Scorer first, with tests:** +1 / 0 / -5, plus accuracy, "please check" rate and wrong-confident rate.
+- [ ] **Scorer first, with tests:** +1 / 0 / -5, plus accuracy, "please check" rate, wrong-confident rate, and a bootstrap 95% interval for the difference between two contenders (needed by kill rule 1b).
 - [ ] **LOINC subset:** the most-used lab codes plus every code in the MIMIC test set.
 - [ ] **Dialect generator:** clean result + hospital profile → HL7 v2 ORU^R01 message (MSH-11 = `T`) with that hospital's quirks (local codes, abbreviations, units, missing fields) and the known right answer.
 - [ ] **Four contenders** on ≥200 held-out mappings (section 7): string match, one AI call forced to answer, one AI call allowed to say "please check", and a small evolved network.
@@ -179,7 +182,11 @@ Week 2:
 
 Mean score per mapping runs from -5 to +1, a range of 6. These numbers are fixed before the spike, so the result can't be argued afterwards.
 
-1. **Evolution must earn its place.** The evolved network must beat the **better** of the two single AI calls (forced, or allowed to say "please check") by at least **0.6 points per mapping** on at least 200 held-out mappings.
+1. **Evolution must earn its place.** On at least 200 held-out mappings, the evolved network must pass both tests:
+   - **a.** Beat the single AI call that is **forced to answer** by at least **0.6 points per mapping**.
+   - **b.** Beat the single AI call that is **allowed to say "please check"**, with the 95% bootstrap interval of the difference above zero, and with **no more** confident wrong answers per 100.
+
+   Why two tests: the score can never go above +1.0. A fixed +0.6 margin over a baseline that already scores 0.4 or more would be impossible, and the rule would fail a good result. Test b asks for a clear, measured win instead.
 2. **Transfer must be real.** On **new codes only** (S1b), accuracy at B before adapting must be at least **10 points** below A, and adapting must win back at least **half** of the drop.
 
 **If rule 1 fails,** the evolution claim dies, but not necessarily the product. A single AI call allowed to say "please check", inside the same two-site workbench with the validator, is still a complete entry. Decide at G2 between that and a fallback idea (Silicon Breeders, Jury of Strangers or Safe Generative UI), keeping in mind that one judge works on evolutionary AI.
@@ -245,7 +252,9 @@ All on held-out data the agents never saw. Results on real MIMIC names are repor
 
 | Risk | Mitigation |
 |---|---|
-| A single AI call, told it may say "please check", already does as well | Kill rule on 28 Nov compares against exactly that |
+| A single AI call, told it may say "please check", already does as well | Kill rule 1b on 28 Nov compares against exactly that |
+| No one on the team has used nsDeploy | Run the official example site in P0, before the spike |
+| No practitioner answers in time | Outreach starts in P0; without a quote, say so and lean on the cited sources |
 | Transfer "recovery" is only remembering approved codes | S1a and S1b reported separately; the kill rule uses S1b |
 | Our fake quirks are cleaner than real hospitals | The S2 real-name test, and saying so openly |
 | MIMIC's name list has no units | Real recorded units from the demo's lab events (170 of 269) |
@@ -267,4 +276,5 @@ All on held-out data the agents never saw. Results on real MIMIC names are repor
 2. Is 12 hours a week realistic until 10 Jan, and how does the team split the hours?
 3. What daily spend cap do you want on the no-key endpoint during judging (for example $1 to $2 a day)?
 4. Will we use Otari? If yes, the submission needs the Otari email and one or two sentences of feedback.
-5. Which repo is the official submission repo? This one (Jullemyth122/Dialect) is assumed.
+5. Who builds what? A suggested split: one person takes the sites, runtime and validator (P2, P3); the other takes the scorer, generator, experiments and evolution (P1, P4). Both review each other's work and the docs.
+6. Official submission repo: **Jullemyth122/Dialect** (confirmed 24 Nov). The team fork merges into it.
