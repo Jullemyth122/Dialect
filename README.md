@@ -34,6 +34,12 @@ Reviewing with an AI such as Gemini? Use [docs/review-with-ai.md](docs/review-wi
 | [CLAUDE.md](CLAUDE.md) | Rules for the coding agent |
 | [docs/brief.md](docs/brief.md) | The original brief (its Otari note is out of date) |
 
+## Licence
+- **Our code and documents:** [MIT](LICENSE).
+- **Third-party data keeps its own licence**, and those files will sit in their own folders with their own notices:
+  - Lab test names extracted from the MIMIC-IV Clinical Database Demo v1.0 are under the Open Data Commons Open Database License (ODbL) v1.0. Cite: Johnson, A., Bulgarelli, L., Pollard, T., Horng, S., Celi, L. A., & Mark, R. (2022). MIMIC-IV Clinical Database Demo (version 1.0). PhysioNet. https://doi.org/10.13026/jwtp-v091
+  - LOINC content is used under the LOINC licence (https://loinc.org/license). LOINC® is a registered United States trademark of Regenstrief Institute, Inc.
+
 ## The idea in four lines
 1. Hospitals name lab tests their own way; matching those names to the standard LOINC codes is slow manual work, and a wrong match can make a result read wrong.
 2. Dialect suggests matches and is scored +1 right, 0 "please check", -5 confidently wrong, so it asks instead of guessing.

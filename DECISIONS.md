@@ -2,6 +2,9 @@
 
 Newest first. Each entry: date, decision, reason. "Proposed" means not yet confirmed by the developer.
 
+## 2026-11-24: MIT licence for our code and documents
+The challenge requires the project to be open source. MIT was the developer's choice. Third-party data is not relicensed: the MIMIC-derived test file stays under ODbL (share-alike) and LOINC content under the LOINC licence, each in its own folder with its notice.
+
 ## 2026-11-24: Real lab names, fictional hospitals, four labelled scenarios
 The real-world test set is MIMIC-IV Demo v1.0 `d_labitems`: 1,630 real lab names, 269 with hospital-assigned LOINC codes, ODbL, no patient data (v2.2 dropped the LOINC column, so v1.0 it is). Hospitals and patients are fictional and labelled synthetic everywhere, including HL7 MSH-11 = `T`. Four scenarios (referral, real dictionary, lab system switch, public health intake) share one engine. Reason: judges and AI screeners must see both that the data is synthetic and that it is grounded in real, cited sources.
 

@@ -86,7 +86,7 @@ What evolves: the prompt template (from a fixed list), the number of candidate c
 Build the site and the validator together. The validator becomes our own Stage One test.
 
 Hospital A must have:
-- [ ] Public HTTPS URL; public repo with an open-source licence
+- [ ] Public HTTPS URL (the repo is already public with an MIT licence; keep ODbL and LOINC data in their own folders with their notices)
 - [ ] `agent-manifest.json` with the networks, default router and model, peer policy and `allowed_peers`
 - [ ] Network as fully resolved JSON in the Neuro SAN format, with a front agent
 - [ ] `links.json` peer-network link map
