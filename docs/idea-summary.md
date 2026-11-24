@@ -26,6 +26,7 @@ Hospitals all "speak" the same lab standards (HL7 v2 messages, LOINC test codes,
 5. **Only the test, never the patient.** Requests to the AI model carry only each test's code, name, unit and normal range (HL7 OBX-3, OBX-6, OBX-7). Patient fields are never read into a request.
 6. **Evolution.** Variants of the network (prompt template, number of candidates, examples, abstain threshold, step order, and if it works, disambiguation rules learned from -5 mistakes) are evolved offline against known-correct answers, then published. Each generation's network and score is visible on the site.
 7. **Dialect Profile:** a plug-in format of standard subset + dialect generator + scorer. Hospital labs is profile #1, so the engine could serve other industries.
+8. **Three views, one per audience.** The **referral view** lets a doctor or nurse see a referred patient's results from both hospitals side by side, correctly matched and converted, with unsure ones held apart. **"My lab report, explained"** lets a patient read each line in plain words, with MedlinePlus explanations (US National Library of Medicine) and questions for their doctor. The **review workbench** is for the analyst. None of them gives medical advice: no interpretation, flags only as the lab sent them, no AI-written health text.
 
 ### Data and scenarios
 Real standards and real public lab names; fictional hospitals and patients. The real-world test set is the MIMIC-IV Demo v1.0 lab dictionary: 1,630 real lab names, 269 with LOINC codes assigned by the hospital, openly licensed (ODbL), with no patient data. The names have no units, so we add the unit the hospital actually recorded for each test (170 of the 269), counted without keeping any patient rows. Three labelled scenarios share one engine:
@@ -42,11 +43,14 @@ Every scenario is marked synthetic in the UI, its JSON, its HL7 messages (MSH-11
 - **Don't claim:** "AI maps lab codes". LabBridge already reports 81 to 90%, and RELMA exists.
 - **Don't claim:** "data never leaves", "zero PHI" or "proof of privacy". Test names, units and ranges go to the model endpoint the site uses. What we can show is an egress log of what went where.
 - **Don't claim:** official status for our validator. It is unofficial and checks only public files.
-- **Not a clinical tool.** Synthetic data, a human approves everything, and a disclaimer is on every mapping screen.
+- **Not a clinical tool, not medical advice.** Synthetic data, a human approves everything, and a disclaimer is on every screen.
+- **Don't claim:** that Dialect explains what a result means for someone's health. It explains what a test is (MedlinePlus) and shows the lab's own range and flag.
 
 ### Who it helps
-- **Direct users:** interface analysts and lab informatics staff at small and mid-sized hospitals, health information exchanges, public health agencies that receive lab reports from many labs, and integration firms (Cognizant included).
-- **Indirect:** clinicians and patients, through lab results that stay correct when records move between hospitals. Say "indirect" every time.
+- **Doctors and nurses** receiving referred patients: results from another hospital they can compare safely (referral view).
+- **Patients:** their lab report in plain words, with trusted explanations and questions to ask (patient view). Not medical advice; their doctor still explains what the results mean for them.
+- **Interface analysts and lab informatics staff** at small and mid-sized hospitals, health information exchanges, public health agencies that receive lab reports from many labs, and integration firms (Cognizant included): the workbench and the mapping file.
+- **Be exact about the evidence:** the doctor and patient views run on synthetic patients. Their benefit in real care is a goal, not something we measured.
 
 ### Why the judges might care
 - **Hodjat and Miikkulainen:** evolved agent networks, scored against ground truth. Also Cognizant's healthcare business: TriZetto Unify opened to AI agents in May 2026.
@@ -91,7 +95,7 @@ Proof to produce:
 A 10 here means one clear job done end to end by a real kind of user, with no dead ends.
 
 Proof to produce:
-- [ ] **One story, one journey:** an analyst at Hospital B pastes or loads a batch of messages → sees exactly what will be sent to the AI model → the agent proposes mappings → a review queue shows "please check" items with top candidates → the analyst approves → the score and the alias table update → B's accuracy visibly rises → the analyst downloads the ConceptMap.
+- [ ] **One story, one journey:** an analyst at Hospital B pastes or loads a batch of messages → sees exactly what will be sent to the AI model → the agent proposes mappings → a review queue shows "please check" items with top candidates → the analyst approves → the score and the alias table update → B's accuracy visibly rises → the analyst downloads the ConceptMap → the doctor's referral view now shows the patient's results from both hospitals side by side → the patient view explains the same report in plain words.
 - [ ] First-visit onboarding in three lines, a sample batch button, empty states, and plain error messages.
 - [ ] It works with no key, on a phone and a laptop, in a fresh browser.
 - [ ] A plain, consistent look across both hospital sites: one design system, each hospital with its own name and colour.

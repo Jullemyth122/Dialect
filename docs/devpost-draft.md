@@ -6,18 +6,18 @@ Started Tue 24 Nov 2026. Rewrite at P5 with real results; every number below mus
 **Dialect**
 
 ## Tagline (Devpost elevator pitch, under 200 characters)
-Agent networks that learn each hospital's own lab-code dialect, and ask a human instead of guessing. Shared as open agentic websites; a hospital's lab list never goes to a peer site.
+Lab results doctors can compare and patients can understand, wherever they travel. Agents learn each hospital's lab-code dialect, ask a human instead of guessing, and never give medical advice.
 
 ## Short description
-Hospitals all use the same lab standards, but each one speaks its own dialect: local codes, units and abbreviations. Matching them to the standard LOINC codes is slow manual work. Dialect is a set of open agentic websites. Each hospital runs a published agent network in the browser that maps its lab messages to LOINC, asks a human when unsure, and learns from the mappings the human approves. A hospital can load a peer's network, with consent, and adapt it to its own codes without sending its lab list or approvals to that peer. The analyst's work ends with a standard FHIR ConceptMap download. Only each test's code, name, unit and normal range go to the AI model; patient fields are never read into a request.
+Hospitals all use the same lab standards, but each one speaks its own dialect: local codes, units and abbreviations. Matching them to the standard LOINC codes is slow manual work. Dialect is a set of open agentic websites. Each hospital runs a published agent network in the browser that maps its lab messages to LOINC, asks a human when unsure, and learns from the mappings the human approves. A hospital can load a peer's network, with consent, and adapt it to its own codes without sending its lab list or approvals to that peer. The analyst's work ends with a standard FHIR ConceptMap download. The same matches power a referral view, where a doctor or nurse sees a referred patient's results from both hospitals side by side with unsure ones held apart, and "My lab report, explained", where a patient reads each test in plain words with MedlinePlus explanations and questions for their doctor. Dialect never interprets results. Only each test's code, name, unit and normal range go to the AI model; patient fields are never read into a request.
 
 Synthetic data only. Not a clinical tool. A human approves every mapping.
 
 ## Section headings (one per judging criterion)
 1. Technological Implementation: which spec features we use, the live conformance panel, and our unofficial validator's report
-2. Design: the analyst's journey from batch to approved mappings to the ConceptMap download
+2. Design: three people, one product: the analyst's journey from batch to ConceptMap, the doctor's referral view, and the patient's explained report
 3. Potential Impact: the problem with sources, results against both single-AI baselines, who uses it, and the shared tools
 4. Quality of the Idea: why this needs the open agentic web, not a central service
 5. Data and scenarios: real standards and real public lab names and units (MIMIC-IV Demo v1.0, ODbL; LOINC), fictional hospitals and patients, three labelled scenarios
-6. Honest limits
+6. Honest limits (including: not medical advice, synthetic patients only, no measured effect on real care)
 7. How it was built during the submission period

@@ -2,6 +2,20 @@
 
 Newest first. Each entry: date, decision, reason. "Proposed" means not yet confirmed by the developer.
 
+## 2026-11-24: Dialect serves doctors, nurses and patients too, never as medical advice
+The developer wants Dialect to help doctors, other professionals and patients, not only hospital IT. Two views are added on top of the mapping engine:
+- **Referral view (Must):** a referred synthetic patient's results from both hospitals lined up by LOINC code, with cited plain-code unit conversions and each lab's own flags. Unmatched results are held apart with "do not compare".
+- **Patient view, "My lab report, explained" (Must; drops to Should if the team has only 84 hours in total):** sample synthetic reports explained line by line with MedlinePlus text fetched by LOINC code.
+
+Safety rules:
+- No interpretation, diagnosis or treatment advice anywhere.
+- Flags appear only as the lab sent them.
+- No AI-written health text; MedlinePlus "Medical test information" and health topic summaries are public domain and credited.
+- Result values never leave the browser.
+- Sample reports only, no real uploads, in this version.
+
+Reason: the mapping is invisible plumbing. These views show what it is for: results a doctor can safely compare and a patient can understand. MedlinePlus Connect takes a LOINC code, allows browser calls (`Access-Control-Allow-Origin: *`, checked 24 Nov) and asks for at most 100 requests a minute. To make room, S3 moves to Could and the views replace the "Try your own code" box.
+
 ## 2026-11-24: Kill rule 1 split into two tests
 The merged rule ("beat the better single AI call by 0.6 points") could not be passed: the score tops out at +1.0, so against a baseline scoring 0.4 or more it would need more than a perfect score. New rule: the evolved network must (a) beat the forced single AI call by at least 0.6 points per mapping, and (b) beat the single AI call allowed to say "please check" with a 95% bootstrap interval above zero and no more confident wrong answers per 100. Both on at least 200 held-out mappings. Fixed before the spike, as before. See PLAN.md section 5.
 

@@ -44,6 +44,12 @@ No real patient-level data is ever used, downloaded into the repo, or shown.
 - **Choosing the subset:** LOINC publishes usage ranks for the top 20,000 codes, replacing the old "Top 2000+" lists (loinc.org/usage/obs). We take the most-used lab codes plus every code in the MIMIC test set.
 - **Real synonyms:** LOINC's short names and related-names fields give real abbreviations for the generator. Check the field names in P0.
 
+### MedlinePlus (for the patient view)
+- **What:** the US National Library of Medicine's consumer health site. **MedlinePlus Connect** takes a LOINC code and returns links and summaries for patients (checked 24 Nov with 2345-7: it returns "Blood Glucose").
+- **Licence:** "Medical test information" and health topic summaries are public domain; credit "Source: MedlinePlus, National Library of Medicine". A.D.A.M. Medical Encyclopedia content is copyrighted: link to it, never copy it.
+- **Browser use:** the service sends `Access-Control-Allow-Origin: *`, so the page can call it directly. Limit: at most 100 requests a minute per IP; NLM recommends caching for 12 to 24 hours.
+- **What we send:** only the matched LOINC code, never anything about the patient.
+
 ### HL7 v2 and units
 - Messages use the HL7 v2 lab result structure (ORU^R01).
 - **MSH-11 Processing ID** is set to `T` (Training) on every message, so the messages identify themselves as non-production at the standard level. Check the table 0103 values in P0.
@@ -75,6 +81,7 @@ Each scenario is a self-contained story with its own data, its own question and 
   - **S1b, new codes:** codes B has never approved. The mapper tuned at A loses accuracy here, then recovers as B's approved mappings become hints. This is the real learning result, and the one the kill rule uses.
 - **Real anchor:** LOINC codes, real synonyms and the real SI/conventional unit difference.
 - **Result shown:** the S1b transfer curve, plus the S1a work saved.
+- **Where people see it:** the referred synthetic patients (`SYN-000123` and a few more) appear in the doctor's **referral view**, with results from both hospitals on one table. The same patients' reports are the samples in the patient view, **"My lab report, explained"**. Result values are generated, plausible and labelled synthetic.
 
 ### S2. A real hospital dictionary (the headline real-data result)
 - **Story:** "Hospital R" is a fictional hospital whose lab dictionary is the **real** MIMIC-IV Demo lab list.
@@ -107,7 +114,7 @@ Each quirk type needs one real example (from MIMIC, LOINC synonyms or a cited pa
 | Specimen wording ("Whole Blood", "Serum", none) | MIMIC: "Glucose, Whole Blood" | Seen 24 Nov |
 | Calculated vs measured | MIMIC: "Hematocrit, Calculated" vs "Hematocrit" | Seen 24 Nov |
 | Abbreviations and synonyms | LOINC short names and related names | Check in P0 |
-| Units: SI vs conventional | UCUM; international practice | Source needed in P0 |
+| Units: SI vs conventional | UCUM; international practice | Source needed in P0, plus a cited factor for every conversion the referral view shows |
 | Word order and punctuation | MIMIC: "Thyroxine (T4), Free" | Seen 24 Nov |
 | Local codes in OBX-3 with no coding system | HL7 v2 practice | Source needed in P0 |
 | Truncated names (field length limits) | | UNVERIFIED |

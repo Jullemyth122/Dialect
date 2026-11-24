@@ -3,7 +3,7 @@
 Written Tue 24 Nov 2026. Numbers marked *example* are illustrations until our experiments measure them; every other number is in docs/facts.md with its source.
 
 ## In one sentence
-Dialect lets any hospital load a shared AI mapper that learns its own lab codes, tells the analyst exactly which mappings it is unsure of, and never sends the hospital's lab list or approvals to another hospital's site.
+Dialect makes lab results readable and comparable wherever they travel: doctors can safely compare a referred patient's results from another hospital, patients can understand their own report, and hospital staff get the matching work done. It does this with a shared AI mapper that learns each hospital's own lab codes, says which matches it is unsure of, never sends the hospital's lab list or approvals to another hospital's site, and never gives medical advice.
 
 ## The problem, as it happens in real life
 A patient is referred from a small hospital to a bigger one. Their blood test results travel with them as an HL7 message. The small hospital's lab calls fasting glucose `GLU-F`, in mmol/L. The big hospital's system expects its own code, in mg/dL. Unless someone has matched every one of those local codes to the shared LOINC standard, the result arrives unrecognized, lands in the wrong place, or needs someone to re-check it by hand.
@@ -11,6 +11,8 @@ A patient is referred from a small hospital to a bigger one. Their blood test re
 Matching them is slow, costly human work. In one AHRQ project, five hospitals had 14,802 different interface codes for what turned out to be 4,051 actual tests. Every new connection between two systems means doing it again.
 
 ## Who feels it
+- **Doctors and nurses** who receive referred patients: results from another hospital arrive with unfamiliar names and units, so they guess, re-check by hand or repeat the test.
+- **Patients**, who get lab reports full of codes and abbreviations and no plain explanation of what each test is.
 - **Interface analysts** at small and mid-sized hospitals, often one or two people mapping thousands of codes.
 - **Public health offices and health information exchanges**, which receive results from many labs at once, each speaking its own dialect.
 - **Integration companies** that do this work for hospitals over and over.
@@ -28,9 +30,19 @@ Matching them is slow, costly human work. In one AHRQ project, five hospitals ha
 3. **It is shared as an open agentic website, not sold as a service.** The mapper itself is a public file any hospital can load, inspect and run in its own browser. What is shared is the skill; what stays private is the lab list and the approvals. No vendor, no upload, no account. The AI model sees only each test's code, name, unit and normal range, never patient details.
 4. **It proves itself on real names, against a fair rival.** Its results are measured on 269 real hospital lab names with known LOINC codes and their real recorded units (MIMIC-IV Demo, an open public dataset), not only on puzzles we wrote. It is compared with a single AI call that is also told it may say "please check", so the win can't come from an unfair comparison.
 
-## Before and after, for one analyst
+## Before and after
+
+**For the analyst**
 - **Before:** export the code list, look up each code, guess the ambiguous ones, hope nothing is wrong, start again for the next connection.
 - **After:** load the hospital's batch into Dialect. Most codes come back mapped. The unsure ones arrive in a review queue with the top candidates and the reason it is unsure. The analyst approves, fixes or skips, and each approval makes the next batch easier. At the end, they download the approved list as a standard FHIR ConceptMap or a CSV, ready to load into the hospital's interface system.
+
+**For the doctor or nurse**
+- **Before:** the referred patient's results from the other hospital are a list of unfamiliar codes in different units.
+- **After:** the referral view shows them next to the hospital's own results, matched and converted, each with the lab's own range and flag. Anything uncertain is held apart under "Not matched: do not compare". The clinical judgement stays with them.
+
+**For the patient**
+- **Before:** a report that says `GLU-F 5.6 mmol/L H` and nothing else.
+- **After:** "Blood sugar, fasting", a short explanation of the test from MedlinePlus (US National Library of Medicine), the lab's normal range and mark, and questions to ask their doctor. No diagnosis, and their numbers stay in their browser.
 
 ## Why it matters
 In healthcare a wrong mapping is worse than no mapping, because a lab result could be read under the wrong test or unit. Cognizant's own healthcare work stresses that low error tolerance and the need to verify agent output, and Cognizant opened its TriZetto Unify healthcare platform to AI agents in May 2026. Dialect's -5 rule turns "verify agent output" into something measured and visible.
@@ -45,4 +57,4 @@ The open agentic web says networks are public data and each site's private conte
 - **The same pattern fits other industries** where everyone uses one standard in their own way: insurance claims, bank payment messages, supplier invoices.
 
 ## What it is not
-Not a clinical tool, not a replacement for the analyst, and not tested inside a real hospital. Real use would need testing on real hospital data, a security review and regulatory approval. Hospitals and patients in the demo are fictional; the standards and lab names are real.
+Not a clinical tool, not medical advice, not a replacement for the doctor or the analyst, and not tested inside a real hospital. It never interprets results; it shows what each test is and what the lab itself reported. Real use would need testing on real hospital data, a security review and regulatory approval. Hospitals and patients in the demo are fictional; the standards and lab names are real.

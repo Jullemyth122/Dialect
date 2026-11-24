@@ -26,6 +26,9 @@ Every number or claim used in the README, Devpost text, video script or UI is co
 | LOINC is free to use, copy and distribute; records may be deleted for local needs; field contents may not be changed; local additions must start with "X" | https://loinc.org/license (updated 6 Aug 2026) | 24 Nov 2026 |
 | LOINC publishes usage ranks for the top 20,000 codes, replacing the old "Top 2000+" lists | https://loinc.org/usage/obs/ | 24 Nov 2026 |
 
+| MedlinePlus "Medical test information" and health topic summaries are public domain; credit "Source: MedlinePlus, National Library of Medicine"; A.D.A.M. encyclopedia content is copyrighted | https://medlineplus.gov/about/using/usingcontent/ | 24 Nov 2026 |
+| MedlinePlus Connect accepts LOINC codes, sends `Access-Control-Allow-Origin: *`, and asks for no more than 100 requests a minute per IP, with 12 to 24 hours of caching | https://medlineplus.gov/medlineplus-connect/technical-information/ (and a test call with 2345-7) | 24 Nov 2026 |
+
 ## LOINC examples used in explanations
 | Fact | Source | Checked |
 |---|---|---|

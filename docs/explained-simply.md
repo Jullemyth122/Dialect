@@ -10,6 +10,13 @@ Hospitals send lab results (like a blood sugar test) to each other as computer m
 
 **Dialect is an AI helper that does the matching, says "I'm not sure, please check" instead of guessing, and learns each hospital's naming habits without sending that hospital's test list to other hospitals' websites.** (The AI model it uses sees each test's code, name, unit and normal range, never anything about the patient.)
 
+**What that gives people:**
+- **Doctors and nurses** see a referred patient's results from another hospital next to their own, correctly matched, and never a wrong comparison.
+- **Patients** see their lab report in plain words, with trusted explanations and questions to ask their doctor.
+- **Hospital IT staff** finish the matching work faster, and with a file their systems can use.
+
+**It never gives medical advice.** It explains what a test *is*, never what a result *means* for someone's health. That stays with the doctor.
+
 ---
 
 ## 2. An everyday comparison: the grocery store
@@ -92,9 +99,28 @@ We also compare it fairly: against a plain AI that is told it may say "please ch
 
 ---
 
-## 6. What a user actually sees
+## 6. What each person actually sees
 
-The user is an interface analyst. We call her Ana in the demo; she is fictional.
+Dialect has three screens, one for each kind of person. All people and patients below are fictional.
+
+### The doctor or nurse: the referral view
+Dr. Reyes at the city hospital receives a patient referred from the provincial hospital. Without Dialect, the patient's lab results from the other hospital arrive with unfamiliar names and different units; she has to guess, or order the tests again.
+
+With Dialect she sees one table: each test from both hospitals on the same row, in the same unit, with each lab's own normal range and high/low flag exactly as the lab sent them. Example: the provincial "GLU-F 5.6 mmol/L (H)" appears next to the city hospital's glucose, also shown as about 101 mg/dL. Any test Dialect was not sure about is kept apart under **"Not matched: do not compare"**, so she is never shown a wrong comparison.
+
+Dialect does not tell her what the results mean. That is her job.
+
+### The patient: "My lab report, explained"
+Mr. Santos has his lab report and doesn't understand it. He opens the patient page and sees each line in plain words:
+- what the test is called in normal language ("Blood sugar, fasting");
+- a short explanation of what the test measures, from **MedlinePlus**, the US National Library of Medicine's free health website (not written by AI);
+- his number, the lab's normal range, and the lab's own high/low mark;
+- questions he can ask his doctor.
+
+It never says "you have diabetes" or "you are fine". Every screen says: **"Not medical advice. Talk to your doctor about your results."** His numbers stay in his browser. In this version he picks from sample reports; uploading real reports is not part of the hackathon.
+
+### The hospital IT person: the review workbench
+The user is an interface analyst. We call her Ana in the demo.
 
 1. Ana opens her hospital's Dialect page and loads a batch of lab test names. The page shows her exactly what will be sent to the AI model: test codes, names, units and normal ranges, nothing about patients.
 2. Dialect returns them in three piles:
@@ -106,6 +132,8 @@ The user is an interface analyst. We call her Ana in the demo; she is fictional.
 5. When she is done, she downloads the approved list as a standard mapping file (a FHIR ConceptMap, or a spreadsheet-style CSV) that her hospital's interface system can load. This is the real output of her work.
 6. If another hospital's Dialect helper is better at certain tests, Ana can load it with one click after a permission prompt. It learns her hospital's habits on her side.
 
+Ana's approvals are what make the doctor's and the patient's screens correct. That is why her screen exists.
+
 ---
 
 ## 7. Is this really helpful? The honest answer
@@ -114,10 +142,12 @@ The user is an interface analyst. We call her Ana in the demo; she is fictional.
 - The problem is real and documented by US government health agencies and published research.
 - Wrong matches can make a lab result read wrong, so "ask instead of guess" is a real safety idea, not decoration.
 - It saves people time only on the part where it is confident. It does not remove the human.
+- Doctors get results from other hospitals they can compare; patients get a trusted, plain explanation of what each test is. Neither replaces the doctor's advice.
 
 **What is not proven:**
 - We have not tested it inside a real hospital, and we won't before the deadline.
 - Our results come from public data and fictional scenarios, not real patients.
+- We have not measured whether the doctor and patient screens change real care. That would need a proper study.
 - Real hospital use would need testing on real hospital data, a security review and regulatory approval.
 
 **What the honest claim is:** a working demonstration and open tools that show a safer way to do this job, plus a tool (an unofficial conformance validator) that every other challenge entrant can use right away.
@@ -144,4 +174,7 @@ The user is an interface analyst. We call her Ana in the demo; she is fictional.
 | **Private context** | Data the AI helper may use but must not pass to other sites |
 | **BYOK** | "Bring your own key": using your own AI account instead of the site's |
 | **Synthetic data** | Realistic but made-up data, so no real patient is involved |
+| **MedlinePlus** | The US National Library of Medicine's free health information website; much of it is public domain. We show its explanations of lab tests, with credit |
+| **Referral** | When one hospital or doctor sends a patient to another |
+| **Medical advice** | Telling a person what their results mean for their health or what to do. Dialect never does this |
 | **MIMIC-IV Demo** | A free public research dataset from a US hospital; we use only its list of test names and the unit used for each test, never patient records |

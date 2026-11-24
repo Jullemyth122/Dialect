@@ -1,6 +1,6 @@
 # Dialect: rules for the coding agent
 
-Entry for the Open Agentic Web Challenge (Cognizant). Agents that learn each hospital's lab-code "dialect" at that hospital, without sending its lab list or approvals to peer sites. The plan is in PLAN.md; background and sources are in docs/brief.md.
+Entry for the Open Agentic Web Challenge (Cognizant). Agents that learn each hospital's lab-code "dialect" at that hospital, without sending its lab list or approvals to peer sites, with views for analysts, doctors and nurses, and patients. The plan is in PLAN.md; background and sources are in docs/brief.md.
 
 ## Project rules
 - Synthetic data only. Never add real patient or customer data to the repo.
@@ -11,6 +11,17 @@ Entry for the Open Agentic Web Challenge (Cognizant). Agents that learn each hos
 - Requests to the AI model use an allowlist: only OBX-3 (code and name), OBX-6
   (unit) and OBX-7 (normal range). Never read patient segments (PID, PV1, NK1)
   or notes (NTE) into a request. Nothing from one hospital site goes to another.
+- Never give medical advice. No screen, prompt or text may interpret a result,
+  suggest a diagnosis or a treatment, or compute its own high/low flag. Show
+  flags only as the lab sent them (OBX-8). Never send result values (OBX-5)
+  to the AI model.
+- Patient-facing explanations come only from MedlinePlus (public-domain parts,
+  credited "Source: MedlinePlus, National Library of Medicine"), never from an
+  AI model. Cache MedlinePlus Connect responses; stay under 100 requests a
+  minute. Link to, never copy, A.D.A.M. encyclopedia content (copyrighted).
+- In the referral view, line up only confident matches; put everything else
+  under "Not matched: do not compare". Convert units only with a cited factor.
+- Every doctor/patient screen also says "Not medical advice."
 - Use the privacy sentence in PLAN.md section 1 word for word; don't write
   "zero PHI", "data never leaves" or "proves" about privacy.
 - Never call our validator official or show a pass badge; it is "unofficial,

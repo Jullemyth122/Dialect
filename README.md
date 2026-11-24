@@ -1,10 +1,10 @@
 # Dialect
 
-**An AI helper that matches each hospital's own lab test names to the worldwide standard codes, says "please check" instead of guessing, and learns each hospital's habits at that hospital.** Its lab list and approvals are never sent to another hospital's site. The AI model sees only each test's code, name, unit and normal range, never patient details.
+**Lab results that stay readable and comparable when they travel between hospitals: for doctors and nurses comparing a referred patient's results, for patients reading their own report, and for the hospital staff who connect the systems.** Underneath, an AI helper matches each hospital's own lab test names to the worldwide standard codes, says "please check" instead of guessing, and learns each hospital's habits at that hospital. Its lab list and approvals are never sent to another hospital's site. The AI model sees only each test's code, name, unit and normal range, never patient details or result values. **Not medical advice:** it never interprets a result.
 
 Entry for the [Open Agentic Web Challenge](https://cognizant-agenticweb.devpost.com/) (Cognizant). Deadline Mon 11 Jan 2027, 8:00 am PST; we plan to submit Sun 10 Jan.
 
-> **Synthetic scenario.** Real standards and real public lab test names; fictional hospitals and patients. Not a clinical tool. A human approves every match.
+> **Synthetic scenario.** Real standards and real public lab test names; fictional hospitals and patients. Not a clinical tool and not medical advice. A human approves every match.
 
 **Status:** planning and research (late November 2026). Nothing is built yet.
 
@@ -38,12 +38,14 @@ Reviewing with an AI such as Gemini? Use [docs/review-with-ai.md](docs/review-wi
 - **Our code and documents:** [MIT](LICENSE).
 - **Third-party data keeps its own licence**, and those files will sit in their own folders with their own notices:
   - Lab test names and the per-test units table extracted from the MIMIC-IV Clinical Database Demo v1.0 are under the Open Data Commons Open Database License (ODbL) v1.0. Cite: Johnson, A., Bulgarelli, L., Pollard, T., Horng, S., Celi, L. A., & Mark, R. (2022). MIMIC-IV Clinical Database Demo (version 1.0). PhysioNet. https://doi.org/10.13026/jwtp-v091
+  - Patient-facing test explanations are shown from MedlinePlus (public-domain medical test information and health topic summaries). Source: MedlinePlus, National Library of Medicine.
   - LOINC content is used under the LOINC licence (https://loinc.org/license). LOINC® is a registered United States trademark of Regenstrief Institute, Inc.
 
-## The idea in four lines
+## The idea in five lines
 1. Hospitals name lab tests their own way; matching those names to the standard LOINC codes is slow manual work, and a wrong match can make a result read wrong.
 2. Dialect suggests matches and is scored +1 right, 0 "please check", -5 confidently wrong, so it asks instead of guessing.
 3. Each hospital's approved matches stay with that hospital, make the next batch easier, and download as a standard mapping file (FHIR ConceptMap or CSV).
-4. The helper is published as an open agentic website: anyone can load and inspect it, and it runs in the hospital's own browser.
+4. The matches power two more screens: a **referral view** where a doctor or nurse sees a referred patient's results from both hospitals side by side (unsure ones held apart), and **"My lab report, explained"** where a patient reads each test in plain words, with explanations from MedlinePlus (US National Library of Medicine) and questions for their doctor.
+5. The helper is published as an open agentic website: anyone can load and inspect it, and it runs in the hospital's own browser.
 
 We will test it on 269 real hospital lab names and compare it fairly against a plain AI call, including one that is also allowed to say "please check". If evolution doesn't beat that, we will say so (PLAN.md section 5).

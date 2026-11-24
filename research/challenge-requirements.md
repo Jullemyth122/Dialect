@@ -15,7 +15,7 @@ Status column: **OK** = the plan already covers it. **FIXED** = added to PLAN.md
 | At least the age of majority where you live (18 in the Philippines). Philippines is not on the excluded list | Rules §3 | CHECK: confirm you are 18+ |
 | No financial or preferential support from Cognizant | Rules §4 | OK |
 | New project, or significantly updated during 11 Nov 2026 to 11 Jan 2027 | Rules §4 | OK: new project |
-| Authorized to use every third-party SDK, API and dataset | Rules §4 | MOSTLY OK (24 Nov): LOINC subset allowed, MIMIC-IV Demo and eICU Demo are ODbL. CHECK: exact LOINC notice text |
+| Authorized to use every third-party SDK, API and dataset | Rules §4 | MOSTLY OK (24 Nov): LOINC subset allowed, MIMIC-IV Demo and eICU Demo are ODbL, MedlinePlus test information is public domain and Connect may be displayed (credit required, 100 requests a minute). CHECK: exact LOINC notice text |
 | Project must be open source ("you can use any model or API, as long as your project itself is open source") | Resources FAQ, Overview | DONE (24 Nov): public repo github.com/Jullemyth122/Dialect, MIT licence; ODbL and LOINC data keep their own licences |
 | English materials | Rules §4 | OK |
 | Free access for judges until 18 Jan 2027, 5:00 pm PT | Rules §4 | FIXED: the live site must stay up through judging |

@@ -16,11 +16,14 @@ Open Agentic Web Challenge (Cognizant). Updated Tue 24 Nov 2026. This version me
 
 ## 1. What we are building
 
-**Dialect** is an open agentic website for hospital interface analysts. It suggests the standard LOINC code for each of a hospital's own lab test names and says "please check" instead of guessing. It learns from the analyst's approvals at that hospital, and the work ends with a mapping file the hospital's systems can import.
+**Dialect** makes lab results readable and comparable wherever they travel, for the people who use them: doctors and nurses, patients, and the hospital staff who connect the systems. It is an open agentic website. Under the hood it suggests the standard LOINC code for each of a hospital's own lab test names and says "please check" instead of guessing. On top of that sit three views, one per audience. **It never gives medical advice:** it never interprets a result, diagnoses or suggests treatment.
 
 What we ship by 10 Jan:
 1. **Two hospital websites** on two different origins (Hospital A and Hospital B). Each publishes a lab-code mapping agent network. B can load A's network after the visitor consents.
-2. **A review workbench** at Hospital B. The analyst sees confident mappings and a "please check" pile with the top candidates and the reason. They approve, fix or skip each one. Approved mappings go into B's private alias table. The work ends with a download: a **FHIR R4 ConceptMap** (a standard mapping file) and a CSV.
+2. **Three views, one per audience:**
+   - **Referral view, for doctors and nurses.** A referred (synthetic) patient's results from both hospitals on one table, lined up by LOINC code. Units are converted by plain code for a short, cited list of tests, and each lab's own normal range and high/low flag is shown as the lab sent it. Anything not confidently matched is held apart under "Not matched: do not compare", never placed in a trend.
+   - **"My lab report, explained", for patients.** Pick a sample (synthetic) lab report and see each line with the test's plain-language name and a short explanation from **MedlinePlus** (US National Library of Medicine, public domain, fetched by LOINC code and credited), the number with the lab's own range and flag, and "questions to ask your doctor". No AI-written health text. Result numbers never leave the browser.
+   - **Review workbench, for interface analysts.** Confident mappings plus a "please check" pile with the top candidates and the reason. Approve, fix or skip. Approved mappings go into B's private alias table. The work ends with a **FHIR R4 ConceptMap** (a standard mapping file) and CSV download.
 3. **Evolution results**: network variants evolved offline against known answers. Every generation's network and score is published on the site.
 4. **The Dialect Conformance Validator (unofficial)**: a page anyone can point at an agentic website to check its public files against the challenge spec. The challenge repo's own validation step is still an empty TODO.
 5. **Shared tools**: the validator, the hospital dialect generator (fake HL7 lab messages with each hospital's quirks and known answers) and the abstain-aware scorer.
@@ -29,8 +32,9 @@ Scoring rule everywhere: **+1** correct, **0** "please check", **-5** confident 
 
 Rules we never break:
 - Synthetic data only: fictional hospitals and patients, real standards and public lab names.
-- Not a clinical tool. Every mapping screen says so, and a human approves every write.
-- **What leaves the browser, said the same way everywhere:** only a test's local code, name, unit and normal range (HL7 fields OBX-3, OBX-6, OBX-7) are sent, and only to the AI model the site uses. Patient fields are never read into the request. Nothing from B (lab list, alias table, key) is sent to Hospital A.
+- Not a clinical tool and **not medical advice**. Every screen says so, and a human approves every write.
+- **No interpretation.** Dialect never says what a result means for a person's health. High/low flags are only the ones the lab sent. Patient explanations are MedlinePlus text, never AI-written. Unit conversions are plain code with a cited factor.
+- **What leaves the browser, said the same way everywhere:** only a test's local code, name, unit and normal range (HL7 fields OBX-3, OBX-6, OBX-7) are sent, and only to the AI model the site uses. Result values and patient fields are never read into the request. The patient view also sends the matched LOINC code (a public code) to MedlinePlus to fetch its explanation. Nothing from B (lab list, alias table, key) is sent to Hospital A.
 - The visitor's key never reaches a peer site.
 - MIMIC rows are used for testing only, never as examples inside prompts or published network files.
 
@@ -49,6 +53,8 @@ Every feature from both reviews, sorted. **Must** items are the entry. **Should*
 | **Must** | Field allowlist: only OBX-3, OBX-6 and OBX-7 are sent, with a visible "what is sent" preview | Cheap, and makes the privacy claim checkable |
 | **Must** | Review workbench with approve, fix, skip and the "save mapping" site action that shows its arguments first | The product. Also the spec's grounded capability |
 | **Must** | ConceptMap and CSV download | Ends the analyst's job with something a hospital system can use. About 2 hours |
+| **Must** | Referral view for doctors and nurses (about 8 hours) | Shows the payoff: the same patient's results from two hospitals, comparable and safe. Also the clearest 30 seconds of the video |
+| **Must** | Patient view, "My lab report, explained" (about 6 hours; replaces the "Try your own code" box) | Patients are a real audience; MedlinePlus gives trusted wording, so no AI health text is needed. **First to drop to Should** if the team has only 84 hours in total |
 | **Must** | Scorer, generator and the four-way comparison (section 7) | Without a fair comparison the results mean nothing |
 | **Must** | Transfer reported in two parts: S1a repeat codes, S1b new codes | Shows learning, not only remembering |
 | **Must** | S2 on real MIMIC names, with their real recorded units | The result on data we did not invent |
@@ -60,7 +66,7 @@ Every feature from both reviews, sorted. **Must** items are the entry. **Should*
 | **Should** | CI: JSON files valid and unit tests pass on every push | Cheap protection |
 | **Should** | DialectProfile v1 schema (standard subset + generator + scorer behind one format) | Makes the engine reusable in other fields |
 | **Should** | 3-person timed user test and one practitioner quote | Design and Impact evidence |
-| **Should** | S3 lab system switch | Shows it asks instead of applying stale mappings |
+| **Could** | S3 lab system switch (moved down on 24 Nov to make room for the two new views) | Shows it asks instead of applying stale mappings |
 | **Could** | Local AI model option (OpenAI-compatible server on the analyst's own computer) | Real hospitals would want it, but it needs server setup (`OLLAMA_ORIGINS` for Ollama), Chrome may ask permission before a website reaches the computer it runs on, and judges won't have it. Optional only |
 | **Could** | Script that checks `docs/facts.md` against `results.json` | Nice; a manual check before submitting does the same job |
 | **Could** | Error ranges on every published result and a cost chart (the kill rule's one bootstrap interval is already Must, in the scorer) | Strengthens the numbers |
@@ -93,7 +99,7 @@ Other defaults:
 
 P4 falls over Christmas, Rizal Day and New Year, and has the most new work. If B is done early, build the evolution scripts in P3 week 2 so that P4 is mostly running them.
 
-**The hours only add up if the Should and Could items stay optional.** The team's review estimated 130 to 160 hours for everything listed. If G3 slips past 6 Dec, drop every Could item and S3 that day.
+**The hours only add up if the Should and Could items stay optional.** The team's review estimated 130 to 160 hours for everything listed. The two new views add about 11 hours to the Must list (14 hours, minus the 3-hour "Try your own code" box they replace), which is more than one person's 84 hours. With two people on the team it fits. With only 84 hours in total, the patient view moves to Should. If G3 slips past 6 Dec, drop every Could item that day.
 
 ---
 
@@ -110,7 +116,8 @@ P4 falls over Christmas, Rizal Day and New Year, and has the most new work. If B
 - [ ] Clear every CHECK item in [research/challenge-requirements.md](research/challenge-requirements.md), including everyone's age (18+).
 - [ ] Spot-check 5 cited sources yourself.
 - [ ] **Run the challenge's own example site locally** (clone cognizant-ai-labs/agentic-web, follow its README, load one example network in the browser). One hour. Nobody on the team has touched nsDeploy yet; finding its quirks now is cheaper than on 6 Dec.
-- [ ] **Start the practitioner outreach now:** message 3 to 5 hospital IT, HIMS or lab informatics people (school contacts, LinkedIn) asking for a 10-minute chat in December. Replies take weeks; the quote is due in P4.
+- [ ] Find a cited source for each unit conversion factor the referral view will use (for example glucose mmol/L to mg/dL).
+- [ ] **Start the practitioner outreach now:** message 3 to 5 people (school contacts, LinkedIn): doctors or nurses for the referral view, and hospital IT, HIMS or lab informatics staff for the workbench. Ask for a 10-minute chat in December. Replies take weeks; the quote is due in P4.
 - [ ] Agree who builds what (section 9, question 5).
 
 ### P1 Spike (Thu 26 to Sat 28 Nov)
@@ -157,16 +164,17 @@ Week 1:
 Week 2:
 - [ ] Full Hospital B workbench: approve, fix or skip; approved mappings go to B's private alias table; the score updates.
 - [ ] ConceptMap and CSV download (a site action that shows what it writes).
-- [ ] Egress log (Should).
+- [ ] **Referral view:** synthetic patient `SYN-000123` with results from A (SI units) and B (conventional units) on one table by LOINC; plain-code unit conversion for a short list of tests with cited factors (glucose, creatinine, cholesterol and similar); each lab's own range and flag; unmatched results under "Not matched: do not compare"; banner "Synthetic data. Not for clinical use. Not medical advice."
 - [ ] Live "Conformance" panel on the site for the runtime checks the validator can't do.
 
 ### P4 Evolution and proof (Mon 21 Dec to Sun 3 Jan)
 - [ ] Evolution loop in `evolve/`: population 8, about 10 generations, fitness on a held-out set.
 - [ ] Publish each generation's network JSON and score, with a lineage view (and rule diffs, if the Should item made it).
 - [ ] Run the experiments in section 7; publish `results.json` and a results card.
-- [ ] **"Try your own code" box:** a visitor types any lab name and unit and sees a mapping or an honest "please check".
-- [ ] User test: 3 people, no help, timed. Fix what confuses them. (Should)
-- [ ] Ask one real hospital IT, HIMS or lab informatics person for two sentences of feedback, quoted with permission. (Should)
+- [ ] **Patient view, "My lab report, explained":** 3 synthetic sample reports, plus a box to type a test name. Each line shows the plain-language test name, the MedlinePlus explanation fetched by LOINC (cached; at most 100 requests a minute; credited "Source: MedlinePlus, National Library of Medicine"), the value with the lab's own range and flag, and fixed "questions to ask your doctor". Unmatched lines say "We couldn't identify this test. Ask the lab or your doctor." Banner: "Not medical advice. Talk to your doctor about your results."
+- [ ] Egress log (Should).
+- [ ] User test: 3 people, no help, timed. Fix what confuses them. Include at least one non-technical person on the patient view and, if possible, a nurse or doctor on the referral view. (Should)
+- [ ] Ask one real practitioner for two sentences of feedback, quoted with permission: a doctor or nurse on the referral view, or a hospital IT, HIMS or lab informatics person on the workbench. (Should)
 
 ### P5 Submission (Mon 4 to Sat 9 Jan)
 - [ ] Video under 2 minutes, **your own voice**, the site running in a browser, the key result in the first 30 seconds, public on YouTube, with uploaded captions. No third-party trademarks or copyrighted music. Use generic words ("hospital interface systems") rather than product names.
@@ -215,13 +223,14 @@ The rules allow "automated AI-driven analysis", and judges need not watch past 2
 **Never** add hidden text or instructions aimed at AI judges. The rules allow disqualification for tampering with the judging. Don't put AI-generated "predicted scores" in the repo or the submission either.
 
 ### The moments that should impress both
+0. **The doctor's screen:** the referred patient's fasting glucose arrives as `GLU-F 5.6 mmol/L`. Mapped wrongly, it would read as 5.6 mg/dL, dangerously low instead of slightly high. In the referral view it sits next to the city hospital's results, converted (about 101 mg/dL), and with the lab's own "H" flag. A test Dialect wasn't sure about sits apart under "Not matched: do not compare". Then the patient view shows the same report in plain words, with MedlinePlus explanations and questions for the doctor.
 1. **The transfer curve on new codes:** good at A, drops at B, climbs back as the analyst approves a handful of mappings, without B's lab list going anywhere.
 2. **The refusal:** a confusing local code where the forced AI call guesses wrong and Dialect says "please check". The -5 rule makes that refusal visible as points saved.
 3. **The real-data result:** the same scoring on 269 real hospital names, with their real units.
 4. **The finished job:** the analyst downloads a ConceptMap a hospital system could import.
 5. **The validator:** the organizers' repo still has an empty "run the validation script" TODO, and we ship one any entrant can use.
 
-The video's first 30 seconds show 1 and 2. The Devpost text leads with 5 under Potential Impact.
+The video's first 30 seconds show 0 and 2. The Devpost text leads with 0 and 5 under Potential Impact.
 
 ### Mock judging (G3b and G4)
 - [ ] Give two different AI models only the Devpost text, screenshots, video transcript and live links. Ask each to score the four criteria from 1 to 10 using the rules' wording, and to list what is overclaimed or missing. Use [docs/review-with-ai.md](docs/review-with-ai.md).
@@ -242,6 +251,7 @@ All on held-out data the agents never saw. Results on real MIMIC names are repor
 | S2a: real names only | The 269 real MIMIC names with no unit: unit-dependent names should get "please check" | Real-data card |
 | S2b: real names and units | The same names with their real recorded units (170 of 269): how much coverage the unit check recovers | Real-data card |
 | S3: lab system switch (Should) | Wrong confident answers after codes change overnight | Results card |
+| Referral view check | On the synthetic referral patients: results lined up correctly, held apart as "do not compare", and lined up wrongly (target: 0) | Results card |
 | Evolution | Score per generation (and rule diffs, if built) | Lineage view |
 | Cost | Score against tokens per message | Chart |
 | Privacy | What A received from B: GET requests for public files only, no bodies, no key | Egress log export (Should) |
@@ -264,17 +274,20 @@ All on held-out data the agents never saw. Results on real MIMIC names are repor
 | Scope creep from reviews | Section 2 tiers; Should and Could are optional by definition |
 | Overclaiming gets flagged | One facts file, one privacy sentence, an honest limits section |
 | Looks like a clinical product | Disclaimers, human approval, interoperability framing |
+| The doctor or patient view reads as medical advice | No interpretation anywhere: flags only as the lab sent them, MedlinePlus text only, no AI-written health text, "Not medical advice" on every screen, sample reports only (no uploads of real reports in this version) |
+| A wrong match shows a doctor a misleading comparison | Only confident matches are lined up; everything else is held apart with "do not compare"; unit conversion only for the cited list |
+| MedlinePlus is down or rate-limits us | Cache each explanation; fall back to the LOINC name and a link to MedlinePlus |
 | Low-memory machine (about 7.6 GB) | No Synthea or Java; one heavy process at a time |
 
-**Never cut:** the two-origin Stage One sites, the no-key default path, the review workbench with ConceptMap download, the four-way comparison, validator v1, the video.
+**Never cut:** the two-origin Stage One sites, the no-key default path, the review workbench with ConceptMap download, the referral view, the four-way comparison, validator v1, the video.
 
 ---
 
 ## 9. Open questions (answer by Wed 25 Nov)
 
 1. Is everyone entering 18 or older? (Rules requirement.)
-2. Is 12 hours a week realistic until 10 Jan, and how does the team split the hours?
+2. Is 12 hours a week realistic until 10 Jan, for each person? This decides whether the patient view stays a Must (two people) or drops to Should (84 hours in total).
 3. What daily spend cap do you want on the no-key endpoint during judging (for example $1 to $2 a day)?
 4. Will we use Otari? If yes, the submission needs the Otari email and one or two sentences of feedback.
-5. Who builds what? A suggested split: one person takes the sites, runtime and validator (P2, P3); the other takes the scorer, generator, experiments and evolution (P1, P4). Both review each other's work and the docs.
+5. Who builds what? A suggested split: one person takes the sites, runtime, validator and the three views (P2, P3); the other takes the scorer, generator, experiments and evolution (P1, P4). Both review each other's work and the docs.
 6. Official submission repo: **Jullemyth122/Dialect** (confirmed 24 Nov). The team fork merges into it.
