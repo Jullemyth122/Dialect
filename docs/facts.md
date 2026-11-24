@@ -20,6 +20,7 @@ Every number or claim used in the README, Devpost text, video script or UI is co
 |---|---|---|
 | MIMIC-IV Clinical Database Demo v1.0 `d_labitems` has 1,630 lab item labels; 269 carry a LOINC code (143 Chemistry, 126 Hematology) | https://doi.org/10.13026/jwtp-v091 (file counted by us) | 24 Nov 2026 |
 | MIMIC-IV Demo is licensed ODbL v1.0; tables without patient-level information (`d_` prefix) are included in full | https://physionet.org/content/mimic-iv-demo/1.0/ | 24 Nov 2026 |
+| MIMIC-IV Demo v1.0 `d_labitems` has no unit column; the demo's lab events record a unit for 170 of the 269 LOINC-coded items (3 of them with more than one unit), e.g. Sodium in mEq/L, Bilirubin, Total in mg/dL | https://doi.org/10.13026/jwtp-v091 (`labevents.valueuom` counted by us; no patient rows kept) | 24 Nov 2026 |
 | MIMIC-IV Demo v2.2 `d_labitems` has no `loinc_code` column (columns: itemid, label, fluid, category) | https://physionet.org/content/mimic-iv-demo/2.2/ (file checked by us) | 24 Nov 2026 |
 | eICU Collaborative Research Database Demo v2.0.1 is licensed ODbL v1.0 | https://physionet.org/content/eicu-crd-demo/2.0.1/ | 24 Nov 2026 |
 | LOINC is free to use, copy and distribute; records may be deleted for local needs; field contents may not be changed; local additions must start with "X" | https://loinc.org/license (updated 6 Aug 2026) | 24 Nov 2026 |
@@ -36,6 +37,8 @@ Every number or claim used in the README, Devpost text, video script or UI is co
 |---|---|---|
 | The challenge repo's "Testing" section is a TODO: "Run the validation script to check your submission is compliant" | https://github.com/cognizant-ai-labs/agentic-web | 23 Nov 2026 |
 | Judging may use automated AI-driven analysis | https://cognizant-agenticweb.devpost.com/rules | 23 Nov 2026 |
+| Partners named on the overview page: Mozilla, MIT NANDA, AWS, UT Austin, AI Commons. No ITU or UN body is named | https://cognizant-agenticweb.devpost.com/ | 24 Nov 2026 |
+| The challenge has no tracks; it lists suggested ideas | https://cognizant-agenticweb.devpost.com/ | 24 Nov 2026 |
 
 ## Our results
 None yet. Filled in from `results.json` after P1 and P4.

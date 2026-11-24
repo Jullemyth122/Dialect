@@ -8,7 +8,7 @@ For teammates and reviewers with no healthcare background. No medical knowledge 
 
 Hospitals send lab results (like a blood sugar test) to each other as computer messages. Every hospital names its tests its own way. There is a worldwide "barcode" system for lab tests called **LOINC**, but someone has to match each hospital's own names to those barcodes by hand, test by test. That is slow, and a wrong match can make a result read wrong.
 
-**Dialect is an AI helper that does the matching, says "I'm not sure, please check" instead of guessing, and learns each hospital's naming habits without that hospital's data being sent to anyone else's website.**
+**Dialect is an AI helper that does the matching, says "I'm not sure, please check" instead of guessing, and learns each hospital's naming habits without sending that hospital's test list to other hospitals' websites.** (The AI model it uses sees each test's code, name, unit and normal range, never anything about the patient.)
 
 ---
 
@@ -65,7 +65,7 @@ Now multiply this by thousands of test names per hospital, and every new hospita
 | Way | Problem |
 |---|---|
 | **By hand**, using a lookup tool | Slow. Every hospital starts from zero |
-| **An AI tool** that suggests matches (published research reports 81 to 90% correct) | About 1 in 10 is wrong, and it doesn't tell you which. Someone still has to check every line |
+| **An AI tool** that suggests matches (published research reports 81 to 90% correct) | 1 or 2 in every 10 are wrong, and it doesn't tell you which. Someone still has to check every line |
 | **A company does it for you** | The hospital must send its data to that company |
 
 ---
@@ -76,15 +76,19 @@ Now multiply this by thousands of test names per hospital, and every new hospita
 It is scored like a strict exam: **+1** for a right answer, **0** for "please ask a human", **-5** for a confident wrong answer. So it learns that guessing is expensive. The analyst only checks the items it flags, instead of checking everything.
 
 **2. It learns each hospital's habits, at that hospital.**
-When the analyst approves a match, Dialect remembers it, for that hospital only. Next time, fewer items need checking.
+When the analyst approves a match, Dialect remembers it, for that hospital only. Next time, fewer items need checking. It also uses those approvals as hints for names it has never seen. We measure the two separately, so "it remembered" is never passed off as "it learned".
 
 **3. It is shared openly, and the data stays home.**
 The AI helper is published as a public file on a website (an "agentic website", which is what this challenge is about). A hospital opens the page, its browser downloads the helper, and the helper runs right there in that hospital's browser. The hospital's test list and approvals are never sent to the website that published the helper.
 
 An everyday comparison: it is like downloading a recipe from a cooking site and cooking in your own kitchen. The cooking site gets nothing from your fridge.
 
+One honest detail: the helper still asks an AI model for suggestions, so the model sees each test's code, name, unit and normal range. It never sees the patient's name, ID or anything else about the patient; the page shows exactly what is sent before it sends it.
+
 **4. It is tested on real names.**
-We test it on 269 real hospital lab test names that already have known LOINC codes, from a free public research dataset (MIMIC-IV Demo). The hospitals and patients in our demo are fictional, but those test names are real.
+We test it on 269 real hospital lab test names that already have known LOINC codes, from a free public research dataset (MIMIC-IV Demo), together with the units that hospital really used. The hospitals and patients in our demo are fictional, but those test names and units are real.
+
+We also compare it fairly: against a plain AI that is told it may say "please check" too. If Dialect can't beat that, we will say so.
 
 ---
 
@@ -92,14 +96,15 @@ We test it on 269 real hospital lab test names that already have known LOINC cod
 
 The user is an interface analyst. We call her Ana in the demo; she is fictional.
 
-1. Ana opens her hospital's Dialect page and loads a batch of lab test names.
+1. Ana opens her hospital's Dialect page and loads a batch of lab test names. The page shows her exactly what will be sent to the AI model: test codes, names, units and normal ranges, nothing about patients.
 2. Dialect returns them in three piles:
    - **Matched** (confident)
    - **Please check** (unsure, with its top 3 guesses and the reason, e.g. "unit missing, could be 1558-6 or 14771-0")
    - **Unknown**
 3. Ana goes through only the "Please check" pile: approve, fix or skip.
 4. Every approval is saved for her hospital only. The next batch has a smaller "Please check" pile.
-5. If another hospital's Dialect helper is better at certain tests, Ana can load it with one click after a permission prompt. It learns her hospital's habits on her side.
+5. When she is done, she downloads the approved list as a standard mapping file (a FHIR ConceptMap, or a spreadsheet-style CSV) that her hospital's interface system can load. This is the real output of her work.
+6. If another hospital's Dialect helper is better at certain tests, Ana can load it with one click after a permission prompt. It learns her hospital's habits on her side.
 
 ---
 
@@ -115,7 +120,7 @@ The user is an interface analyst. We call her Ana in the demo; she is fictional.
 - Our results come from public data and fictional scenarios, not real patients.
 - Real hospital use would need testing on real hospital data, a security review and regulatory approval.
 
-**What the honest claim is:** a working demonstration and open tools that show a safer way to do this job, plus a tool (the conformance validator) that every other challenge entrant can use right away.
+**What the honest claim is:** a working demonstration and open tools that show a safer way to do this job, plus a tool (an unofficial conformance validator) that every other challenge entrant can use right away.
 
 ---
 
@@ -130,6 +135,8 @@ The user is an interface analyst. We call her Ana in the demo; she is fictional.
 | **HL7 v2** | The common text format hospitals use to send results to each other |
 | **FHIR** | A newer, web-style format for health data |
 | **Mapping** | Matching a local code to the right LOINC code |
+| **Alias table** | A hospital's own saved list of approved matches; it stays with that hospital |
+| **ConceptMap** | A standard FHIR file that lists "this local code = that LOINC code", so other systems can load the matches |
 | **Interface analyst** | The hospital IT person who connects systems and does the mapping |
 | **Abstain** | When the AI says "I'm not sure, please ask a human" |
 | **Agentic website** | A website that publishes an AI helper as a public file, which runs in the visitor's browser |
@@ -137,4 +144,4 @@ The user is an interface analyst. We call her Ana in the demo; she is fictional.
 | **Private context** | Data the AI helper may use but must not pass to other sites |
 | **BYOK** | "Bring your own key": using your own AI account instead of the site's |
 | **Synthetic data** | Realistic but made-up data, so no real patient is involved |
-| **MIMIC-IV Demo** | A free public research dataset from a US hospital; we use only its list of test names |
+| **MIMIC-IV Demo** | A free public research dataset from a US hospital; we use only its list of test names and the unit used for each test, never patient records |

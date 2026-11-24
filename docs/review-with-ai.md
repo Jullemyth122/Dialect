@@ -41,6 +41,8 @@ C. Score each criterion from 1 to 10 as the plan stands, with one sentence
 D. For each criterion, name the single change that would raise the score most.
 E. List every claim you think is overclaimed, unsupported or contradictory.
 F. Name the strongest argument AGAINST this entry winning.
+G. Check the plan's hours (PLAN.md sections 2 and 3). Is the Must list
+   buildable in 84 hours? Name anything that should move down a tier.
 Be critical. Do not be polite at the expense of accuracy.
 ```
 
@@ -48,3 +50,5 @@ Be critical. Do not be polite at the expense of accuracy.
 - If part A is wrong or vague, the explanation is not clear enough. Fix `docs/explained-simply.md` first.
 - Collect the part D and part E answers in a new issue or in DECISIONS.md, with the date.
 - Run the same prompt on a second AI model too. Where both agree, act first.
+- Treat the AI's scores as opinions, not evidence. Don't put predicted scores in the repo or the submission, and check every fact it adds (the 24 Nov review invented a partner and challenge "tracks").
+- Every new feature it suggests goes into a tier in PLAN.md section 2 before anyone builds it.

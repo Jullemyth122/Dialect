@@ -1,6 +1,6 @@
 # Dialect: idea summary and the 10/10 playbook
 
-Written Mon 23 Nov 2026. This is the one page to read before working on Dialect. The details are in PLAN.md, research/challenge-requirements.md and docs/brief.md.
+Written Mon 23 Nov 2026, updated Tue 24 Nov after the team's review. This is the one page to read before working on Dialect. The details are in PLAN.md, research/challenge-requirements.md and docs/brief.md.
 
 ---
 
@@ -20,25 +20,28 @@ Hospitals all "speak" the same lab standards (HL7 v2 messages, LOINC test codes,
 
 ### What Dialect does
 1. **Each hospital runs its own agentic website.** The site's agent network maps that hospital's lab messages to LOINC.
-2. **Three answers only:** a mapping, or **"ask a human"**. Scoring: **+1** correct, **0** abstain, **-5** confident and wrong. A wrong mapping is far worse than asking.
-3. **A human approves every write.** An approved mapping goes into the hospital's own alias table, which is private context.
-4. **Adaptation at a new site.** Hospital B loads a mapper network from a peer site, after the visitor consents. The network runs in B's browser and learns B's dialect from B's own approved mappings. B's data and alias table never go to the peer site.
-5. **Evolution.** Variants of the network (prompt template, number of candidates, examples, abstain threshold, step order) are evolved offline against known-correct answers, then published. Each generation's network and score is visible on the site.
-6. **Dialect Profile:** a plug-in format of standard subset + dialect generator + scorer. Hospital labs is profile #1, so the engine could serve other industries.
+2. **Two kinds of answer:** a mapping, or **"please check"** (ask a human). Scoring: **+1** correct, **0** abstain, **-5** confident and wrong. A wrong mapping is far worse than asking.
+3. **A human approves every write.** An approved mapping goes into the hospital's own alias table, which is private context. When the review is done, the analyst downloads the approved mappings as a **FHIR R4 ConceptMap** (a standard mapping file hospital systems can import) or a CSV.
+4. **Adaptation at a new site.** Hospital B loads a mapper network from a peer site, after the visitor consents. The network runs in B's browser and learns B's dialect from B's own approved mappings. B's lab list, alias table and key never go to the peer site.
+5. **Only the test, never the patient.** Requests to the AI model carry only each test's code, name, unit and normal range (HL7 OBX-3, OBX-6, OBX-7). Patient fields are never read into a request.
+6. **Evolution.** Variants of the network (prompt template, number of candidates, examples, abstain threshold, step order, and if it works, disambiguation rules learned from -5 mistakes) are evolved offline against known-correct answers, then published. Each generation's network and score is visible on the site.
+7. **Dialect Profile:** a plug-in format of standard subset + dialect generator + scorer. Hospital labs is profile #1, so the engine could serve other industries.
 
 ### Data and scenarios
-Real standards and real public lab names; fictional hospitals and patients. The real-world test set is the MIMIC-IV Demo v1.0 lab dictionary: 1,630 real lab names, 269 with LOINC codes assigned by the hospital, openly licensed (ODbL), with no patient data. Four labelled scenarios share one engine:
-- **S1** Referral between two hospitals: the transfer demo
-- **S2** A real hospital dictionary: the headline real-data result
-- **S3** Lab system switch: does it ask instead of guessing when codes change?
-- **S4** Public health intake: many dialects at once
+Real standards and real public lab names; fictional hospitals and patients. The real-world test set is the MIMIC-IV Demo v1.0 lab dictionary: 1,630 real lab names, 269 with LOINC codes assigned by the hospital, openly licensed (ODbL), with no patient data. The names have no units, so we add the unit the hospital actually recorded for each test (170 of the 269), counted without keeping any patient rows. Three labelled scenarios share one engine:
+- **S1** Referral between two hospitals: the transfer demo, reported as S1a (repeat codes, remembered) and S1b (new codes, learned)
+- **S2** A real hospital dictionary: the headline real-data result, run with names only (S2a) and with real units (S2b)
+- **S3** Lab system switch (if time allows): does it ask instead of guessing when codes change?
+
+S4 (public health intake) and a third hospital are on the stretch list.
 
 Every scenario is marked synthetic in the UI, its JSON, its HL7 messages (MSH-11 = `T`) and the Devpost text. Full detail: [data-and-scenarios.md](data-and-scenarios.md).
 
 ### What we claim, and what we don't
-- **Claim:** per-site adaptation without sending data to peer sites, plus safe, scored abstention.
+- **Claim:** per-site adaptation without sending data to peer sites, plus safe, scored abstention, measured against a fair baseline (a single AI call that is also allowed to say "please check").
 - **Don't claim:** "AI maps lab codes". LabBridge already reports 81 to 90%, and RELMA exists.
-- **Don't claim:** "data never leaves". Data goes to the model endpoint the site picks, unless that model runs locally.
+- **Don't claim:** "data never leaves", "zero PHI" or "proof of privacy". Test names, units and ranges go to the model endpoint the site uses. What we can show is an egress log of what went where.
+- **Don't claim:** official status for our validator. It is unofficial and checks only public files.
 - **Not a clinical tool.** Synthetic data, a human approves everything, and a disclaimer is on every mapping screen.
 
 ### Who it helps
@@ -51,9 +54,9 @@ Every scenario is marked synthetic in the UI, its JSON, its HL7 messages (MSH-11
 - **Cognizant AI Lab:** low error tolerance in healthcare, and their MAKER zero-error work, which fits the -5 penalty for confident errors.
 
 ### Plan and gates
-P0 Research (23 to 25 Nov) → **G2 kill rule on 28 Nov** → Stage One site and validator v1 by 6 Dec → Hospital B and peer loading by 20 Dec → evolution, proof and polish, feature freeze 3 Jan → video by 7 Jan → submit 10 Jan. About 84 hours at 12 a week.
+P0 Research (23 to 25 Nov) → **G2 kill rule on 28 Nov** → Stage One site, validator v1 and a two-origin smoke test by 6 Dec → full Hospital B workbench by 20 Dec → evolution, proof and polish, feature freeze 3 Jan → video by 7 Jan → submit 10 Jan. About 84 hours at 12 a week, with no spare hours, so features are sorted into Must, Should and Could (PLAN.md section 2).
 
-If the kill rule fails, switch to Silicon Breeders, Jury of Strangers or Safe Generative UI.
+If evolution doesn't beat the best single AI call, the evolution claim is dropped; we then choose between the simpler product and a fallback idea (Silicon Breeders, Jury of Strangers or Safe Generative UI).
 
 ### Rules that bind us
 - The video has you explaining the project in your own voice (not AI generated), shows the site running in a browser, is under 2 minutes, is public on YouTube, and has no third-party trademarks.
@@ -77,7 +80,7 @@ A 10 here means every one of the spec's seven interoperability checks (section 6
 
 Proof to produce:
 - [ ] **A live "Conformance" panel on the site** that runs all seven spec checks and shows pass/fail: two-agent network, default router, site action, peer load from a second origin, key never reaching the peer, private context absent at the peer, and the four error stops.
-- [ ] **Build the conformance validator and share it.** The challenge repo's "Testing" section is still an empty TODO ("Run the validation script to check your submission is compliant"). A validator other entrants can run is our strongest shared tool. It scores here and under Impact.
+- [ ] **Build the conformance validator (unofficial, static checks) and share it.** The challenge repo's "Testing" section is still an empty TODO ("Run the validation script to check your submission is compliant"). A validator other entrants can run is our strongest shared tool. It scores here and under Impact.
 - [ ] An observability panel: selected router, contacted origins, agent and tool calls, and cost per run (a SHOULD in spec section 5).
 - [ ] Unit tests for the scorer, generator and safety rules; CI on every push; a clean README.
 - [ ] Use the reference runtime and the repo's `check_partner.mjs` peer check rather than reinventing them, and say so.
@@ -88,10 +91,10 @@ Proof to produce:
 A 10 here means one clear job done end to end by a real kind of user, with no dead ends.
 
 Proof to produce:
-- [ ] **One story, one journey:** an analyst at Hospital B pastes or loads a batch of messages → the agent proposes mappings → a review queue shows "ask a human" items with top candidates → the analyst approves → the score and the alias table update → B's accuracy visibly rises.
+- [ ] **One story, one journey:** an analyst at Hospital B pastes or loads a batch of messages → sees exactly what will be sent to the AI model → the agent proposes mappings → a review queue shows "please check" items with top candidates → the analyst approves → the score and the alias table update → B's accuracy visibly rises → the analyst downloads the ConceptMap.
 - [ ] First-visit onboarding in three lines, a sample batch button, empty states, and plain error messages.
 - [ ] It works with no key, on a phone and a laptop, in a fresh browser.
-- [ ] A plain, consistent look across all three hospital sites: one design system, each hospital with its own name and colour.
+- [ ] A plain, consistent look across both hospital sites: one design system, each hospital with its own name and colour.
 - [ ] **A test with 3 people** (classmates are fine): give them the task with no help and time it. Fix whatever confuses them. Put "3 first-time users finished the task in under N minutes" in the text.
 
 ### Potential Impact
@@ -100,8 +103,8 @@ Proof to produce:
 A 10 here means a named audience, sourced numbers, results on data we didn't invent, a real person's word, and shared tools.
 
 Proof to produce:
-- [ ] **Results on a real-world test set** of local lab test names with known LOINC codes (P0 task), not only our generated quirks.
-- [ ] A results card in plain numbers. For example: "Of 100 codes, 72 auto-mapped correctly, 25 sent to a human, 3 wrong", next to the single-call baseline.
+- [ ] **Results on a real-world test set:** the 269 MIMIC names, with and without their real units (S2a, S2b), not only our generated quirks.
+- [ ] A results card in plain numbers. For example: "Of 100 codes, 72 auto-mapped correctly, 25 sent to a human, 3 wrong", next to both single-call baselines (forced, and allowed to say "please check").
 - [ ] **Feedback from one real practitioner:** a hospital IT, HIMS or lab informatics person in the Philippines (through school or LinkedIn). Even two sentences quoted with permission makes "real audience" credible.
 - [ ] **Shared tools, published and linked:** the conformance validator, the Dialect Profile format with the HL7 dialect generator, and the scorer. Post them in the challenge repo's Discussions.
 - [ ] Every number in the text has a source link. Mark anything unchecked as UNVERIFIED.
@@ -123,7 +126,7 @@ Proof to produce:
 - [ ] **Mock judging at G3b (20 Dec) and G4 (3 Jan):** score ourselves with this playbook, and have an agent and one human score us cold from only the text, screenshots and video. Fix the lowest criterion first.
 
 ### What this costs
-Everything above does not fit in 84 hours with three hospitals. Since 24 Nov the plan's default is **two hospitals plus the validator**: two hospitals still prove transfer, while the validator scores under two criteria. The validator is built in P2 alongside the Stage One site and doubles as our own conformance test.
+Everything above does not fit in 84 hours with three hospitals. Since 24 Nov the plan is **two hospitals plus the validator**: two hospitals still prove transfer, while the validator scores under two criteria. The validator is built in P2 alongside the Stage One site and doubles as our own conformance test. Even so, the full list is more than 84 hours, so PLAN.md section 2 sorts every feature into Must, Should and Could, and the lower tiers are cut first.
 
 ### AI screening
 How we prepare for AI-driven judging (criterion headings word for word, one facts file, evidence next to every claim, valid published JSON, our own captions, no hidden instructions to AI judges) is in PLAN.md section 6.
