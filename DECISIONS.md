@@ -50,7 +50,7 @@ The team ran a Gemini audit of the plan and rewrote PLAN, DECISIONS and README. 
 Hospitals A and B only; `sites/hospital-c` deleted. Active scenarios: S1 (S1a/S1b), S2 (S2a/S2b) and S3 (Should). S4 public health intake, S5 a second industry and validator v2 move to stretch. Reason: the hours (PLAN.md section 3).
 
 ## 2026-11-24: One privacy sentence everywhere
-"Only a test's local code, name, unit and normal range (OBX-3, OBX-6, OBX-7) are sent, and only to the AI model the site uses. Patient fields are never read into the request. Nothing from Hospital B (lab list, alias table, key) is sent to Hospital A." Reason: earlier wording in different files disagreed, which an AI screener would flag.
+"Only a test's local code, name, unit and normal range (OBX-3, OBX-6, OBX-7) are sent, and only to the AI model the site uses. Patient fields are never read into the request. Nothing from Hospital B (lab list, alias table, key) is sent to Hospital A." Reason: earlier wording in different files disagreed, which an AI screener would flag. *[Extended later on 24 Nov: result values are never sent either, and the patient view sends the matched LOINC code to MedlinePlus. The current wording is in PLAN.md section 1.]*
 
 ## 2026-11-24: MIT licence for our code and documents
 The challenge requires the project to be open source. MIT was the developer's choice. Third-party data is not relicensed: the MIMIC-derived test files (names and the units table) stay under ODbL (share-alike) and LOINC content under the LOINC licence, each in its own folder with its notice.
