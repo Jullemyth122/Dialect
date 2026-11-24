@@ -13,7 +13,7 @@ The team ran a Gemini audit of the plan and rewrote PLAN, DECISIONS and README. 
 
 **Kept (now in PLAN.md):**
 - Transfer reported as S1a (repeat codes) and S1b (new codes); the kill rule uses S1b. Otherwise "recovery" could be the agent just remembering approved codes.
-- A fourth comparison: one AI call told it may say "please check". The kill rule compares against both single AI calls (rule tightened again below the same day).
+- A fourth comparison: one AI call told it may say "please check". The kill rule compares against both single AI calls (rule changed again later that day, see the entry above).
 - MIMIC `d_labitems` has no units. We fixed this with the real recorded units from the demo's lab events (170 of 269 coded names), not by assuming US units.
 - MIMIC data is used for testing only, never in prompts or published network files, so ODbL share-alike stays in its own folder.
 - The review workbench ends with a FHIR R4 ConceptMap and CSV download.
