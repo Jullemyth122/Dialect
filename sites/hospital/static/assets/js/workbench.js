@@ -7,6 +7,8 @@ import { parseCsv, toCsv } from "../lib/csv.js";
 import { shortlist, checkSuggestion } from "../lib/candidates.js";
 import { toConceptMap } from "../lib/conceptmap.js";
 import { loadByokStore, getSelectedByokProfile } from "../../runtime/byok.js";
+import { focusAiSetup } from "./ai-setup.js";
+import { plainName } from "./plain-names.js";
 
 const FIELDS = ["code", "name", "unit", "range"];
 const MAX_ROWS = 500;
@@ -251,16 +253,17 @@ class Workbench {
     const toReview = this.rows.filter((r) => r.status === "pending" || r.status === "check").length;
     if (!this.rows.length) { announce("#wb-status", "Load a test list first."); return; }
     if (!toReview) { announce("#wb-status", "Nothing left for the AI to suggest. Approve or skip the rest."); return; }
-    if (panel) panel.open = true;
     let hasKey = false;
     try { hasKey = Boolean(getSelectedByokProfile(loadByokStore())?.key); } catch { hasKey = false; }
     // A key added only for this tab (runtime settings) is not in the saved store; site.js says so here.
     if (!hasKey) hasKey = /^Assistant connected/.test(document.querySelector("#assistant-status")?.textContent ?? "");
     if (!hasKey && !SITE.publisherFunded) {
-      announce("#wb-status", "The AI needs an API key first. Add your Meta key on the AI model page (link above), then press Suggest with AI again.");
-      panel?.scrollIntoView({ behavior: "smooth", block: "start" });
+      announce("#wb-status", "The AI isn't connected yet. Paste your Meta API key in the AI helper box above, then press Suggest with AI again.");
+      announce("#ai-form-status", "Paste your Meta API key here to use AI suggestions.");
+      focusAiSetup();
       return;
     }
+    if (panel) panel.open = true;
     const input = document.querySelector("#ns-input");
     const send = document.querySelector("#ns-send");
     if (!input || !send || send.disabled) {
@@ -342,15 +345,15 @@ class Workbench {
 
   rowItem(r) {
     const id = `i-${r.code.replace(/[^a-z0-9]/gi, "_")}`;
-    const head = h("div", {}, h("span", { class: "item-code", id }, r.code), h("span", { class: "item-name" }, `${r.name} · ${r.unit || "no unit"}`));
+    const head = h("div", {}, h("span", { class: "item-code", id }, r.code), h("span", { class: "item-name" }, r.name), h("span", { class: "item-unit" }, `Unit: ${r.unit || "none"}${r.range ? ` · Range: ${r.range}` : ""}`));
     const attrs = { tabindex: "-1", "data-code": r.code, "aria-labelledby": id };
 
     if (r.status === "approved" || r.status === "skipped") {
       const entry = r.approved ? this.entry(r.approved.loinc) : null;
       const guess = r.status === "approved"
         ? h("div", { class: "item-guess" },
-          h("div", { class: "line1" }, h("span", { class: "badge badge-ok" }, "Approved"), h("span", { class: "loinc" }, r.approved.loinc)),
-          h("span", { class: "disp" }, entry?.display ?? ""),
+          h("div", { class: "line1" }, h("span", { class: "loinc" }, r.approved.loinc), entry ? h("span", { class: "plain" }, plainName(entry)) : null, h("span", { class: "badge badge-ok" }, "Approved")),
+          h("span", { class: "disp" }, entry ? `LOINC name: ${entry.display}` : ""),
           h("span", { class: "why" }, r.approved.by === "alias table" ? "Remembered from an earlier approval (no AI call)" : `Approved by the ${r.approved.by}`))
         : h("div", { class: "item-guess" }, h("div", { class: "line1" }, h("span", { class: "badge badge-muted" }, "Skipped")));
       const undo = h("button", { class: "button button-line button-s", type: "button", "aria-describedby": id, onclick: () => this.undo(r.code) }, "Undo");
@@ -361,17 +364,17 @@ class Workbench {
     const guess = this.guessFor(r, candidates);
     const entry = guess ? this.entry(guess.loinc) : null;
     const BADGES = {
-      confident: ["badge-info", "AI: confident"],
-      check: ["badge-warn", "Needs a person"],
-      text: ["badge-muted", "Best text match"],
+      confident: ["badge-info", "AI suggests"],
+      check: ["badge-warn", "AI unsure: please check"],
+      text: ["badge-muted", "Name match (no AI)"],
       picked: ["badge-muted", "Your choice"],
     };
     const [badgeClass, badgeText] = BADGES[guess?.kind] ?? ["badge-warn", "No match found"];
     const reason = r.suggestion?.reason ?? (guess ? candidates.find((c) => c.code === guess.loinc)?.reason : "Nothing in this site's code list fits. Skip it, or ask the lab what it is.");
     const guessEl = h("div", { class: "item-guess" },
-      h("div", { class: "line1" }, h("span", { class: `badge ${badgeClass}` }, badgeText), guess ? h("span", { class: "loinc" }, guess.loinc) : null),
-      entry ? h("span", { class: "disp" }, entry.display) : null,
-      reason ? h("span", { class: "why" }, reason) : null);
+      h("div", { class: "line1" }, guess ? h("span", { class: "loinc" }, guess.loinc) : null, entry ? h("span", { class: "plain" }, plainName(entry)) : null, h("span", { class: `badge ${badgeClass}` }, badgeText)),
+      entry ? h("span", { class: "disp" }, `LOINC name: ${entry.display}`) : null,
+      reason ? h("span", { class: "why" }, `Why: ${reason}`) : null);
 
     const open = this.expanded.has(r.code);
     const changeId = `${id}-change`;

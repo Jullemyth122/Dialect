@@ -2,6 +2,15 @@
 
 Newest first. Each entry: date, decision, reason. "Proposed" means not yet confirmed by the developer.
 
+## 2026-11-26: Staff pages explain "why and when"; the AI key box sits on the lab page
+The developer could not tell from the staff pages when this work happens or how to start the AI. Changes:
+- **A "Why and when do I do this?" box**, open by default with a hide toggle, on the lab and doctor pages. It covers:
+  - the situation: a referral, a new partner, a health-information exchange, a lab-system change or a new test;
+  - how to read one row or the table.
+- **An "AI helper" card on the lab page.** It shows connected or not connected, with a Meta model picker and a key field. The key is stored with the runtime's own BYOK storage, in this browser only, and the page reloads so the assistant starts with it. "Suggest with AI" without a key jumps to this box. The AI model page stays for other providers.
+- **Worklist rows in plain words:** each row shows the code, the everyday name, "LOINC name: …" and "Why: …". The badges now read "Name match (no AI)", "AI suggests" and "AI unsure: please check".
+- **Patients never see or need AI.** Only lab staff use it.
+
 ## 2026-11-26: Doctor page as a results flowsheet; lab page as a mapping worklist with "Suggest with AI"
 Each page now looks like the tool that person already uses:
 - **Patients: a patient portal.**

@@ -486,6 +486,46 @@ dialog.assistant-review button.assistant-decline { background: var(--surface); c
   .item-guess::before { display: none; }
 }
 
+/* "Why and when" box (lab and doctor pages) */
+.scenario { background: var(--p-soft); border: 1px solid var(--p-tint); border-radius: var(--r-l); }
+.scenario > summary { cursor: pointer; list-style: none; padding: 12px 18px; font-weight: 750; color: var(--p); display: flex; align-items: center; gap: 8px; }
+.scenario > summary::-webkit-details-marker { display: none; }
+.scenario > summary::before { content: "?"; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--p); color: #fff; font-size: 0.8rem; font-weight: 800; flex: none; }
+:root[data-theme="dark"] .scenario > summary::before { color: #111; }
+.scenario > summary::after { content: "Hide"; margin-left: auto; font-size: 0.8rem; font-weight: 650; opacity: 0.8; }
+.scenario:not([open]) > summary::after { content: "Show"; }
+.scenario-body { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px 28px; padding: 0 18px 16px; }
+.scenario-why p { margin: 0 0 8px; max-width: 62ch; }
+.scenario-why p:last-child { margin: 0; }
+.scenario code, .read-box code { font-family: var(--mono); font-weight: 800; background: var(--surface); border: 1px solid var(--line); border-radius: 5px; padding: 0 5px; }
+.scenario-read { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; }
+.scenario-label { margin: 0 0 8px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.read-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.read-box { display: grid; gap: 2px; padding: 8px 10px; border-radius: var(--r-s); background: var(--surface-2); }
+.read-box code { border: 0; background: none; padding: 0; font-size: 1rem; }
+.read-box small { font-size: 0.74rem; color: var(--muted); }
+.read-arrow { color: var(--p); font-weight: 800; font-size: 1.2rem; }
+.read-actions { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 0.88rem; }
+@media (max-width: 760px) { .scenario-body { grid-template-columns: 1fr; } }
+
+/* AI helper card (lab page) */
+.ai-card { display: grid; gap: 12px; padding-block: 16px; }
+.ai-status { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.ai-status > div:nth-child(2) { flex: 1 1 280px; min-width: 0; }
+.ai-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--line-strong); box-shadow: 0 0 0 4px var(--surface-2); flex: none; }
+.ai-card.is-on .ai-dot { background: var(--ok); box-shadow: 0 0 0 4px var(--ok-soft); }
+.ai-title { font-size: 1rem; margin: 0 0 2px; }
+.ai-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 12px; padding-top: 12px; border-top: 1px dashed var(--line-strong); }
+.ai-form[hidden] { display: none; }
+.ai-form .field { flex: 0 1 280px; }
+.ai-form .field-grow { flex: 1 1 260px; }
+.ai-hint { flex-basis: 100%; margin: 0; }
+.ai-card .status-line:empty { display: none; }
+
+/* Worklist rows in plain words */
+.item-unit { display: block; font-size: 0.76rem; color: var(--muted); font-family: var(--mono); }
+.item-guess .plain { font-weight: 700; }
+
 /* Print: a compact black-and-white summary for A4 or Letter. Explanations stay on screen
    (they are links on paper); results become one compact row per test. */
 @page { margin: 14mm 14mm 16mm; }
@@ -542,6 +582,7 @@ dialog.assistant-review button.assistant-decline { background: var(--surface); c
   .flowsheet { border: 0; box-shadow: none; }
   .flowsheet-legend { background: none; }
   .conv-tag { border-color: #000; color: #000; background: none; }
+  .scenario, .ai-card { display: none !important; }
 }
 /* Very narrow paper (58/80 mm receipt printers): stack each row. */
 @media print and (max-width: 100mm) {

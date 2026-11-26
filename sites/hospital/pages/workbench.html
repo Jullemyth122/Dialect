@@ -10,11 +10,61 @@
   <section class="persona-head persona-head-tight" aria-labelledby="page-title">
     <span class="persona-chip"><span class="dot dot-lab" aria-hidden="true"></span>For lab &amp; IT staff</span>
     <h1 id="page-title">Lab code mapping</h1>
-    <p class="lede">Each of {{name}}'s local test codes needs a standard code (LOINC) before its results can be shared. The AI suggests, you decide.</p>
+    <p class="lede">Teach other systems what your lab's test names mean. Do it once; every result after that is translated automatically.</p>
   </section>
 
   <div class="stack">
+    <details class="scenario" open>
+      <summary>Why and when do I do this?</summary>
+      <div class="scenario-body">
+        <div class="scenario-why">
+          <p>Your lab names tests its own way, like <code>GLUF</code> or <code>CREAT</code>. Other hospitals, health records and public-health systems don't know those names. They understand <b>LOINC</b>, one worldwide code per lab test.</p>
+          <p class="small muted">You map your tests when your hospital starts sending results to a partner, joins a health-information exchange, changes lab systems, or adds a new test.</p>
+        </div>
+        <div class="scenario-read" aria-label="How to read one row">
+          <p class="scenario-label">How to read one row</p>
+          <div class="read-row">
+            <span class="read-box"><code>GLUF</code><small>your lab's name</small></span>
+            <span class="read-arrow" aria-hidden="true">→</span>
+            <span class="read-box"><code>1558-6</code><small>worldwide code: fasting blood sugar</small></span>
+          </div>
+          <ul class="read-actions">
+            <li><b>Approve</b> if both mean the same test.</li>
+            <li><b>Change</b> to pick another code.</li>
+            <li><b>Skip</b> if nothing fits.</li>
+          </ul>
+        </div>
+      </div>
+    </details>
+
     <div class="note note-warn note-slim" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20L12 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4M12 17v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><p><strong>Synthetic data. Not for clinical use. A human must approve.</strong></p></div>
+
+    <section class="card ai-card" id="ai-card" aria-labelledby="ai-title">
+      <div class="ai-status">
+        <span class="ai-dot" id="ai-dot" aria-hidden="true"></span>
+        <div>
+          <h2 id="ai-title" class="ai-title">AI helper: not connected</h2>
+          <p class="small muted m-0" id="ai-sub">Optional. Without AI you get name matches only. Only lab staff use AI; patients never do.</p>
+        </div>
+        <div class="cluster ai-buttons">
+          <button class="button button-line button-s" type="button" id="ai-change" hidden>Change</button>
+          <button class="button button-line button-s" type="button" id="ai-remove" hidden>Remove key</button>
+        </div>
+      </div>
+      <form class="ai-form" id="ai-form" novalidate>
+        <div class="field">
+          <label for="ai-model">Meta AI model</label>
+          <select id="ai-model"></select>
+        </div>
+        <div class="field field-grow">
+          <label for="ai-key">Meta API key</label>
+          <input id="ai-key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your key from dev.meta.ai">
+        </div>
+        <button class="button button-main" type="submit">Connect AI</button>
+        <p class="small muted ai-hint">No key? <a href="https://dev.meta.ai/" rel="noopener">Get one from Meta</a>. It is saved only in this browser and sent only to Meta. <a href="/models.html">Other providers</a></p>
+      </form>
+      <p class="status-line" id="ai-form-status" role="status" aria-live="polite"></p>
+    </section>
 
     <section class="card wb-head" aria-labelledby="progress-title">
       <div class="wb-head-top">

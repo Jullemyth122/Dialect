@@ -12,6 +12,24 @@
   </section>
 
   <div class="stack">
+    <details class="scenario no-print" open>
+      <summary>When do I use this?</summary>
+      <div class="scenario-body">
+        <div class="scenario-why">
+          <p>A patient treated at another hospital is <b>referred to you</b>. Their earlier lab results use that hospital's test names and units: blood sugar in <b>mmol/L</b>, for example, while you use <b>mg/dL</b>.</p>
+          <p class="small muted">Instead of converting by hand, you see both visits on one table in your units. You don't approve anything here; each hospital's lab already matched its own codes.</p>
+        </div>
+        <div class="scenario-read" aria-label="How to read the table">
+          <p class="scenario-label">How to read the table</p>
+          <ul class="read-actions">
+            <li><b>One row per test</b>, earlier visit on the left.</li>
+            <li><span class="conv-tag">converted</span> means changed to your units; the original value is underneath.</li>
+            <li><b>Red box</b>: tests nobody could match. Don't compare them.</li>
+          </ul>
+        </div>
+      </div>
+    </details>
+
     <div class="chart-banner" id="patient" aria-live="polite"><span class="who">Loading…</span></div>
 
     <section class="flowsheet" aria-labelledby="lined-title">
