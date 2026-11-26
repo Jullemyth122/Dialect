@@ -13,6 +13,7 @@
     "build": "node scripts/build-sites.mjs --env local",
     "build:prod": "node scripts/build-sites.mjs --env production",
     "serve:a": "node vendor/agentify-website/scripts/serve_site.mjs dist/hospital-a --port 8081",
-    "serve:b": "node vendor/agentify-website/scripts/serve_site.mjs dist/hospital-b --port 8082"
+    "serve:b": "node vendor/agentify-website/scripts/serve_site.mjs dist/hospital-b --port 8082",
+    "deploy": "node scripts/deploy.mjs"
   }
 }

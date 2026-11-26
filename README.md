@@ -6,7 +6,12 @@ Entry for the [Open Agentic Web Challenge](https://cognizant-agenticweb.devpost.
 
 > **Synthetic scenario.** Real standards and real public lab test names; fictional hospitals and patients. Not a clinical tool and not medical advice. A human approves every match.
 
-**Status (26 Nov 2026):** first build. Both hospital sites, the workbench with the assistant mounted, the referral view, the patient view and the models page run locally, and 20 tests pass. Not deployed yet; the live chat still needs a test with a real key.
+**Status (26 Nov 2026):** deployed.
+
+- **Live sites:** **Hospital A** https://dialect-hospital-a.vercel.app and **Hospital B** https://dialect-hospital-b.vercel.app. Start at "How it works" (`/guide.html`).
+- **What works:** the full flow. Hospital B lists and maps its tests (sample, CSV or by hand), sends results as an HL7 message file, and Hospital A opens the file and lines it up. The patient view works too.
+- **Tests:** 20 pass. The challenge's `check_partner` passes on the live URLs (B can call A's network).
+- **Not done yet:** the live AI chat needs a test with a real Meta key, and there is no no-key (publisher-funded) path yet, so visitors bring their own key. Redeploy with `npm run deploy`.
 
 ## Run it locally
 Needs Node.js 22 or newer; there are no npm dependencies.

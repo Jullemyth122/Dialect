@@ -2,6 +2,14 @@
 
 Newest first. Each entry: date, decision, reason. "Proposed" means not yet confirmed by the developer.
 
+## 2026-11-26: Deployed to Vercel, one project per hospital
+The developer asked to publish both sites.
+- **Projects:** `dialect-hospital-a` and `dialect-hospital-b` in the developer's Vercel account. The domains match the profiles' production URLs (https://dialect-hospital-a.vercel.app, https://dialect-hospital-b.vercel.app), so no URL change or rebuild was needed.
+- **How:** each `dist/<id>` folder is deployed as a static site with its own generated `vercel.json`. `npm run deploy` (scripts/deploy.mjs) does the production build, the tests, the link and the deploy.
+- **`vercel link` writes `.env.local`** (a short-lived Vercel token) and `.gitignore` into the folder. The deploy script deletes both before deploying. A check of the first deploy showed both were not served (404), and nothing under `.vercel/` was served either.
+- **Checked live:** every page returns 200. The manifest sends `Access-Control-Allow-Origin: *`. The challenge's `check_partner` reports "OK: https://dialect-hospital-a.vercel.app/dialect_lab_mapper can be called from https://dialect-hospital-b.vercel.app".
+- **Not yet:** the no-key path (a publisher-funded proxy holding the Meta key in a Vercel environment variable). Until then, visitors bring their own key.
+
 ## 2026-11-26: The full flow between the two hospitals is now something you do, step by step
 The developer could not see how data gets from one hospital to the other, or how to enter data. Added, following the real workflow (LOINC mapping FAQ, RELMA, CDPH ELR HL7 guide):
 - **How it works** (`guide.html`, in the menu and on the home page): five steps (list the tests, match to LOINC, send, receive and line up, the patient reads it). Each step says who does it, how a real hospital does it, how to do it here, and links to the right hospital's site.
