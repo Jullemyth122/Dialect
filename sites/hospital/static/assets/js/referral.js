@@ -48,8 +48,9 @@ async function main() {
 
   const oldLabel = `${name(oldId)} · ${shortDate(oldBlock.collected)}`;
   const newLabel = `${name(newId)} · ${shortDate(newBlock.collected)}`;
-  const head = (el, when, label, here) => el.replaceChildren(
-    h("span", { class: "col-when" }, when), h("span", { class: "col-where" }, label), here ? h("span", { class: "col-here" }, "your hospital") : null);
+  const head = (el, when, label, here) => el.replaceChildren(...[
+    h("span", { class: "col-when" }, when), h("span", { class: "col-where" }, label), here ? h("span", { class: "col-here" }, "your hospital") : null,
+  ].filter(Boolean));
   head(document.querySelector("#col-old"), "Earlier", oldLabel, oldId === toId);
   head(document.querySelector("#col-new"), "Latest", newLabel, newId === toId);
 
@@ -85,6 +86,8 @@ async function main() {
     "Only these factors are used: ", h("a", { href: table.source.url }, table.source.title), ` (checked ${table.source.checked}). `,
     "Everything else is shown exactly as the lab reported it. Flags (like H) are the labs' own.");
   document.querySelector("#print")?.addEventListener("click", () => window.print());
+  // On paper, show where the converted numbers come from.
+  window.addEventListener("beforeprint", () => { for (const d of document.querySelectorAll("details.fold")) d.open = true; });
 }
 
 main().catch((error) => {

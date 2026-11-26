@@ -458,11 +458,12 @@ dialog.assistant-review button.assistant-decline { background: var(--surface); c
 .flowsheet .compare .sub { font-size: 0.76rem; }
 .flowsheet .compare .sub-warn { color: var(--warn); font-weight: 650; }
 .flowsheet .compare td.is-empty { color: var(--muted); }
-.flowsheet-legend { margin: 0; padding: 10px 18px; border-top: 1px solid var(--line); font-size: 0.78rem; color: var(--muted); background: var(--surface-2); }
+.flowsheet-legend { max-width: none; margin: 0; padding: 10px 18px; border-top: 1px solid var(--line); font-size: 0.78rem; color: var(--muted); background: var(--surface-2); }
 .flowsheet-legend .flag { padding: 0 6px; font-size: 0.7rem; }
 .dnc { padding: 14px 18px; }
 .dnc h2 { font-size: 1rem; margin-bottom: 4px; }
 .dnc code { font-family: var(--mono); font-weight: 800; }
+.dnc p { max-width: none; }
 
 /* Lab: mapping worklist (workbench.html) */
 .note-slim { padding: 8px 14px; }
