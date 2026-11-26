@@ -5,22 +5,10 @@
 import { h, loadJson } from "./common.js";
 import { SITE } from "./site-config.js";
 import { explain } from "./medlineplus.js";
+import { plainName } from "./plain-names.js";
 
 const FLAG_WORDS = { H: "High", L: "Low", HH: "Very high", LL: "Very low", A: "Marked" };
 const longDate = (iso) => new Date(`${iso}T00:00:00`).toLocaleDateString("en", { day: "numeric", month: "long", year: "numeric" });
-
-// Everyday names for the LOINC codes in our subset. The standard LOINC name is shown in "What is this test?".
-const PLAIN = {
-  "1558-6": "Fasting blood sugar (glucose)", "14771-0": "Fasting blood sugar (glucose)",
-  "2345-7": "Blood sugar (glucose)", "14749-6": "Blood sugar (glucose)",
-  "2160-0": "Creatinine", "14682-9": "Creatinine", "2951-2": "Sodium", "2823-3": "Potassium",
-  "2075-0": "Chloride", "2028-9": "Bicarbonate (total CO2)", "3094-0": "Urea nitrogen (BUN)",
-  "2093-3": "Total cholesterol", "14647-2": "Total cholesterol", "2085-9": "HDL cholesterol",
-  "2571-8": "Triglycerides", "1975-2": "Total bilirubin", "1742-6": "ALT (alanine aminotransferase)",
-  "1920-8": "AST (aspartate aminotransferase)", "17861-6": "Calcium", "718-7": "Hemoglobin",
-  "4544-3": "Hematocrit", "6690-2": "White blood cell count", "777-3": "Platelet count", "4548-4": "Hemoglobin A1c",
-};
-const plainName = (entry) => PLAIN[entry.code] ?? entry.display.replace(/\s*\[[^\]]*\]/g, "");
 
 /** "3.9-5.5" -> {lo, hi}; "<5.2" -> {hi}; ">40" -> {lo}; anything else -> null. */
 function parseRange(text) {

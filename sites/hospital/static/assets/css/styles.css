@@ -427,6 +427,65 @@ dialog.assistant-review button.assistant-decline { background: var(--surface); c
   .report-head .status-chip { display: none; }
 }
 
+/* Doctor: chart banner and results flowsheet (referral.html) */
+.chart-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding: 14px 18px; border-radius: var(--r-l); background: var(--ink); color: var(--bg); }
+.chart-banner .avatar { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--p); color: #fff; font-weight: 800; letter-spacing: 0.02em; flex: none; }
+:root[data-theme="dark"] .chart-banner .avatar { color: #10201d; }
+.chart-banner .who-wrap { display: grid; gap: 2px; min-width: 0; margin-right: auto; }
+.chart-banner .who { font-weight: 800; font-size: 1.1rem; }
+.chart-banner .ids { font-size: 0.8rem; opacity: 0.75; }
+.banner-facts { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 0; }
+.banner-facts div { display: grid; }
+.banner-facts dt { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.65; font-weight: 700; }
+.banner-facts dd { margin: 0; font-weight: 650; font-size: 0.92rem; }
+
+.flowsheet { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-l); box-shadow: var(--shadow); overflow: hidden; }
+.flowsheet-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+.flowsheet-title { font-size: 1.1rem; margin: 0; }
+.flowsheet-sub { margin: 2px 0 0; font-size: 0.82rem; color: var(--muted); }
+.flowsheet-scroll { overflow-x: auto; }
+.flowsheet .compare th, .flowsheet .compare td { padding: 10px 18px; }
+.flowsheet .compare thead th { text-transform: none; letter-spacing: 0; font-size: 0.8rem; vertical-align: bottom; }
+.col-when { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; color: var(--muted); }
+.col-where { display: block; color: var(--ink); font-weight: 700; font-size: 0.86rem; }
+.col-here { display: inline-block; margin-top: 3px; font-size: 0.7rem; font-weight: 700; color: var(--p); background: var(--p-soft); border-radius: 999px; padding: 1px 8px; }
+.flowsheet .compare tbody tr:nth-child(even) { background: color-mix(in srgb, var(--surface-2) 55%, transparent); }
+.flowsheet .compare tbody th { font-size: 0.95rem; }
+.cell-main { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 6px; }
+.flowsheet .compare .val { font-variant-numeric: tabular-nums; font-size: 1.05rem; }
+.flowsheet .compare .flag { padding: 1px 7px; font-size: 0.72rem; }
+.conv-tag { display: inline-block; font-size: 0.68rem; font-weight: 700; color: var(--p); background: var(--p-soft); border: 1px solid var(--p-tint); border-radius: 999px; padding: 0 7px; }
+.flowsheet .compare .sub { font-size: 0.76rem; }
+.flowsheet .compare .sub-warn { color: var(--warn); font-weight: 650; }
+.flowsheet .compare td.is-empty { color: var(--muted); }
+.flowsheet-legend { margin: 0; padding: 10px 18px; border-top: 1px solid var(--line); font-size: 0.78rem; color: var(--muted); background: var(--surface-2); }
+.flowsheet-legend .flag { padding: 0 6px; font-size: 0.7rem; }
+.dnc { padding: 14px 18px; }
+.dnc h2 { font-size: 1rem; margin-bottom: 4px; }
+.dnc code { font-family: var(--mono); font-weight: 800; }
+
+/* Lab: mapping worklist (workbench.html) */
+.note-slim { padding: 8px 14px; }
+.wb-head { display: grid; gap: 14px; }
+.wb-head-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 14px 20px; }
+.wb-head-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 2px; }
+.wb-head .big { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; }
+.wb-head .bar { grid-column: auto; }
+.wb-head .drop { border-width: 1px; padding: 10px 12px; text-align: left; }
+.model-link code { font-family: var(--mono); }
+.queue-title { font-size: 1.15rem; }
+.queue-head { display: grid; grid-template-columns: minmax(130px, 0.8fr) minmax(0, 2fr) auto; gap: 16px; padding: 0 15px 6px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+.queue-head span:last-child { min-width: 210px; text-align: right; }
+.queue { gap: 8px; }
+.item { box-shadow: 0 1px 2px rgb(28 34 48 / 4%); }
+.item-guess { position: relative; padding-left: 22px; }
+.item-guess::before { content: "→"; position: absolute; left: 0; top: 1px; color: var(--p); font-weight: 800; }
+@media (max-width: 760px) {
+  .queue-head { display: none; }
+  .item-guess { padding-left: 0; }
+  .item-guess::before { display: none; }
+}
+
 /* Print: a compact black-and-white summary for A4 or Letter. Explanations stay on screen
    (they are links on paper); results become one compact row per test. */
 @page { margin: 14mm 14mm 16mm; }
@@ -478,6 +537,11 @@ dialog.assistant-review button.assistant-decline { background: var(--surface); c
   .range-dot, .result.is-flagged .range-dot { background: #000; box-shadow: none; border-color: #fff; }
   .paper, .paper[hidden] { display: none !important; }
   .results[hidden] { display: block !important; }
+  .chart-banner { background: none; color: #000; border: 1px solid #000; }
+  .chart-banner .avatar { display: none; }
+  .flowsheet { border: 0; box-shadow: none; }
+  .flowsheet-legend { background: none; }
+  .conv-tag { border-color: #000; color: #000; background: none; }
 }
 /* Very narrow paper (58/80 mm receipt printers): stack each row. */
 @media print and (max-width: 100mm) {

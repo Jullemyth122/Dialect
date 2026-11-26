@@ -1,4 +1,4 @@
-<!--meta title="Match our test codes · Dialect · {{name}}" description="For lab and IT staff: check the suggested LOINC code for each of {{name}}'s lab tests, approve, change or skip, and download a FHIR ConceptMap. Synthetic data." path="/workbench.html" nav="lab" persona="lab" -->
+<!--meta title="Lab code mapping · Dialect · {{name}}" description="For lab and IT staff: check the suggested LOINC code for each of {{name}}'s lab tests, approve, change or skip, and download a FHIR ConceptMap. Synthetic data." path="/workbench.html" nav="lab" persona="lab" -->
 {{> head}}
   <link rel="stylesheet" href="/assets/css/assistant.css">
   <script type="module" src="/assets/js/workbench.js"></script>
@@ -7,42 +7,53 @@
 <body class="{{bodyClass}}">
 {{> header}}
 <main id="main" class="container">
-  <section class="persona-head" aria-labelledby="page-title">
+  <section class="persona-head persona-head-tight" aria-labelledby="page-title">
     <span class="persona-chip"><span class="dot dot-lab" aria-hidden="true"></span>For lab &amp; IT staff</span>
-    <h1 id="page-title">Match our test codes</h1>
-    <p class="lede">Each of {{name}}'s tests gets a suggested standard code. You approve it, change it, or skip it.</p>
-    <ol class="howto">
-      <li>Load your test list</li>
-      <li>Approve, change or skip</li>
-      <li>Download the result</li>
-    </ol>
+    <h1 id="page-title">Lab code mapping</h1>
+    <p class="lede">Each of {{name}}'s local test codes needs a standard code (LOINC) before its results can be shared. The AI suggests, you decide.</p>
   </section>
 
   <div class="stack">
-    <div class="note note-warn" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20L12 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4M12 17v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><p><strong>Synthetic data. Not for clinical use. A human must approve.</strong></p></div>
+    <div class="note note-warn note-slim" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20L12 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4M12 17v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><p><strong>Synthetic data. Not for clinical use. A human must approve.</strong></p></div>
 
-    <section class="card progress-card" aria-labelledby="progress-title">
-      <div>
-        <h2 id="progress-title" class="visually-hidden">Progress</h2>
-        <span class="big" id="wb-progress">0 of 0 approved</span>
-        <p class="small muted m-0" id="wb-progress-sub"></p>
-      </div>
-      <div class="cluster">
-        <button class="button button-main button-s" type="button" id="wb-conceptmap" disabled>Download ConceptMap</button>
-        <button class="button button-line button-s" type="button" id="wb-csv" disabled>CSV</button>
+    <section class="card wb-head" aria-labelledby="progress-title">
+      <div class="wb-head-top">
+        <div>
+          <h2 id="progress-title" class="wb-head-title">Mapping progress</h2>
+          <span class="big" id="wb-progress">0 of 0 approved</span>
+          <p class="small muted m-0" id="wb-progress-sub"></p>
+        </div>
+        <div class="cluster">
+          <button class="button button-main" type="button" id="wb-ai"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8L12 3Z" fill="currentColor"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z" fill="currentColor"/></svg>Suggest with AI</button>
+          <button class="button button-line button-s" type="button" id="wb-conceptmap" disabled>Download ConceptMap</button>
+          <button class="button button-line button-s" type="button" id="wb-csv" disabled>CSV</button>
+        </div>
       </div>
       <div class="bar" aria-hidden="true"><span id="wb-bar"></span></div>
+      <div class="toolbar drop" id="wb-drop">
+        <span class="small"><b>Test list:</b> <span id="wb-source">sample list</span></span>
+        <span class="sep"></span>
+        <button class="button button-line button-s" type="button" id="wb-sample">Use the sample list</button>
+        <label class="button button-line button-s" for="wb-file">Upload a CSV</label>
+        <input class="visually-hidden" type="file" id="wb-file" accept=".csv,text/csv">
+        <a class="small model-link" href="/models.html">AI model: <code>{{model}}</code></a>
+      </div>
+      <p class="status-line" id="wb-status" role="status" aria-live="polite"></p>
     </section>
 
-    <div class="toolbar drop" id="wb-drop">
-      <button class="button button-line button-s" type="button" id="wb-sample">Use the sample list</button>
-      <label class="button button-line button-s" for="wb-file">Upload a CSV</label>
-      <input class="visually-hidden" type="file" id="wb-file" accept=".csv,text/csv">
-      <span class="small muted">or drop it here · columns: code, name, unit, range</span>
-      <span class="sep"></span>
-      <a class="small" href="/models.html">AI model: <code>{{model}}</code> · change</a>
-    </div>
-    <p class="status-line" id="wb-status" role="status" aria-live="polite"></p>
+    <section aria-labelledby="queue-title">
+      <div class="cluster cluster-between mb-16">
+        <h2 id="queue-title" class="m-0 queue-title">Worklist</h2>
+        <fieldset class="pills" id="wb-filter">
+          <legend class="visually-hidden">Show</legend>
+          <input type="radio" name="wb-filter" id="f-review" value="review" checked><label for="f-review">To review <span class="count" data-count="review">0</span></label>
+          <input type="radio" name="wb-filter" id="f-approved" value="approved"><label for="f-approved">Approved <span class="count" data-count="approved">0</span></label>
+          <input type="radio" name="wb-filter" id="f-skipped" value="skipped"><label for="f-skipped">Skipped <span class="count" data-count="skipped">0</span></label>
+        </fieldset>
+      </div>
+      <div class="queue-head" aria-hidden="true"><span>Your lab's test</span><span>Suggested standard code</span><span>Decision</span></div>
+      <ul class="queue" id="wb-rows" aria-labelledby="queue-title"><li class="empty">Loading the sample list…</li></ul>
+    </section>
 
     <details class="fold">
       <summary>What does the AI see?</summary>
@@ -56,19 +67,8 @@
       </div>
     </details>
 
-    <section aria-labelledby="queue-title">
-      <h2 id="queue-title" class="visually-hidden">Tests</h2>
-      <fieldset class="pills mb-16" id="wb-filter">
-        <legend class="visually-hidden">Show</legend>
-        <input type="radio" name="wb-filter" id="f-review" value="review" checked><label for="f-review">To review <span class="count" data-count="review">0</span></label>
-        <input type="radio" name="wb-filter" id="f-approved" value="approved"><label for="f-approved">Approved <span class="count" data-count="approved">0</span></label>
-        <input type="radio" name="wb-filter" id="f-skipped" value="skipped"><label for="f-skipped">Skipped <span class="count" data-count="skipped">0</span></label>
-      </fieldset>
-      <ul class="queue" id="wb-rows" aria-labelledby="queue-title"><li class="empty">Loading the sample list…</li></ul>
-    </section>
-
     <details class="fold assistant" id="assistant">
-      <summary>Ask the AI assistant to suggest codes</summary>
+      <summary>AI assistant</summary>
       <div class="fold-body">
         <p class="assistant-note">Try: "Suggest codes for the tests to review." It only picks from each test's shortlist, says "please check" when unsure, and asks you before saving. Your messages and the test list go to the AI provider you choose.</p>
         <p id="assistant-status" role="status">Connecting the assistant… If this stays, the assistant could not load. You can still use the page.</p>

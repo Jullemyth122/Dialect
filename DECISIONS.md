@@ -2,6 +2,15 @@
 
 Newest first. Each entry: date, decision, reason. "Proposed" means not yet confirmed by the developer.
 
+## 2026-11-26: Doctor page as a results flowsheet; lab page as a mapping worklist with "Suggest with AI"
+Each page now looks like the tool that person already uses:
+- **Patients: a patient portal.**
+- **Doctors and nurses: an EHR "results review".** A chart banner (patient, MRN, referred from and to, date) sits over a striped flowsheet: one row per test, oldest on the left, the "your hospital" column marked, and converted values tagged "converted" with the as-reported value underneath.
+- **Lab and IT staff: an interface-engine mapping worklist.** The columns are "your lab's test → suggested standard code → decision".
+- **"Suggest with AI"** sends the review request to the assistant (the Meta model through the nsdeploy runtime), as if the analyst had typed it. It fills the runtime's own `#ns-input` and clicks `#ns-send`, so the runtime stays unedited. The AI only suggests; saving still needs the analyst. Without a key, the button points to the AI model page.
+- **Positioning:** Dialect is not a hospital management system (admissions, billing, beds). It is a translation layer that sits beside the lab system and the EHR.
+- The everyday test names moved to `assets/js/plain-names.js`, shared by the patient and doctor pages.
+
 ## 2026-11-26: Patient page laid out like a patient portal
 The developer found the patient page unclear ("how am I gonna use it") and unpolished. Changes:
 - **One report card**, laid out like a hospital patient portal. It has a header with the lab name, the collection date, the patient and "Final", then summary chips (tests, marked by the lab, not identified).

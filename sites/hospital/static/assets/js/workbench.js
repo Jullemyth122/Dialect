@@ -6,6 +6,7 @@ import { SITE } from "./site-config.js";
 import { parseCsv, toCsv } from "../lib/csv.js";
 import { shortlist, checkSuggestion } from "../lib/candidates.js";
 import { toConceptMap } from "../lib/conceptmap.js";
+import { loadByokStore, getSelectedByokProfile } from "../../runtime/byok.js";
 
 const FIELDS = ["code", "name", "unit", "range"];
 const MAX_ROWS = 500;
@@ -76,6 +77,8 @@ class Workbench {
     }
     this.rows = rows;
     this.source = source;
+    const sourceEl = document.querySelector("#wb-source");
+    if (sourceEl) sourceEl.textContent = source;
     this.version += 1;
     this.render();
     const remembered = rows.filter((r) => r.status === "approved").length;
@@ -235,6 +238,41 @@ class Workbench {
     });
     document.querySelector("#wb-conceptmap")?.addEventListener("click", () => this.exportConceptMap());
     document.querySelector("#wb-csv")?.addEventListener("click", () => this.exportCsv());
+    document.querySelector("#wb-ai")?.addEventListener("click", () => this.askAi());
+  }
+
+  /**
+   * Opens the assistant and sends it the review request, as if the analyst had typed it.
+   * The assistant (the Meta model through the nsdeploy runtime) then calls find_candidates
+   * and suggest_mapping on this page; saving still needs the analyst's approval.
+   */
+  askAi() {
+    const panel = document.querySelector("#assistant");
+    const toReview = this.rows.filter((r) => r.status === "pending" || r.status === "check").length;
+    if (!this.rows.length) { announce("#wb-status", "Load a test list first."); return; }
+    if (!toReview) { announce("#wb-status", "Nothing left for the AI to suggest. Approve or skip the rest."); return; }
+    if (panel) panel.open = true;
+    let hasKey = false;
+    try { hasKey = Boolean(getSelectedByokProfile(loadByokStore())?.key); } catch { hasKey = false; }
+    // A key added only for this tab (runtime settings) is not in the saved store; site.js says so here.
+    if (!hasKey) hasKey = /^Assistant connected/.test(document.querySelector("#assistant-status")?.textContent ?? "");
+    if (!hasKey && !SITE.publisherFunded) {
+      announce("#wb-status", "The AI needs an API key first. Add your Meta key on the AI model page (link above), then press Suggest with AI again.");
+      panel?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    const input = document.querySelector("#ns-input");
+    const send = document.querySelector("#ns-send");
+    if (!input || !send || send.disabled) {
+      announce("#wb-status", "The AI assistant is still starting or busy. Try again in a moment.");
+      panel?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    input.value = `Suggest a standard code for each of the ${toReview} tests to review. Use find_candidates for each, then suggest_mapping. Say "please check" when unsure. Do not save anything.`;
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    send.click();
+    announce("#wb-status", `Asked the AI to suggest codes for ${toReview} tests. Suggestions appear in the worklist as they arrive.`);
+    panel?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   async readFile(file) {
