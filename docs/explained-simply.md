@@ -1,6 +1,6 @@
 # Dialect, explained simply
 
-For teammates and reviewers with no healthcare background. No medical knowledge needed. Written Tue 24 Nov 2026.
+For teammates and reviewers with no healthcare background. No medical knowledge needed. Written Tue 24 Nov 2026; section 4 (how it works, step by step) added Thu 26 Nov.
 
 ---
 
@@ -16,6 +16,8 @@ Hospitals send lab results (like a blood sugar test) to each other as computer m
 - **Hospital IT staff** finish the matching work faster, and with a file their systems can use.
 
 **It never gives medical advice.** It explains what a test *is*, never what a result *means* for someone's health. That stays with the doctor.
+
+**Where else it fits** (we build only the hospital referral): hospitals that send samples to outside labs, a hospital switching lab systems, public health offices receiving lab reports, clinical trials, and insurers that score care quality from lab results. All of them receive lab results in someone else's codes.
 
 ---
 
@@ -67,17 +69,47 @@ Now multiply this by thousands of test names per hospital, and every new hospita
 
 ---
 
-## 4. How people solve it today
+## 4. How Dialect works, step by step
 
-| Way | Problem |
+Same example: `GLU-F 5.6 mmol/L, normal 3.9-5.5, flag H` arrives at Hospital B.
+
+1. **Keep only what is needed.** Dialect reads the test code, name, unit and normal range. It never puts the result (5.6) or anything about the patient into an AI request.
+2. **Shortlist candidates (plain code, no AI).** It searches the LOINC list for codes that could fit "glucose, fasting": 1558-6 (mg/dL), 14771-0 (mmol/L), 2345-7 (glucose at any time, mg/dL).
+3. **The AI picks one, or says "please check".** It sees the shortlist and the clues ("fasting", "mmol/L") and answers "14771-0, confident", or "please check: could be 14771-0 or 2345-7, I can't tell if the patient was fasting".
+4. **Plain code double-checks.** A rule (not the AI) checks the unit: an mg/dL code for an mmol/L result is blocked. Safety rules are never left to the AI.
+5. **A human approves.** The analyst sees the suggestion in the workbench and approves, fixes or skips. Nothing is saved without a person.
+6. **Dialect remembers, for that hospital only.** The approved match goes into Hospital B's private notebook (the alias table): "GLU-F = 14771-0". Next time, no AI is needed, and B's approvals become hints for names it has never seen.
+7. **People use the result.** The doctor's referral view lines up both hospitals' results by code (5.6 mmol/L shown beside "about 101 mg/dL"). The patient view fetches a plain explanation from MedlinePlus by the code. The analyst downloads the finished list as a standard file.
+
+**Where the "agentic web" comes in.** Each hospital's website publishes its helper as a public file, like a recipe: which agents exist, what each does, which AI model to use. Hospital B can load Hospital A's recipe after the user agrees, and run it on B's own lab list in B's own browser. B gets A's skill, not A's data, and A never sees B's data. A's recipe starts a bit worse at B, because B names things differently, then improves as B's analyst approves matches.
+
+**Where "evolving" comes in.** Offline, we make about 8 variations of the recipe (different prompt wording, how many candidates the AI sees, how unsure it must be before it says "please check"), score each on cases with known answers, keep the best, mix and tweak them, and repeat for about 10 rounds. Every round is published on the site.
+
+**Who does what:**
+
+| Job | Done by |
 |---|---|
-| **By hand**, using a lookup tool | Slow. Every hospital starts from zero |
-| **An AI tool** that suggests matches (published research reports 81 to 90% correct) | 1 or 2 in every 10 are wrong, and it doesn't tell you which. Someone still has to check every line |
-| **A company does it for you** | The hospital must send its data to that company |
+| Suggest the code | The AI |
+| Shortlist, unit checks, conversions, the privacy filter | Plain code (rules, not AI) |
+| Approve every match | The human analyst |
+| Explain a test to a patient | MedlinePlus text, never the AI |
+| Say what a result means for someone's health | Nobody in Dialect. That is the doctor's job |
 
 ---
 
-## 5. What Dialect does differently
+## 5. How people solve it today
+
+| Way | Problem |
+|---|---|
+| **By hand**, using a lookup tool (RELMA) | Slow. Every hospital starts from zero |
+| **An AI tool** that suggests matches (LabBridge, LARA and others; published research reports 81 to 90% correct) | 1 or 2 in every 10 are wrong, and it doesn't tell you which. Someone still has to check every line. Each hospital learns alone |
+| **A company does it for you** | The hospital must send its data to that company |
+
+**Honest note:** AI that matches lab names is not our invention; the tools above already exist. What Dialect adds is section 6: asking instead of guessing, learning at each hospital, sharing the skill (not the data) between hospitals, and evolving it.
+
+---
+
+## 6. What Dialect does differently
 
 **1. It says "I'm not sure" instead of guessing.**
 It is scored like a strict exam: **+1** for a right answer, **0** for "please ask a human", **-5** for a confident wrong answer. So it learns that guessing is expensive. The analyst only checks the items it flags, instead of checking everything.
@@ -99,7 +131,7 @@ We also compare it fairly: against a plain AI that is told it may say "please ch
 
 ---
 
-## 6. What each person actually sees
+## 7. What each person actually sees
 
 Dialect has three screens, one for each kind of person. All people and patients below are fictional.
 
@@ -117,7 +149,7 @@ Mr. Santos has his lab report and doesn't understand it. He opens the patient pa
 - his number, the lab's normal range, and the lab's own high/low mark;
 - questions he can ask his doctor.
 
-It never says "you have diabetes" or "you are fine". Every screen says: **"Not medical advice. Talk to your doctor about your results."** His numbers stay in his browser. In this version he picks from sample reports; uploading real reports is not part of the hackathon.
+It never says "you have diabetes" or "you are fine". Every screen says: **"Not medical advice. Talk to your doctor about your results."** His numbers stay in his browser. In this version he picks from sample reports; uploading real reports is not part of the hackathon. He can print the explained report on one page to bring to his doctor (planned), and, if time allows, have the explanations read aloud or shown in large text.
 
 ### The hospital IT person: the review workbench
 The user is an interface analyst. We call her Ana in the demo.
@@ -136,7 +168,7 @@ Ana's approvals are what make the doctor's and the patient's screens correct. Th
 
 ---
 
-## 7. Is this really helpful? The honest answer
+## 8. Is this really helpful? The honest answer
 
 **What is solidly true:**
 - The problem is real and documented by US government health agencies and published research.
@@ -154,7 +186,7 @@ Ana's approvals are what make the doctor's and the patient's screens correct. Th
 
 ---
 
-## 8. Glossary
+## 9. Glossary
 
 | Word | Plain meaning |
 |---|---|
@@ -177,4 +209,7 @@ Ana's approvals are what make the doctor's and the patient's screens correct. Th
 | **MedlinePlus** | The US National Library of Medicine's free health information website; much of it is public domain. We show its explanations of lab tests, with credit |
 | **Referral** | When one hospital or doctor sends a patient to another |
 | **Medical advice** | Telling a person what their results mean for their health or what to do. Dialect never does this |
+| **Reference lab** | An outside lab a hospital sends samples to; results come back in that lab's codes |
+| **Prior art** | Existing work that already does something similar. We name it ourselves |
+| **Evolution** | Making variations of the helper, scoring them, keeping the best and repeating |
 | **MIMIC-IV Demo** | A free public research dataset from a US hospital; we use only its list of test names and the unit used for each test, never patient records |

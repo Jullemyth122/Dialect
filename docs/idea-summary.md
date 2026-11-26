@@ -1,6 +1,6 @@
 # Dialect: idea summary and the 10/10 playbook
 
-Written Mon 23 Nov 2026, updated Tue 24 Nov after the team's review. This is the one page to read before working on Dialect. The details are in PLAN.md, research/challenge-requirements.md and docs/brief.md.
+Written Mon 23 Nov 2026, updated Tue 24 Nov after the team's review and Thu 26 Nov (prior art, other users, the AI's one job). This is the one page to read before working on Dialect. The details are in PLAN.md, research/challenge-requirements.md and docs/brief.md.
 
 ---
 
@@ -40,7 +40,7 @@ Every scenario is marked synthetic in the UI, its JSON, its HL7 messages (MSH-11
 
 ### What we claim, and what we don't
 - **Claim:** per-site adaptation without sending data to peer sites, plus safe, scored abstention, measured against a fair baseline (a single AI call that is also allowed to say "please check").
-- **Don't claim:** "AI maps lab codes". LabBridge already reports 81 to 90%, and RELMA exists.
+- **Don't claim:** "AI maps lab codes". LabBridge already reports 81 to 90%; LARA (LOINC Conference 2026), an agentic LOINC coder (2026 research), Wolters Kluwer's commercial mapping and RELMA exist too, and a Nov 2026 blog post describes almost our mapper design. We name them ourselves. **Claim as new only the combination:** the skill shared between hospitals on the open agentic web without sharing their data, evolved to ask instead of guess, with safe views on top. (Our searches did not find it; that is not proof.)
 - **Don't claim:** "data never leaves", "zero PHI" or "proof of privacy". Test names, units and ranges go to the model endpoint the site uses. What we can show is an egress log of what went where.
 - **Don't claim:** official status for our validator. It is unofficial and checks only public files.
 - **Not a clinical tool, not medical advice.** Synthetic data, a human approves everything, and a disclaimer is on every screen.
@@ -51,6 +51,10 @@ Every scenario is marked synthetic in the UI, its JSON, its HL7 messages (MSH-11
 - **Patients:** their lab report in plain words, with trusted explanations and questions to ask (patient view). Not medical advice; their doctor still explains what the results mean for them.
 - **Interface analysts and lab informatics staff** at small and mid-sized hospitals, health information exchanges, public health agencies that receive lab reports from many labs, and integration firms (Cognizant included): the workbench and the mapping file.
 - **Be exact about the evidence:** the doctor and patient views run on synthetic patients. Their benefit in real care is a goal, not something we measured.
+- **The same engine, other users (one sentence in the pitch, not built):** hospitals using outside reference labs, a hospital switching lab systems, public health lab reporting, clinical trials (FDA expects LOINC in trial lab data) and insurers (HEDIS quality measures use LOINC value sets). Sources in docs/facts.md.
+
+### The AI's one job
+Given a hospital's own test code, name, unit and normal range, return the LOINC code or "please check". Each hospital configures its own model (no-key default or its own key), its private alias table and its evolved settings. Only the analyst talks to the AI; the doctor sees approved matches and the patient sees MedlinePlus text.
 
 ### Why the judges might care
 - **Hodjat and Miikkulainen:** evolved agent networks, scored against ground truth. Also Cognizant's healthcare business: TriZetto Unify opened to AI agents in May 2026.
@@ -58,14 +62,14 @@ Every scenario is marked synthetic in the UI, its JSON, its HL7 messages (MSH-11
 - **Cognizant AI Lab:** low error tolerance in healthcare, and their MAKER zero-error work, which fits the -5 penalty for confident errors.
 
 ### Plan and gates
-P0 Research (23 to 25 Nov) → **G2 kill rule on 28 Nov** → Stage One site, validator v1 and a two-origin smoke test by 6 Dec → full Hospital B workbench by 20 Dec → evolution, proof and polish, feature freeze 3 Jan → video by 7 Jan → submit 10 Jan. About 84 hours at 12 a week, with no spare hours, so features are sorted into Must, Should and Could (PLAN.md section 2).
+P0 Research (23 to 25 Nov; its last items carried into 26 Nov, example site first) → **G2 kill rule on 28 Nov** → Stage One site, validator v1 and a two-origin smoke test by 6 Dec → full Hospital B workbench by 20 Dec → evolution, proof and polish, feature freeze 3 Jan → video by 7 Jan → submit 10 Jan. About 84 hours at 12 a week, with no spare hours, so features are sorted into Must, Should and Could (PLAN.md section 2).
 
 If evolution doesn't beat the best single AI call, the evolution claim is dropped; we then choose between the simpler product and a fallback idea (Silicon Breeders, Jury of Strangers or Safe Generative UI).
 
 ### Rules that bind us
 - The video has you explaining the project in your own voice (not AI generated), shows the site running in a browser, is under 2 minutes, is public on YouTube, and has no third-party trademarks.
 - The project is open source.
-- The site must run with no visitor key: a default model path is needed, and bring-your-own-key is extra.
+- The site must publish a default router and model. A path that works with no visitor key is optional in the spec (corrected 26 Nov), but we offer one, paid from Meta credits through the Meta Model API, so judges can try it without a key. Bring-your-own-key is extra.
 - Required files: `agent-manifest.json`, the network in Neuro SAN JSON format, `links.json`, the runtime and the interface.
 - The site stays live until judging ends on 18 Jan.
 
@@ -95,7 +99,7 @@ Proof to produce:
 A 10 here means one clear job done end to end by a real kind of user, with no dead ends.
 
 Proof to produce:
-- [ ] **One story, one journey:** an analyst at Hospital B pastes or loads a batch of messages → sees exactly what will be sent to the AI model → the agent proposes mappings → a review queue shows "please check" items with top candidates → the analyst approves → the score and the alias table update → B's accuracy visibly rises → the analyst downloads the ConceptMap → the doctor's referral view now shows the patient's results from both hospitals side by side → the patient view explains the same report in plain words.
+- [ ] **One story, one journey:** an analyst at Hospital B uploads the hospital's test list (CSV) or a batch of messages → sees exactly what will be sent to the AI model → the agent proposes mappings → a review queue shows "please check" items with top candidates → the analyst approves → the score and the alias table update → B's accuracy visibly rises → the analyst downloads the ConceptMap → the doctor's referral view now shows the patient's results from both hospitals side by side → the patient view explains the same report in plain words.
 - [ ] First-visit onboarding in three lines, a sample batch button, empty states, and plain error messages.
 - [ ] It works with no key, on a phone and a laptop, in a fresh browser.
 - [ ] A plain, consistent look across both hospital sites: one design system, each hospital with its own name and colour.
@@ -119,6 +123,8 @@ Proof to produce:
 A 10 here means a clear answer to "why does this need the agentic web?" and proof that we understand HL7 and LOINC.
 
 Proof to produce:
+- [ ] **A "What exists already, and what's new" paragraph** that names LabBridge, LARA, the agentic LOINC coder and RELMA before any judge does, then states the one new thing (PLAN.md section 1). An AI screener will search for prior art; finding it named by us reads as understanding, finding it on its own reads as overclaiming.
+- [ ] **Optional, Should: the hard-case exchange.** B publishes human-approved patterns of its mistakes (never data); A's evolution learns from them. Learning flows both ways between sites.
 - [ ] **A "Why not a central service?" paragraph:** with a central SaaS, every hospital uploads its data to one vendor. Here the shared part is the published network, the private part stays at each hospital, and the network learns locally. That is the open agentic web's own model of public networks plus private context.
 - [ ] Show real domain detail: HL7 v2 OBX segments, LOINC's six parts (component, property, timing, system, scale, method), unit conversion as plain code, and why -5 for a confident wrong answer.
 - [ ] An honest limits section: synthetic quirks are cleaner than real hospitals, and data goes to the chosen model. Being upfront shows understanding.

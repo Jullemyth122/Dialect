@@ -8,6 +8,7 @@ Use this to check two things: (1) does the idea pass the challenge's bar, and (2
 3. `research/challenge-requirements.md`: the rules and spec, checked
 4. `docs/data-and-scenarios.md`: data sources and scenarios
 5. `PLAN.md`: what will be built and when
+6. `docs/facts.md`: every source, including the prior art we name
 
 If the AI can open links, also give it https://cognizant-agenticweb.devpost.com/rules
 
@@ -43,6 +44,9 @@ E. List every claim you think is overclaimed, unsupported or contradictory.
 F. Name the strongest argument AGAINST this entry winning.
 G. Check the plan's hours (PLAN.md sections 2 and 3). Is the Must list
    buildable in 84 hours? Name anything that should move down a tier.
+H. Search for prior art yourself. Does anything already do what the plan
+   claims is new (PLAN.md section 1, "What is new, and what is not")? Give
+   links. Do not count tools the plan already names.
 Be critical. Do not be polite at the expense of accuracy.
 ```
 

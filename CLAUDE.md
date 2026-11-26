@@ -26,6 +26,25 @@ Entry for the Open Agentic Web Challenge (Cognizant). Agents that learn each hos
   "zero PHI", "data never leaves" or "proves" about privacy.
 - Never call our validator official or show a pass badge; it is "unofficial,
   static checks only".
+- Never claim that AI lab mapping itself is new. Name the prior art (LabBridge,
+  LARA, the agentic LOINC coder, RELMA; sources in docs/facts.md) and claim only
+  the combination in PLAN.md section 1.
+- No uploads of real lab reports, and no AI translation of patient
+  explanations (that is AI-written health text).
+- "Ask the sender" (if built) may use only the sending hospital's own public
+  test directory, never the receiving hospital's lab list.
+- Hard-case exchange files hold human-approved mistake patterns only, never
+  codes, names, results or patient data.
+- Hospitals A and B are one codebase with a hospital profile file; don't fork
+  the app per hospital.
+- AI provider: Meta Model API (`https://api.meta.ai/v1`, OpenAI-compatible),
+  default model `muse-ember-1.0`. Never use `-contributor` models (Meta may
+  train on what they receive). The site's Meta key lives only in a Vercel
+  environment variable read by the no-key endpoint; never in the repo, the
+  browser bundle, the manifest or a prompt.
+- OCR (if built) runs in the browser on our own synthetic sample photos only;
+  show the photo crop beside every read line and hold low-confidence lines apart.
+- Read-aloud reads MedlinePlus text only.
 - Confident wrong mappings are worse than abstaining. Never remove the abstain option.
 - Business rules that must hold (unit conversion, valid ranges) run as plain
   code, not as AI instructions.

@@ -81,6 +81,9 @@ Each scenario is a self-contained story with its own data, its own question and 
   - **S1b, new codes:** codes B has never approved. The mapper tuned at A loses accuracy here, then recovers as B's approved mappings become hints. This is the real learning result, and the one the kill rule uses.
 - **Real anchor:** LOINC codes, real synonyms and the real SI/conventional unit difference.
 - **Result shown:** the S1b transfer curve, plus the S1a work saved.
+- **The analyst's input:** each fictional hospital also has a synthetic test catalogue (a CSV of local code, name, unit and normal range) that the workbench uploads in one go. No results or patients are in it.
+- **Ask the sender (Could, decided at G3):** if built, the city hospital (A) also acts as the provincial hospital's outside lab: B sends some samples to A, and the results come back in A's codes. A publishes its synthetic test directory as its own public file, the way real reference labs publish their LOINC tables, and B's site asks A's directory agent about those codes. B's lab list is never published.
+- **Paper reports (OCR, Could, decided 20 Dec):** if built, the sample photos are of our own synthetic reports, printed and photographed by us, with the synthetic banner visible on the paper. No real report photos.
 - **Where people see it:** the referred synthetic patients (`SYN-000123` and a few more) appear in the doctor's **referral view**, with results from both hospitals on one table. The same patients' reports are the samples in the patient view, **"My lab report, explained"**. Result values are generated, plausible and labelled synthetic.
 
 ### S2. A real hospital dictionary (the headline real-data result)

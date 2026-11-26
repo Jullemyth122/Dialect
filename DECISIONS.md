@@ -2,6 +2,49 @@
 
 Newest first. Each entry: date, decision, reason. "Proposed" means not yet confirmed by the developer.
 
+## 2026-11-26: Meta Model API is our AI provider
+The developer will use their Meta API credits. The site's default router is a small Vercel function that adds the Meta key (an environment variable) and accepts only lab-mapping requests, marked `publisher_funded` in the manifest. Default model `muse-ember-1.0`; `muse-spark-1.3` is an evolution option. Standard mode only: never the `-contributor` models, because Meta may train on what is sent to them. BYOK accepts any OpenAI-compatible provider that allows browser calls. Reason: the challenge README accepts any OpenAI-compatible, browser-callable provider with tool calls; Meta's endpoint sends `Access-Control-Allow-Origin: *` (tested 26 Nov) and documents tool calling. Still to confirm in P1: that `muse-ember-1.0` makes the tool calls nsDeploy needs, by running the official example site with it.
+
+## 2026-11-26: Correction: a no-key path is optional in the spec
+Earlier files said the spec requires a default path that works without a visitor key. Spec §4 says a site **MAY** offer one; it must publish a default router and model. We keep the capped no-key path as Must anyway, so judges can try the site without a key. research/challenge-requirements.md, PLAN.md and idea-summary.md corrected.
+
+## 2026-11-26: Print, OCR, read-aloud and large text, tiered
+- **Print (Should, 2 to 3 hours):** the explained report and the referral table on one page each, with the disclaimers printed.
+- **OCR of a paper report (Could, about 10 hours, decided at G3b on 20 Dec):** our own synthetic sample photos only, read in the browser, the crop beside every line, low-confidence lines held apart. A misread number is the risk.
+- **Read aloud and large text (Could, about 1 hour each):** MedlinePlus text only.
+- **Not doing:** a geographic map (decoration, not our job), a patient chat assistant (drifts into advice), AI translation (AI-written health text).
+Reason: the developer asked for more creative, people-facing features. These are the ones that help patients and clinicians without breaking the medical-advice rule or the hours.
+
+## 2026-11-26: Healthcare confirmed; Dialect stays the entry
+The developer reviewed 100 alternative ideas across Cognizant's industries and 100 other healthcare ideas, and chose to keep Dialect. Reason: healthcare is one of Cognizant's largest businesses (it opened TriZetto Unify to AI agents on 29 May 2026), our real test data is already found and checked, and switching after G1 would cost weeks.
+
+## 2026-11-26: Prior art named; we claim only the combination as new
+A prior-art search found that AI lab-to-LOINC mapping already exists: LabBridge (JMIR 2026), an agentic LOINC paper (BIS 2026), LARA (LOINC Conference 2026), Wolters Kluwer's commercial mapping, RELMA, and a Nov 2026 blog post with almost our mapper design. We did not find the mapper published as a browser agent network that another hospital loads and adapts without exchanging data, evolved under an abstain-aware score. From now on every document says: "AI lab mapping exists (LabBridge, LARA, RELMA). Dialect shares the skill between hospitals on the open agentic web, without sharing their data, and evolves it to ask instead of guess." Reason: an AI screener will search for prior art; naming it ourselves turns a weakness into proof that we know the field. Sources in docs/facts.md.
+
+## 2026-11-26: The uses of Dialect, listed and sourced
+Dialect helps wherever lab results cross a boundary: referrals (built), lab-system switches (S3, Could), reference labs, clinics joining a network, public health reporting, clinical trials and insurer quality measures. Only referrals are built; the others are one sourced sentence under Potential Impact. Reason: shows reach, including Cognizant's payer and life-sciences businesses, at no build cost. PLAN.md section 1.
+
+## 2026-11-26: Four additions, each tiered
+- **CSV upload of a whole test list (Must, about 3 hours):** how analysts really work.
+- **Prior art named in README, Devpost and proposal (Must, writing only).**
+- **Hard-case exchange (Should, about 4 hours):** B publishes human-approved patterns of its mistakes, never data; A's evolution reads them. Learning then flows both ways without sharing data.
+- **Ask the sender (Could, about 5 hours, decided at G3):** a hospital that chooses to publish its test directory, as Mayo Clinic Laboratories and ARUP publish LOINC tables, also publishes an agent that answers questions about its own codes. Only that public directory is involved, so the privacy sentence still holds. In the demo the city hospital (A) publishes its directory and acts as the provincial hospital's (B's) outside lab; B's lab list stays private.
+- Also Could: approval history; a trend line in the referral view.
+
+## 2026-11-26: Four simplifications
+1. Hospitals A and B are one codebase built twice with a different hospital profile file.
+2. Build one thin path end to end first (one lab line mapped, approved, shown in the referral table), then widen.
+3. The referral view converts units for about 5 tests only, each with a cited factor.
+4. The patient view stays Must only if two people confirm about 12 hours a week each; otherwise it is Should (unchanged rule, still waiting on section 9, question 2).
+
+Reason: the Must list was larger than 84 hours. The CSV upload's 3 hours should be paid for by the shared codebase (estimate, checked at G3).
+
+## 2026-11-26: Never build
+Result interpretation, our own high/low flags, AI-written health text, AI translation of patient explanations (for example into Filipino), uploads of real reports, an "official" validator, a claim that AI lab mapping itself is new, a third hospital or another industry before 3 Jan. Reason: each one either breaks the medical-advice rule or invites a judge to mark us down.
+
+## 2026-11-26: G1 slipped by a day
+P0 is not finished (official example site, MIMIC units table, unit-dependence tags, section 9 answers). These go first in P1, example site first. G2 stays on Sat 28 Nov and may move by at most two days if the spike is not ready. *(Proposed; the developer confirms.)*
+
 ## 2026-11-24: Dialect serves doctors, nurses and patients too, never as medical advice
 The developer wants Dialect to help doctors, other professionals and patients, not only hospital IT. Two views are added on top of the mapping engine:
 - **Referral view (Must):** a referred synthetic patient's results from both hospitals lined up by LOINC code, with cited plain-code unit conversions and each lab's own flags. Unmatched results are held apart with "do not compare".

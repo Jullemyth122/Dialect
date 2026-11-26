@@ -45,7 +45,7 @@ Status column: **OK** = the plan already covers it. **FIXED** = added to PLAN.md
 | Network follows the **Neuro SAN** agent-network data model (HOCON, or fully resolved JSON), with a front agent | §2, §3.3 | FIXED |
 | `links.json` peer-network link map is one of the minimum public files | §3.3 | FIXED |
 | Manifest includes the site's default LLM router metadata and peer policy | §3.3 | FIXED |
-| **A default inference path that works with no visitor key.** BYOK is optional; the default path is not. Interop check: "Load and run that network ... with the site's published default router and model" | §4, §6 | FIXED: capped publisher-funded router replaces "replay only" |
+| A **published default router and model** (interop check: "Load and run that network in a browser with the site's published default router and model"). **Corrected 26 Nov:** a default that works *without a visitor key* is a MAY, not a MUST ("A site MAY publish a default router and model that work without a visitor-supplied key"), and the challenge README says the visitor pays by default unless the site points its router at a small proxy and sets `llm_router.publisher_funded` | §4, §6; README "Models and keys" | OK: we still offer a capped no-key path (paid from Meta credits) so judges can try the site without a key |
 | At least one grounded capability: MCP or a registered local site action | §6 | OK: the "save mapping" write action |
 | Show destination and arguments before any write | §3.1 | OK |
 | Consent before each contact with another origin, naming the origin and purpose | §3.2 | OK |
@@ -65,4 +65,5 @@ Status column: **OK** = the plan already covers it. **FIXED** = added to PLAN.md
 - The repo README's "Testing" section is still a TODO: "Run the validation script to check your submission is compliant". No official validator exists yet, so a conformance validator is an open gap we can fill and share.
 - The README (checked 23 Nov) says **hosted Otari now allows browser calls**, so a static site can use it, and suggests the model `alibaba/qwen3.8-flash`. This replaces the older note in docs/brief.md that hosted Otari blocks the browser. Free Otari credits are limited to the first 100 registrants, so we probably won't get them.
 - Peer linking in the reference examples uses `allowed_peers` and `peer_policy` in the manifest, a `bridge/` page, and `scripts/check_partner.mjs` to check a partner before adding it.
+- README "Which providers and models work?" (checked 26 Nov): "Any OpenAI-compatible provider that accepts calls from a browser, such as OpenAI, OpenRouter, hosted Otari and self-hosted LiteLLM ... Pick a model that makes tool calls." We use the Meta Model API (see docs/facts.md). The Devpost pages refused automated reads on 26 Nov (HTTP 403); the challenge text the developer pasted that day matches this file.
 - Spec §1.1: published agent instructions are public by design. Anything confidential must stay server-side behind MCP or a site action.

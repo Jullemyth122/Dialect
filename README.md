@@ -25,6 +25,7 @@ Reviewing with an AI such as Gemini? Use [docs/review-with-ai.md](docs/review-wi
 
 | File | What it is |
 |---|---|
+| [docs/learn-in-30-minutes.md](docs/learn-in-30-minutes.md) | Six words, a sample report to practise on, and three questions to ask a lab worker or nurse |
 | [docs/data-and-scenarios.md](docs/data-and-scenarios.md) | Real data sources, how synthetic data is labelled, the three scenarios |
 | [docs/facts.md](docs/facts.md) | The single source for every number and claim, with links |
 | [docs/devpost-draft.md](docs/devpost-draft.md) | Title, tagline, description, submission headings |
@@ -49,3 +50,9 @@ Reviewing with an AI such as Gemini? Use [docs/review-with-ai.md](docs/review-wi
 5. The helper is published as an open agentic website: anyone can load and inspect it, and it runs in the hospital's own browser.
 
 We will test it on 269 real hospital lab names and compare it fairly against a plain AI call, including one that is also allowed to say "please check". If evolution doesn't beat that, we will say so (PLAN.md section 5).
+
+## What exists already, and what's new
+AI lab mapping exists: LabBridge, LARA and RELMA already match local lab names to LOINC (sources in [docs/facts.md](docs/facts.md)). Dialect shares the skill between hospitals on the open agentic web, without sharing their data, and evolves it to ask instead of guess. On top of the matches it adds safe views for doctors, nurses and patients.
+
+## Where else it fits
+We build the hospital-referral case. The same engine fits anywhere lab results cross a boundary: reference labs, a hospital switching lab systems, public health reporting, clinical trials and insurers' quality measures (each sourced in [docs/facts.md](docs/facts.md)).

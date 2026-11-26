@@ -16,13 +16,16 @@ Matching them is slow, costly human work. In one AHRQ project, five hospitals ha
 - **Interface analysts** at small and mid-sized hospitals, often one or two people mapping thousands of codes.
 - **Public health offices and health information exchanges**, which receive results from many labs at once, each speaking its own dialect.
 - **Integration companies** that do this work for hospitals over and over.
+- **Anyone else who receives lab results in someone else's codes:** hospitals using outside reference labs, clinical trials (FDA expects LOINC codes in trial lab data), and insurers computing quality measures (HEDIS uses LOINC value sets). We build only the hospital referral case; sources in docs/facts.md.
 
 ## How it is done today, and what is missing
 | Today's option | What it lacks |
 |---|---|
 | **By hand**, with lookup tools such as RELMA | Slow; every hospital starts from zero |
-| **AI mappers** (LabBridge reports 81 to 90% accuracy) | Fast, but 10 to 19 in 100 are wrong and the tool does not say which. Someone still has to check everything |
-| **Central mapping services** | The hospital has to send its codes and data to one vendor |
+| **AI mappers**: LabBridge (reports 81 to 90% accuracy), LARA, an agentic LOINC coder (2026 research) | Fast, but 10 to 19 in 100 are wrong and the tool does not say which. Someone still has to check everything. Each hospital runs its own copy and learns alone |
+| **Central or commercial mapping services** (for example Wolters Kluwer's AI mapping) | The hospital has to send its codes and data to one vendor |
+
+**To be clear: using AI to map lab names to LOINC is not our invention.** What we add is how the skill is shared and improved: published on the open agentic web, adapted at each hospital without either hospital sending its data to the other, and evolved to ask instead of guess. Sources for every tool above are in docs/facts.md.
 
 ## What makes Dialect different
 1. **It knows when it doesn't know.** A confident wrong answer costs -5 points; asking a human costs nothing. So Dialect only answers when it is sure and flags the rest. The analyst checks the flagged items instead of everything. *Example: out of 1,000 codes, review the 150 it flags instead of all 1,000.*
@@ -34,7 +37,7 @@ Matching them is slow, costly human work. In one AHRQ project, five hospitals ha
 
 **For the analyst**
 - **Before:** export the code list, look up each code, guess the ambiguous ones, hope nothing is wrong, start again for the next connection.
-- **After:** load the hospital's batch into Dialect. Most codes come back mapped. The unsure ones arrive in a review queue with the top candidates and the reason it is unsure. The analyst approves, fixes or skips, and each approval makes the next batch easier. At the end, they download the approved list as a standard FHIR ConceptMap or a CSV, ready to load into the hospital's interface system.
+- **After:** load the hospital's whole test list (a CSV) or a batch of messages into Dialect. Most codes come back mapped. The unsure ones arrive in a review queue with the top candidates and the reason it is unsure. The analyst approves, fixes or skips, and each approval makes the next batch easier. At the end, they download the approved list as a standard FHIR ConceptMap or a CSV, ready to load into the hospital's interface system.
 
 **For the doctor or nurse**
 - **Before:** the referred patient's results from the other hospital are a list of unfamiliar codes in different units.
@@ -45,7 +48,7 @@ Matching them is slow, costly human work. In one AHRQ project, five hospitals ha
 - **After:** "Blood sugar, fasting", a short explanation of the test from MedlinePlus (US National Library of Medicine), the lab's normal range and mark, and questions to ask their doctor. No diagnosis, and their numbers stay in their browser.
 
 ## Why it matters
-In healthcare a wrong mapping is worse than no mapping, because a lab result could be read under the wrong test or unit. Cognizant's own healthcare work stresses that low error tolerance and the need to verify agent output, and Cognizant opened its TriZetto Unify healthcare platform to AI agents in May 2026. Dialect's -5 rule turns "verify agent output" into something measured and visible.
+In healthcare a wrong mapping is worse than no mapping, because a lab result could be read under the wrong test or unit. Cognizant's own healthcare work stresses that low error tolerance and the need to verify agent output, and Cognizant opened its TriZetto Unify healthcare platform to AI agents on 29 May 2026, while stressing that clinical decisions and oversight stay with people (press release, in docs/facts.md). Dialect's -5 rule turns "verify agent output" into something measured and visible.
 
 ## Why an open agentic website is the right shape
 The open agentic web says networks are public data and each site's private context stays private. That is exactly the shape of this problem: the mapping skill can be shared openly, while every hospital's codes, patients and approvals must stay home. A central service could not offer that without collecting everyone's data.
