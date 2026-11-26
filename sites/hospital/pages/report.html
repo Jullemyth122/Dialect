@@ -7,7 +7,8 @@
 <main id="main" class="container narrow">
   <section class="persona-head" aria-labelledby="page-title">
     <span class="persona-chip"><span class="dot dot-patient" aria-hidden="true"></span>For patients</span>
-    <h1 id="page-title">Understand my lab report</h1>
+    <h1 id="page-title"><span class="no-print">Understand my lab report</span><span class="print-only">Lab results to discuss with my doctor</span></h1>
+    <p class="print-only print-meta">{{name}} · Dialect demo · Synthetic sample, not a real patient.</p>
     <p class="lede">Choose a sample report. Tap a test to learn what it is.</p>
     <div class="note" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.5v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><p><strong>Not medical advice. Talk to your doctor about your results.</strong> We explain what a test is, not what your result means for you.</p></div>
   </section>
@@ -26,7 +27,7 @@
         </div>
         <button class="button button-soft button-s no-print" type="button" id="print">Print for my doctor</button>
       </div>
-      <p class="print-only"><strong>Not medical advice. Talk to your doctor about your results.</strong> Synthetic sample from the Dialect demo.</p>
+      <p class="print-only"><strong>Not medical advice. Talk to your doctor about your results.</strong> Marks (H, L) are the lab's own. What each test is: medlineplus.gov/lab-tests</p>
       <ul class="tests" id="lines" aria-live="polite"><li class="empty">Loading…</li></ul>
     </section>
 

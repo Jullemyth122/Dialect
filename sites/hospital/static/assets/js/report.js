@@ -64,10 +64,7 @@ async function main() {
     return [input, h("label", { for: id }, `${report.patient.replace("Synthetic patient ", "")}`, h("span", { class: "count" }, where))];
   }));
   show(reports[0]);
-  document.querySelector("#print")?.addEventListener("click", () => {
-    for (const d of document.querySelectorAll(".test details")) d.open = true;
-    window.print();
-  });
+  document.querySelector("#print")?.addEventListener("click", () => window.print());
 }
 
 main().catch((error) => {
