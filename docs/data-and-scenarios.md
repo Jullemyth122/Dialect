@@ -94,7 +94,7 @@ Each scenario is a self-contained story with its own data, its own question and 
 - **Real anchor:** the whole test set is real public data (section 2), and it is never used for tuning.
 - **Result shown:** a separate real-data card. This is the number that makes Potential Impact credible.
 
-### S3. Lab system switch (Should)
+### S3. Lab system switch (Could)
 - **Story:** a hospital replaces its lab system. Overnight, many local codes and names change.
 - **Tests:** whether the agent notices that its learned mappings no longer fit, and asks a human instead of confidently applying old ones.
 - **Real anchor:** real names, with a realistic change pattern (renamed tests, new codes, split panels).

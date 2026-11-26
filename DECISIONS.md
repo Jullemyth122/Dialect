@@ -2,6 +2,9 @@
 
 Newest first. Each entry: date, decision, reason. "Proposed" means not yet confirmed by the developer.
 
+## 2026-11-26: Checked against the full challenge page; NANDA Index up to Should; video trademark rule
+The developer pasted the full challenge page on 26 Nov. Every required item is already in PLAN.md; nothing new is required. Two changes: NANDA Index registration moves from Could to Should (about 2 hours), because discovery is the challenge's first sentence and judge Ramesh Raskar founded Project NANDA; and the video rule now says no logos, the AI provider's name off screen, and standards and the MedlinePlus credit named only as attribution. Also fixed: S3 was still labelled Should in two places; it is Could. The page also lists an Employee prize, which appears to be for Cognizant employees and does not affect us.
+
 ## 2026-11-26: Meta Model API is our AI provider
 The developer will use their Meta API credits. The site's default router is a small Vercel function that adds the Meta key (an environment variable) and accepts only lab-mapping requests, marked `publisher_funded` in the manifest. Default model `muse-ember-1.0`; `muse-spark-1.3` is an evolution option. Standard mode only: never the `-contributor` models, because Meta may train on what is sent to them. BYOK accepts any OpenAI-compatible provider that allows browser calls. Reason: the challenge README accepts any OpenAI-compatible, browser-callable provider with tool calls; Meta's endpoint sends `Access-Control-Allow-Origin: *` (tested 26 Nov) and documents tool calling. Still to confirm in P1: that `muse-ember-1.0` makes the tool calls nsDeploy needs, by running the official example site with it.
 

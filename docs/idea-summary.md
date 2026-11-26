@@ -11,7 +11,7 @@ Written Mon 23 Nov 2026, updated Tue 24 Nov after the team's review and Thu 26 N
 - **Build:** an open agentic website. It publishes an agent network as public JSON, runs that network in the visitor's browser, and can load other sites' networks after the visitor agrees.
 - **Deadline:** Mon 11 Jan 2027, 8:00 am PST (midnight going into Tue 12 Jan, Manila time). We submit **Sun 10 Jan**.
 - **Judges:** Babak Hodjat (Cognizant Chief AI Officer), Ramesh Raskar (MIT, founder of Project NANDA), Risto Miikkulainen (UT Austin, evolutionary AI).
-- **Prizes:** $5,000 / $3,000 / $2,000, plus Otari credits.
+- **Prizes:** $5,000 / $3,000 / $2,000, plus Otari credits (and an Employee prize, which appears to be for Cognizant employees).
 - **Field:** 1,728 registered as of 23 Nov; the gallery isn't public yet.
 - **Judging:** Stage One is pass/fail on spec conformance. Stage Two has four equal criteria: Technological Implementation, Design, Potential Impact and Quality of the Idea. Ties go to Technological Implementation. Judges may judge from the text, screenshots and a 2-minute video alone, and AI-driven analysis is allowed.
 
@@ -128,7 +128,7 @@ Proof to produce:
 - [ ] **A "Why not a central service?" paragraph:** with a central SaaS, every hospital uploads its data to one vendor. Here the shared part is the published network, the private part stays at each hospital, and the network learns locally. That is the open agentic web's own model of public networks plus private context.
 - [ ] Show real domain detail: HL7 v2 OBX segments, LOINC's six parts (component, property, timing, system, scale, method), unit conversion as plain code, and why -5 for a confident wrong answer.
 - [ ] An honest limits section: synthetic quirks are cleaner than real hospitals, and data goes to the chosen model. Being upfront shows understanding.
-- [ ] Optional: register the hospital sites in the NANDA Index so peers find each other through it rather than hard-coded links.
+- [ ] Register the hospital sites in the NANDA Index (Should since 26 Nov) so peers find each other through it, not only through hard-coded links.
 
 ### Things that lift every criterion
 - [ ] **Write the Devpost text for the AI judge too:** one heading per criterion, with the criterion's wording, exact spec terms (manifest, `links.json`, private context, site action, BYOK, consent), and links to the live proof.

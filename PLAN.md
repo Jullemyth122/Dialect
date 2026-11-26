@@ -100,6 +100,7 @@ Every feature from both reviews, sorted. **Must** items are the entry. **Should*
 | **Should** | DialectProfile v1 schema (standard subset + generator + scorer behind one format) | Makes the engine reusable in other fields |
 | **Should** | 3-person timed user test and one practitioner quote | Design and Impact evidence |
 | **Should** (added 26 Nov) | **Print:** "My report, explained" as one page for the patient to bring to the doctor, and the referral table for the doctor or nurse, with "Not matched: do not compare" and "Not medical advice" on the page (about 2 to 3 hours, mostly a print stylesheet) | Paper still travels with patients; it works where hospitals have no connected systems. Lifts Design |
+| **Should** (moved up from Could, 26 Nov) | **NANDA Index registration** for both hospital sites, so peers can be found without only the hard-coded `links.json` (about 2 hours, estimate; check how registration works during P2) | "Agents can discover and connect with other agents" is the challenge's first sentence, MIT NANDA is a technology partner, and judge Ramesh Raskar founded Project NANDA |
 | **Should** (added 26 Nov) | **Hard-case exchange:** B publishes the *patterns* of its -5 mistakes as a public file (for example "whole-blood glucose was confused with serum glucose"), never codes, names or results; A's evolution reads them as hints (about 4 hours, built with the evolution in P4) | Learning then flows both ways between sites without sharing data, which sharpens what is new. Reuses the rule-mutation work. Each pattern is written or approved by a human before it is published |
 | **Could** | S3 lab system switch (moved down on 24 Nov to make room for the two new views) | Shows it asks instead of applying stale mappings |
 | **Could** (added 26 Nov; decide at G3, 6 Dec) | **Ask the sender:** a hospital that *chooses* to publish its test directory (as Mayo Clinic Laboratories and ARUP publish LOINC tables) also publishes a small agent that answers "what does your code X mean?". The receiving site calls it, with consent, before asking its own AI (about 5 hours). In the demo, A acts as B's outside lab: B sends some samples to A, results come back in A's codes, and B asks A's directory agent. B's lab list is never published | The clearest site-to-site agent call in the project. Only the sender's own public directory is involved, so the privacy sentence still holds. Decide once the two-origin smoke test shows nsDeploy handles cross-site calls |
@@ -111,7 +112,6 @@ Every feature from both reviews, sorted. **Must** items are the entry. **Should*
 | **Could** | Script that checks `docs/facts.md` against `results.json` | Nice; a manual check before submitting does the same job |
 | **Could** | Error ranges on every published result and a cost chart (the kill rule's one bootstrap interval is already Must, in the scorer) | Strengthens the numbers |
 | **Could** | Drift report download for S3 | Only if S3 is built |
-| **Could** | NANDA Index registration | Discovery without hard-coded links |
 | **Stretch** | Hospital C, S4 public health intake (eICU names), S5 a second industry, validator v2 live checks | Cut on 24 Nov. Do not start them before 3 Jan |
 
 Other defaults:
@@ -235,7 +235,7 @@ Week 2:
 - [ ] Ask one real practitioner for two sentences of feedback, quoted with permission: a doctor or nurse on the referral view, or a hospital IT, HIMS or lab informatics person on the workbench. (Should)
 
 ### P5 Submission (Mon 4 to Sat 9 Jan)
-- [ ] Video under 2 minutes, **your own voice**, the site running in a browser, the key result in the first 30 seconds, public on YouTube, with uploaded captions. No third-party trademarks or copyrighted music. Use generic words ("hospital interface systems") rather than product names.
+- [ ] Video under 2 minutes, **your own voice**, the site running in a browser, the key result in the first 30 seconds, public on YouTube, with uploaded captions. No third-party trademarks or copyrighted music. Use generic words ("hospital interface systems", "the AI model") rather than product names. Show no logos. Keep the AI provider's name off screen (blur or close the model settings panel while recording). Naming the standards we use (LOINC with its ® notice) and the required "Source: MedlinePlus, National Library of Medicine" credit is attribution, not branding; to be certain, ask the organizers in the challenge Discord before recording.
 - [ ] Devpost text following section 6, with a "What exists already, and what's new" paragraph under Quality of the Idea and the one "other users" sentence under Potential Impact.
 - [ ] Screenshots, each with a caption saying what it proves.
 - [ ] README: a 30-second summary, live links, how to verify each claim, licence, honest limits.
@@ -317,7 +317,7 @@ All on held-out data the agents never saw. Results on real MIMIC names are repor
 | S1b: new codes | Accuracy at A, at B before adapting, at B after adapting, on codes B has never approved | Transfer curve |
 | S2a: real names only | The 269 real MIMIC names with no unit: unit-dependent names should get "please check" | Real-data card |
 | S2b: real names and units | The same names with their real recorded units (170 of 269): how much coverage the unit check recovers | Real-data card |
-| S3: lab system switch (Should) | Wrong confident answers after codes change overnight | Results card |
+| S3: lab system switch (Could) | Wrong confident answers after codes change overnight | Results card |
 | Referral view check | On the synthetic referral patients: results lined up correctly, held apart as "do not compare", and lined up wrongly (target: 0) | Results card |
 | Evolution | Score per generation (and rule diffs, if built) | Lineage view |
 | Hard-case exchange (Should) | A's held-out score with and without B's published mistake patterns | Results card |
