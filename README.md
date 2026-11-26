@@ -6,7 +6,19 @@ Entry for the [Open Agentic Web Challenge](https://cognizant-agenticweb.devpost.
 
 > **Synthetic scenario.** Real standards and real public lab test names; fictional hospitals and patients. Not a clinical tool and not medical advice. A human approves every match.
 
-**Status:** planning and research (late November 2026). Nothing is built yet.
+**Status (26 Nov 2026):** first build. Both hospital sites, the workbench with the assistant mounted, the referral view, the patient view and the models page run locally, and 20 tests pass. Not deployed yet; the live chat still needs a test with a real key.
+
+## Run it locally
+Needs Node.js 22 or newer; there are no npm dependencies.
+
+```shell
+npm run build      # builds dist/hospital-a and dist/hospital-b
+npm test           # 20 tests: scorer, units, shortlist, and checks on the built pages
+npm run serve:a    # Hospital A at http://127.0.0.1:8081
+npm run serve:b    # Hospital B at http://localhost:8082 (a different host name on purpose)
+```
+
+The assistant on the workbench sends your messages and the test list (code, name, unit and range only) to the AI provider you choose on the Models page or in its settings panel. Use a key with a spending limit; afterwards, delete the saved setup and close the tab.
 
 ---
 

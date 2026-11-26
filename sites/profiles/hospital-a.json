@@ -1,0 +1,13 @@
+{
+  "id": "hospital-a",
+  "name": "Hospital A",
+  "kind": "city hospital",
+  "tagline": "A fictional city hospital lab, with long test names and conventional units.",
+  "codeSystem": "urn:dialect:hospital-a:lab",
+  "theme": { "accent": "#0E5A57", "accentStrong": "#0A4542", "accentSoft": "#E3EFEC", "accentDark": "#7FC8BF" },
+  "urls": {
+    "local": "http://127.0.0.1:8081/",
+    "production": "https://dialect-hospital-a.vercel.app/"
+  },
+  "partners": []
+}

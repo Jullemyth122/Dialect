@@ -1,0 +1,58 @@
+<!--meta title="About the data and privacy · Dialect · {{name}}" description="What is real and what is synthetic in the Dialect demo, exactly what is sent where, and the licences for LOINC, MedlinePlus and our code." path="/about.html" nav="about" -->
+{{> head}}
+</head>
+<body class="{{bodyClass}}">
+{{> header}}
+<main id="main">
+  <section class="page-hero" aria-labelledby="page-title">
+    <div class="container">
+      <span class="eyebrow">About and data</span>
+      <h1 id="page-title">What's real, what's not, and what goes where.</h1>
+      <p class="lede">Dialect is an entry in the Open Agentic Web Challenge. It is a demonstration, built with real standards and fictional hospitals, so anyone can try it safely.</p>
+    </div>
+  </section>
+
+  <div class="container stack">
+    <section class="grid-3" aria-label="The three layers of data">
+      <div class="card card-flat"><span class="eyebrow">Real</span><h2>Standards and codes</h2><p>LOINC codes and names, HL7 v2 message fields, UCUM units, and MedlinePlus explanations, each from a cited public source.</p></div>
+      <div class="card card-flat"><span class="eyebrow">Based on real patterns</span><h2>Hospital dialects</h2><p>Each hospital's test list uses naming habits seen in real labs: short codes, abbreviations such as SGPT, and SI or conventional units.</p></div>
+      <div class="card card-flat"><span class="eyebrow">Fictional</span><h2>Hospitals and patients</h2><p>{{name}} and {{otherName}} don't exist. Patients are labelled SYN-000123 and similar. Every value is made up.</p></div>
+    </section>
+
+    <section class="card" id="privacy" aria-labelledby="privacy-title">
+      <h2 id="privacy-title">What is sent where</h2>
+      <p>Only a test's local code, name, unit and normal range (HL7 fields OBX-3, OBX-6, OBX-7) are sent, and only to the AI model the site uses. Result values and patient fields are never read into the request. The patient view also sends the matched LOINC code (a public code) to MedlinePlus to fetch its explanation. Nothing from B (lab list, alias table, key) is sent to Hospital A.</p>
+      <p class="small muted">When you use the assistant, your chat messages also go to the AI provider you choose. Approved matches are stored in this browser's storage for this site only.</p>
+    </section>
+
+    <section class="card" aria-labelledby="rules-title">
+      <h2 id="rules-title">Rules Dialect never breaks</h2>
+      <ul>
+        <li>Never medical advice: no interpretation, diagnosis or treatment suggestions anywhere.</li>
+        <li>Flags are shown only as the lab sent them. Dialect never computes its own.</li>
+        <li>Patient explanations come only from MedlinePlus, never from an AI model.</li>
+        <li>Unit conversions use only cited factors; anything else is shown as reported.</li>
+        <li>A person approves every match before it is saved.</li>
+      </ul>
+    </section>
+
+    <section class="card" aria-labelledby="agentic-title">
+      <h2 id="agentic-title">For agents and other sites</h2>
+      <p>This site's agent network is public at <a href="/{{networkName}}.network.json"><code>{{networkName}}.network.json</code></a>, described by <a href="/agent-manifest.json"><code>agent-manifest.json</code></a>. Its network address is <code>{{networkUrl}}</code>. Another agentic website can run it in its own visitor's browser after that visitor agrees; it gets none of this site's page tools or data.</p>
+    </section>
+
+    <section class="card" aria-labelledby="licence-title">
+      <h2 id="licence-title">Licences and credits</h2>
+      <ul>
+        <li>Our code and documents: MIT licence. <a href="https://github.com/Jullemyth122/Dialect">Source on GitHub</a>.</li>
+        <li>This material contains content from LOINC (<a href="https://loinc.org">loinc.org</a>). LOINC® is a registered United States trademark of Regenstrief Institute, Inc., used under the <a href="https://loinc.org/license">LOINC licence</a>.</li>
+        <li>Test explanations: Source: MedlinePlus, National Library of Medicine. Only public-domain medical test information is shown; encyclopedia pages are linked, not copied.</li>
+        <li>Unit factors: <a href="https://www.labcorp.com/resource/si-unit-conversion-table">Labcorp SI Unit Conversion Table</a>.</li>
+        <li>Browser runtime: nsdeploy's runtime as adapted in the challenge's agentify-website skill, Apache-2.0.</li>
+      </ul>
+    </section>
+  </div>
+</main>
+{{> footer}}
+</body>
+</html>

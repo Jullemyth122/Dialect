@@ -1,0 +1,23 @@
+code,name,unit,range
+GLU-F,Fasting Glucose,mmol/L,3.9-5.5
+GLU-R,Glucose Rand,mmol/L,3.9-7.8
+GLU,Glucose,mmol/L,3.9-7.8
+CREA,Creat,umol/L,62-106
+NA,Na,mmol/L,135-145
+K,K+,mmol/L,3.5-5.1
+CL,Cl,mmol/L,98-107
+TCO2,Total CO2,mmol/L,22-29
+BUN,BUN,mg/dL,7-20
+TC,Chol Tot,mmol/L,<5.2
+TG,Trigly,mg/dL,<150
+TBIL,T. Bili,mg/dL,0.1-1.2
+SGPT,SGPT/ALT,U/L,7-56
+SGOT,SGOT/AST,U/L,10-40
+CA,Ca total,mg/dL,8.6-10.2
+HGB,Hgb,g/dL,13.0-17.0
+HCT,Hct,%,40-52
+WBC,WBC ct,10*3/uL,4.0-10.5
+PLT,Plt ct,10*3/uL,150-450
+HBA1C,HbA1c,%,4.0-5.6
+BS,BS,,
+XLAB-77,Special chem panel 3,,

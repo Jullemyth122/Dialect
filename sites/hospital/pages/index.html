@@ -1,0 +1,155 @@
+<!--meta title="Dialect · {{name}}: lab results that stay readable when they travel" description="{{name}} is a fictional hospital in the Dialect demo. An open agentic website that matches local lab test names to LOINC codes, asks a person when unsure, and helps doctors compare and patients understand lab results. Not medical advice." path="/" nav="home" -->
+{{> head}}
+</head>
+<body class="{{bodyClass}}">
+{{> header}}
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">{{name}} · a fictional {{kind}}</span>
+        <h1 id="hero-title">Lab results that stay readable when they travel.</h1>
+        <p class="lede">Every hospital names its lab tests its own way. Dialect matches {{name}}'s names to the world-standard LOINC codes, says <strong>"please check"</strong> instead of guessing, and learns from the matches a person approves. Doctors can then compare results across hospitals, and patients can read their own report.</p>
+        <div class="cluster hero-actions">
+          <a class="button button-primary" href="/workbench.html">Open the workbench</a>
+          <a class="button button-quiet" href="/referral.html">See a referral</a>
+          <a class="button button-quiet" href="/report.html">Read a sample report</a>
+        </div>
+      </div>
+      <figure class="translate" aria-labelledby="translate-caption">
+        <div class="translate-row">
+          <span class="label">The provincial lab writes</span>
+          <span class="code">GLU-F</span><span class="value">5.6 mmol/L · flag H</span>
+        </div>
+        <span class="translate-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 5v14m0 0-6-6m6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <div class="translate-row is-standard">
+          <span class="label">Dialect matches it to</span>
+          <span class="code">14771-0</span><span class="value">Fasting glucose [Moles/volume] in Serum or Plasma</span>
+        </div>
+        <div class="translate-row">
+          <span class="label">So the city doctor sees</span>
+          <span class="code">≈ 100.9</span><span class="value">mg/dL, beside their own results</span>
+        </div>
+        <figcaption id="translate-caption" class="translate-foot">
+          <span>Mapped wrongly, 5.6 would read as dangerously low.</span>
+          <span>Factor 18.02, Labcorp SI table</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section-tight" aria-labelledby="who-title">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Three people, one engine</span>
+        <h2 id="who-title">Made for the people who use lab results.</h2>
+        <p class="lede">The matching is invisible plumbing. These are the screens it powers. None of them gives medical advice.</p>
+      </div>
+      <div class="board">
+        <article class="tile tile-tint">
+          <span class="tile-who">Interface analyst</span>
+          <h3>Review workbench</h3>
+          <p>Load the hospital's test list. Confident matches arrive ready; unsure ones wait in a "please check" pile with the top candidates and the reason. Approve, fix or skip, then download a FHIR ConceptMap.</p>
+          <div class="mini" aria-hidden="true">
+            <div class="mini-row"><span class="mono">SGPT</span><span class="badge badge-confident">Confident</span></div>
+            <div class="mini-row"><span class="mono">BS</span><span class="badge badge-check">Please check</span></div>
+            <div class="mini-row"><span class="mono">CREA</span><span class="badge badge-approved">Approved</span></div>
+          </div>
+          <a class="tile-link" href="/workbench.html">Open the workbench</a>
+        </article>
+        <article class="tile">
+          <span class="tile-who">Doctor or nurse</span>
+          <h3>Referral view</h3>
+          <p>A referred patient's results from both hospitals on one table, lined up by code, with each lab's own range and flag. Anything not matched sits apart: do not compare.</p>
+          <a class="tile-link" href="/referral.html">See the referral</a>
+        </article>
+        <article class="tile tile-ink">
+          <span class="tile-who">Patient</span>
+          <h3>My lab report, explained</h3>
+          <p>Each test in plain words from MedlinePlus (US National Library of Medicine), your number with the lab's range and mark, and questions to ask your doctor.</p>
+          <div class="mini" aria-hidden="true">
+            <div class="mini-row"><span>Blood glucose test</span><span class="mono">5.6</span></div>
+            <div class="mini-row"><span>Creatinine test</span><span class="mono">88</span></div>
+          </div>
+          <a class="tile-link" href="/report.html">Read a sample report</a>
+        </article>
+        <article class="tile tile-sand">
+          <span class="tile-who">Safety rule</span>
+          <h3>Asking beats guessing</h3>
+          <p>Every match is scored +1 when right, 0 for "please check" and −5 when confidently wrong. A wrong match is worse than no match.</p>
+        </article>
+        <article class="tile">
+          <span class="tile-who">Choose your AI</span>
+          <h3>Any model, your key</h3>
+          <p>Meta's Muse models by default, or any provider that allows browser calls. Your key stays in this browser.</p>
+          <a class="tile-link" href="/models.html">Choose a model</a>
+        </article>
+        <article class="tile tile-sand">
+          <span class="tile-who">Honest limits</span>
+          <h3>Synthetic, on purpose</h3>
+          <p>Hospitals and patients are fictional. Standards, codes and lab names are real and cited. Nothing here is for clinical use.</p>
+          <a class="tile-link" href="/about.html">About the data</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="how-title">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">How it works</span>
+        <h2 id="how-title">From a local code to a safe comparison.</h2>
+      </div>
+      <ol class="steps">
+        <li><h3>Keep only the test</h3><p>Only the code, name, unit and normal range are read. Never the result or the patient.</p></li>
+        <li><h3>Shortlist in plain code</h3><p>Rules, not AI, find the LOINC codes that could fit, and check each code's unit.</p></li>
+        <li><h3>The AI picks or asks</h3><p>It chooses from the shortlist, or says "please check" with a reason.</p></li>
+        <li><h3>A person approves</h3><p>Nothing is saved until the analyst confirms. The hospital remembers it, here only.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section-tight" aria-labelledby="share-title">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">The open agentic web</span>
+        <h2 id="share-title">Hospitals share the skill, not their data.</h2>
+        <p class="lede">This site publishes its mapping assistant as a public agent network. Another hospital's site can load it in its own browser, with the visitor's consent, and adapt it to its own codes.</p>
+      </div>
+      <div class="compare">
+        <div class="card card-flat shared">
+          <h3>Public, by design</h3>
+          <ul>
+            <li>The agent network and its instructions: <a href="/{{networkName}}.network.json">{{networkName}}.network.json</a></li>
+            <li>The manifest other sites read: <a href="/agent-manifest.json">agent-manifest.json</a></li>
+            <li>The LOINC codes it can choose from</li>
+          </ul>
+        </div>
+        <div class="card card-flat private">
+          <h3>Stays with this hospital</h3>
+          <ul>
+            <li>The hospital's test list and its approved matches</li>
+            <li>Your AI key, kept in this browser</li>
+            <li>Result values and patient details, which are never read into a request</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight" aria-labelledby="new-title">
+    <div class="container">
+      <div class="card">
+        <span class="eyebrow">What exists already, and what's new</span>
+        <h2 id="new-title">AI lab mapping isn't new. Sharing it this way is.</h2>
+        <p>Tools such as LabBridge, LARA and Regenstrief's RELMA already match local lab names to LOINC. Dialect's addition is how the skill travels: published on the open agentic web, adapted at each hospital without either one sending its data to the other, and tuned to ask instead of guess.</p>
+        <p class="small muted">Sources for every tool named here are listed in the project's facts file on GitHub.</p>
+      </div>
+    </div>
+  </section>
+</main>
+{{> footer}}
+</body>
+</html>

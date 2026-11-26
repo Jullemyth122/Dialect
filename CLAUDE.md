@@ -65,17 +65,27 @@ Entry for the Open Agentic Web Challenge (Cognizant). Agents that learn each hos
 
 ## Layout
 ```text
-/research            findings from the research phase (P0)
-/profiles/lab-hl7    Dialect Profile: LOINC subset, dialect generator, scorer
-/sites/hospital-a    public site: manifest, network JSON, runtime, UI
-/sites/hospital-b
-/sites/validator     Conformance Validator (unofficial, static checks)
-/data                third-party data with its own licence notices (MIMIC ODbL, LOINC)
-/evolve              evolution loop and experiment scripts
-/docs                brief, README, Devpost text, demo script
+/research                findings from the research phase (P0)
+/profiles/lab-hl7        LOINC subset, cited conversions, lib/ (scorer, units, shortlist, csv, ConceptMap), test/
+/sites/hospital          ONE codebase for both hospitals: pages/, partials/, static/ (assets, site.js, site-actions.js)
+/sites/profiles          hospital-a.json, hospital-b.json (name, colours, URLs, partners)
+/data/synthetic          synthetic catalogues, referral packet, sample reports, answers.json (scorer only, never shipped)
+/vendor/agentify-website the challenge's skill, unchanged (runtime, build_network, serve_site, check_partner)
+/scripts                 build-sites.mjs, make-images.ps1
+/tests                   checks on the built sites
+/dist                    build output (git-ignored)
+/docs                    brief, Devpost text, plain-language docs
 DECISIONS.md
 ```
+Planned, not built yet: /sites/validator (unofficial, static checks), /data/mimic (ODbL), /evolve.
+
+## Commands
+- `npm run build` then `npm test` (Node 22+, no dependencies).
+- `npm run serve:a` (http://127.0.0.1:8081) and `npm run serve:b` (http://localhost:8082): different host names on purpose.
+- Never edit `vendor/`, generated `*.network.json`, `bridge/` or discovery files; change the generator in `scripts/build-sites.mjs`.
+- Build page text with DOM methods (`textContent`), never `innerHTML`: the runtime uses Trusted Types.
 
 ## Machine notes
 - The dev machine has about 7.6 GB RAM and often under 1 GB free. Run one heavy process at a time; do not start Java tools (Synthea) or headless browsers alongside a dev server.
 - Python is not installed. Prefer Node scripts.
+- With under about 1.5 GB free memory, do not start a headless browser; check pages with curl and the test suite instead.

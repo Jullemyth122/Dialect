@@ -1,0 +1,354 @@
+{
+  "about": "A small LOINC subset for the Dialect demo. The 'code' and 'display' fields are LOINC content, copied unchanged from tx.fhir.org $lookup on 2026-11-26 (display = LOINC long common name). Every other field ('analyte', 'property', 'units', 'synonyms') is our own annotation, not LOINC content. Synonyms are common lab abbreviations we chose for the demo; they are UNVERIFIED as a complete list.",
+  "notice": "This material contains content from LOINC (http://loinc.org). LOINC is copyright Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc.",
+  "codes": [
+    {
+      "code": "1558-6",
+      "display": "Fasting glucose [Mass/volume] in Serum or Plasma",
+      "analyte": "glucose_fasting",
+      "property": "mass",
+      "units": [
+        "mg/dL"
+      ]
+    },
+    {
+      "code": "14771-0",
+      "display": "Fasting glucose [Moles/volume] in Serum or Plasma",
+      "analyte": "glucose_fasting",
+      "property": "moles",
+      "units": [
+        "mmol/L"
+      ]
+    },
+    {
+      "code": "2345-7",
+      "display": "Glucose [Mass/volume] in Serum or Plasma",
+      "analyte": "glucose",
+      "property": "mass",
+      "units": [
+        "mg/dL"
+      ]
+    },
+    {
+      "code": "14749-6",
+      "display": "Glucose [Moles/volume] in Serum or Plasma",
+      "analyte": "glucose",
+      "property": "moles",
+      "units": [
+        "mmol/L"
+      ]
+    },
+    {
+      "code": "2160-0",
+      "display": "Creatinine [Mass/volume] in Serum or Plasma",
+      "analyte": "creatinine",
+      "property": "mass",
+      "units": [
+        "mg/dL"
+      ]
+    },
+    {
+      "code": "14682-9",
+      "display": "Creatinine [Moles/volume] in Serum or Plasma",
+      "analyte": "creatinine",
+      "property": "moles",
+      "units": [
+        "umol/L",
+        "µmol/L"
+      ]
+    },
+    {
+      "code": "2951-2",
+      "display": "Sodium [Moles/volume] in Serum or Plasma",
+      "analyte": "sodium",
+      "property": "moles",
+      "units": [
+        "mmol/L",
+        "mEq/L"
+      ]
+    },
+    {
+      "code": "2823-3",
+      "display": "Potassium [Moles/volume] in Serum or Plasma",
+      "analyte": "potassium",
+      "property": "moles",
+      "units": [
+        "mmol/L",
+        "mEq/L"
+      ]
+    },
+    {
+      "code": "2075-0",
+      "display": "Chloride [Moles/volume] in Serum or Plasma",
+      "analyte": "chloride",
+      "property": "moles",
+      "units": [
+        "mmol/L",
+        "mEq/L"
+      ]
+    },
+    {
+      "code": "2028-9",
+      "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma",
+      "analyte": "co2_total",
+      "property": "moles",
+      "units": [
+        "mmol/L",
+        "mEq/L"
+      ]
+    },
+    {
+      "code": "3094-0",
+      "display": "Urea nitrogen [Mass/volume] in Serum or Plasma",
+      "analyte": "urea_nitrogen",
+      "property": "mass",
+      "units": [
+        "mg/dL"
+      ]
+    },
+    {
+      "code": "2093-3",
+      "display": "Cholesterol [Mass/volume] in Serum or Plasma",
+      "analyte": "cholesterol_total",
+      "property": "mass",
+      "units": [
+        "mg/dL"
+      ]
+    },
+    {
+      "code": "14647-2",
+      "display": "Cholesterol [Moles/volume] in Serum or Plasma",
+      "analyte": "cholesterol_total",
+      "property": "moles",
+      "units": [
+        "mmol/L"
+      ]
+    },
+    {
+      "code": "2085-9",
+      "display": "Cholesterol in HDL [Mass/volume] in Serum or Plasma",
+      "analyte": "cholesterol_hdl",
+      "property": "mass",
+      "units": [
+        "mg/dL"
+      ]
+    },
+    {
+      "code": "2571-8",
+      "display": "Triglyceride [Mass/volume] in Serum or Plasma",
+      "analyte": "triglyceride",
+      "property": "mass",
+      "units": [
+        "mg/dL"
+      ]
+    },
+    {
+      "code": "1975-2",
+      "display": "Bilirubin.total [Mass/volume] in Serum or Plasma",
+      "analyte": "bilirubin_total",
+      "property": "mass",
+      "units": [
+        "mg/dL"
+      ]
+    },
+    {
+      "code": "1742-6",
+      "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma",
+      "analyte": "alt",
+      "property": "enzyme",
+      "units": [
+        "U/L",
+        "IU/L"
+      ]
+    },
+    {
+      "code": "1920-8",
+      "display": "Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma",
+      "analyte": "ast",
+      "property": "enzyme",
+      "units": [
+        "U/L",
+        "IU/L"
+      ]
+    },
+    {
+      "code": "17861-6",
+      "display": "Calcium [Mass/volume] in Serum or Plasma",
+      "analyte": "calcium",
+      "property": "mass",
+      "units": [
+        "mg/dL"
+      ]
+    },
+    {
+      "code": "718-7",
+      "display": "Hemoglobin [Mass/volume] in Blood",
+      "analyte": "hemoglobin",
+      "property": "mass",
+      "units": [
+        "g/dL"
+      ]
+    },
+    {
+      "code": "4544-3",
+      "display": "Hematocrit [Volume Fraction] of Blood by Automated count",
+      "analyte": "hematocrit",
+      "property": "fraction",
+      "units": [
+        "%"
+      ]
+    },
+    {
+      "code": "6690-2",
+      "display": "Leukocytes [#/volume] in Blood by Automated count",
+      "analyte": "leukocytes",
+      "property": "count",
+      "units": [
+        "10*3/uL",
+        "x10^9/L",
+        "10^3/uL"
+      ]
+    },
+    {
+      "code": "777-3",
+      "display": "Platelets [#/volume] in Blood by Automated count",
+      "analyte": "platelets",
+      "property": "count",
+      "units": [
+        "10*3/uL",
+        "x10^9/L",
+        "10^3/uL"
+      ]
+    },
+    {
+      "code": "4548-4",
+      "display": "Hemoglobin A1c/Hemoglobin.total in Blood",
+      "analyte": "hba1c",
+      "property": "fraction",
+      "units": [
+        "%"
+      ]
+    }
+  ],
+  "synonyms": {
+    "glucose_fasting": [
+      "fasting glucose",
+      "glucose fasting",
+      "glu-f",
+      "gluf",
+      "fbs",
+      "fasting blood sugar"
+    ],
+    "glucose": [
+      "glucose",
+      "glu",
+      "rbs",
+      "random glucose",
+      "glucose random",
+      "glu-r",
+      "blood sugar"
+    ],
+    "creatinine": [
+      "creatinine",
+      "crea",
+      "creat",
+      "cr"
+    ],
+    "sodium": [
+      "sodium",
+      "na"
+    ],
+    "potassium": [
+      "potassium",
+      "k",
+      "k+"
+    ],
+    "chloride": [
+      "chloride",
+      "cl"
+    ],
+    "co2_total": [
+      "carbon dioxide",
+      "co2",
+      "tco2",
+      "total co2",
+      "bicarbonate"
+    ],
+    "urea_nitrogen": [
+      "urea nitrogen",
+      "bun",
+      "blood urea nitrogen"
+    ],
+    "cholesterol_total": [
+      "cholesterol",
+      "chol",
+      "total cholesterol",
+      "chol tot",
+      "tc"
+    ],
+    "cholesterol_hdl": [
+      "hdl",
+      "hdl cholesterol",
+      "hdl-c"
+    ],
+    "triglyceride": [
+      "triglyceride",
+      "triglycerides",
+      "trig",
+      "trigly",
+      "tg"
+    ],
+    "bilirubin_total": [
+      "bilirubin total",
+      "total bilirubin",
+      "tbil",
+      "t bili",
+      "t. bili"
+    ],
+    "alt": [
+      "alanine aminotransferase",
+      "alt",
+      "sgpt"
+    ],
+    "ast": [
+      "aspartate aminotransferase",
+      "ast",
+      "sgot"
+    ],
+    "calcium": [
+      "calcium",
+      "ca",
+      "ca total"
+    ],
+    "hemoglobin": [
+      "hemoglobin",
+      "hgb",
+      "hb"
+    ],
+    "hematocrit": [
+      "hematocrit",
+      "hct"
+    ],
+    "leukocytes": [
+      "white blood cell",
+      "wbc",
+      "leukocytes",
+      "wbc count",
+      "wbc ct"
+    ],
+    "platelets": [
+      "platelet",
+      "platelets",
+      "plt",
+      "plt ct",
+      "platelet count"
+    ],
+    "hba1c": [
+      "hemoglobin a1c",
+      "hba1c",
+      "a1c",
+      "glycohemoglobin"
+    ]
+  },
+  "notice_status": "UNVERIFIED wording: check the exact notice LOINC asks for at https://loinc.org/license (PLAN.md P0)."
+}

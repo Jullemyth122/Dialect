@@ -41,6 +41,14 @@ Every number or claim used in the README, Devpost text, video script or UI is co
 | Rate limit for `muse-ember-1.0`: 3,000 requests a minute per team | https://dev.meta.ai/docs/pricing-rate-limits | 26 Nov 2026 |
 | Meta's older hosted Llama API docs now redirect to the Model API; a third-party article says the Llama API shut down on 6 Jul 2026 (not confirmed by Meta) | https://dev.meta.ai/ and https://ecorpit.com/llama-api-sunset-migrate-third-party-host-cost-2026/ | 26 Nov 2026 |
 
+## Used in the sites (26 Nov)
+| Fact | Source | Checked |
+|---|---|---|
+| Labcorp SI factors: glucose mmol/L × 18.02 = mg/dL (mg/dL × 0.0555 = mmol/L); creatinine mg/dL × 88.4 = µmol/L (× 0.0113 back); cholesterol mmol/L × 38.61 = mg/dL (mg/dL × 0.0259 = mmol/L) | https://www.labcorp.com/resource/si-unit-conversion-table | 26 Nov 2026 |
+| Meta Model API Standard prices per 1M tokens: Muse Ember $0.10 in / $0.50 out (up to 200K input); Muse Spark 1.1–1.3 $1.25 / $4.25; Muse Wonder $4.00 / $20.00 | https://dev.meta.ai/docs/pricing-rate-limits | 26 Nov 2026 |
+| MedlinePlus Connect returns JSON (`feed.entry[].title`, `.link`, `.summary` as HTML) for a LOINC code; 14771-0 returns "Blood Glucose Test" linking to medlineplus.gov/lab-tests/ | our test call | 26 Nov 2026 |
+| The challenge's `check_partner.mjs` reports Hospital A's network "can be called from http://localhost:8082" | our local run | 26 Nov 2026 |
+
 ## Cognizant context
 | Fact | Source | Checked |
 |---|---|---|

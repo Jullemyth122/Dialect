@@ -2,6 +2,17 @@
 
 Newest first. Each entry: date, decision, reason. "Proposed" means not yet confirmed by the developer.
 
+## 2026-11-26: Coding started; stack follows the challenge's own build guide
+- **Plain static HTML, CSS and JavaScript modules, no bundler; Node's built-in test runner; no npm dependencies.** Replaces the "TypeScript, Vite, Vitest" proposal of 23 Nov, which was marked "unless the spec dictates". The challenge's agentify-website skill expects a static site with its runtime copied in unchanged, a `.hocon` network compiled by its `build_network.mjs`, and `node --test`.
+- **The skill is vendored** in `vendor/agentify-website/` (commit `0c0ca45`, Apache-2.0, unchanged). Our build copies its runtime into each site and runs its network builder, which validated both networks with no warnings.
+- **One codebase, two builds:** `sites/hospital/` plus `sites/profiles/hospital-{a,b}.json`, built by `scripts/build-sites.mjs` into `dist/` (ignored by git).
+- **Model chooser:** a Models page saves setups through the runtime's own `byok.js`, so the assistant's settings panel and the page share them. Presets: Meta's five Standard Muse models (prices from Meta's page) plus the runtime's own provider list. Contributor models are refused.
+- **Unit conversions** use Labcorp's SI Unit Conversion Table only (glucose 18.02 / 0.0555, creatinine 0.0113 / 88.4, cholesterol 38.61 / 0.0259). Anything else is shown as reported.
+- **LOINC names** in the subset were copied from tx.fhir.org lookups, never typed from memory.
+- **The referral packet** is the clinical message: each line carries the sending lab's own LOINC code (HL7 OBX-3 can carry local and standard codes). It is not the sender's alias table. In the demo it is a synthetic file; generating it from B's approved matches is the next step.
+- **Known limits, written down:** (1) the runtime runs `write` actions without a dialog. Ours (`suggest_mapping`, `skip_test`) only change the page and can be undone; `save_mapping` is `irreversible` and opens our dialog with its arguments. (2) No page-wide Content-Security-Policy yet, because a strict one can break the runtime and we can't test it in a browser on this machine; the required sandbox-worker CSP and other security headers are set. Add one after a browser test. (3) Production URLs `dialect-hospital-{a,b}.vercel.app` are placeholders until deployment. (4) A's network shares no page tools with other sites yet, so B's visitor asking A gets answers from A's instructions only; sharing A's public `find_candidates` read through `bridge/bridge-actions.js` is the next step.
+- The order changed: the developer asked for the UI now, so P2/P3 site work started alongside P1. The scorer and its tests were still written first, as CLAUDE.md requires.
+
 ## 2026-11-26: Checked against the full challenge page; NANDA Index up to Should; video trademark rule
 The developer pasted the full challenge page on 26 Nov. Every required item is already in PLAN.md; nothing new is required. Two changes: NANDA Index registration moves from Could to Should (about 2 hours), because discovery is the challenge's first sentence and judge Ramesh Raskar founded Project NANDA; and the video rule now says no logos, the AI provider's name off screen, and standards and the MedlinePlus credit named only as attribution. Also fixed: S3 was still labelled Should in two places; it is Could. The page also lists an Employee prize, which appears to be for Cognizant employees and does not affect us.
 

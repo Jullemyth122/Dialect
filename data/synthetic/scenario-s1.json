@@ -1,0 +1,13 @@
+{
+  "id": "S1",
+  "title": "Referral between two hospitals",
+  "synthetic": true,
+  "story": "A fictional provincial hospital (Hospital B) refers a patient to a fictional city hospital (Hospital A). B's lab uses short local codes and SI units; A's uses long names and conventional units.",
+  "layers": {
+    "real": ["LOINC codes and names (tx.fhir.org, 2026-11-26)", "Unit factors (Labcorp SI Unit Conversion Table)", "MedlinePlus test explanations (fetched by LOINC code)"],
+    "based_on_real_patterns": ["Each hospital's test names, abbreviations (for example SGPT, T. Bili) and SI or conventional units"],
+    "fictional": ["Hospitals A and B", "Patients SYN-000123, SYN-000456, SYN-000789", "Every result value", "Normal ranges (illustrative)"]
+  },
+  "files": ["hospital-a/catalogue.csv", "hospital-b/catalogue.csv", "referral-SYN-000123.json", "reports.json", "answers.json (scorer only)"],
+  "not_for_clinical_use": true
+}

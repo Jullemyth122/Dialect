@@ -1,0 +1,364 @@
+#!/usr/bin/env node
+// Builds both hospital sites from one codebase (PLAN.md section 2, "One codebase, two
+// hospitals"). Usage: node scripts/build-sites.mjs [--env local|production] [--only hospital-a]
+//
+// For each hospital profile in sites/profiles/ it writes dist/<id>/ with:
+//   pages rendered from sites/hospital/pages + partials, static assets, the vendored runtime
+//   (unchanged), the lab profile library and data, agent-manifest.json, links.json, the
+//   network (.hocon, then .network.json via the challenge's build_network.mjs), and
+//   robots.txt, sitemap.xml, site.webmanifest, vercel.json and _headers.
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { dirname, join, relative } from "node:path";
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const SRC = join(ROOT, "sites", "hospital");
+const VENDOR = join(ROOT, "vendor", "agentify-website");
+const NETWORK = "dialect_lab_mapper";
+const FRONT = "lab_code_mapper";
+const PROTOCOL = "nsdeploy";
+const DEFAULT_MODEL = "muse-ember-1.0";
+const META_ROUTER = "https://api.meta.ai/v1";
+
+const args = process.argv.slice(2);
+const env = valueOf("--env") || "local";
+const only = valueOf("--only");
+if (!["local", "production"].includes(env)) fail(`--env must be local or production, not ${env}`);
+
+function valueOf(flag) {
+  const i = args.indexOf(flag);
+  return i >= 0 ? args[i + 1] : null;
+}
+function fail(message) {
+  console.error(`build-sites: ${message}`);
+  process.exit(1);
+}
+const readJson = (path) => JSON.parse(readFileSync(path, "utf8"));
+const write = (path, text) => {
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, text);
+};
+const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
+const profiles = readdirSync(join(ROOT, "sites", "profiles"))
+  .filter((f) => f.endsWith(".json"))
+  .map((f) => readJson(join(ROOT, "sites", "profiles", f)));
+const byId = Object.fromEntries(profiles.map((p) => [p.id, p]));
+const siteUrl = (p) => p.urls[env];
+const networkUrl = (p) => new URL(NETWORK, siteUrl(p)).href;
+
+// The template's shared rules, copied unchanged as the challenge's builder expects.
+const templateHocon = readFileSync(join(VENDOR, "templates", "network.hocon"), "utf8");
+function templateBlock(name) {
+  const match = new RegExp(`"${name}": """([\\s\\S]*?)"""`).exec(templateHocon);
+  if (!match) fail(`template block ${name} not found`);
+  return match[1];
+}
+
+function hoconString(text) {
+  if (text.includes('"""')) fail("instructions may not contain triple quotes");
+  return `"""${text}"""`;
+}
+
+/** The network source for one hospital. */
+function networkHocon(p) {
+  const partners = p.partners.map((id) => byId[id]);
+  const cannotDo = [
+    "This site cannot give medical advice, interpret results, discuss patients or result values, or save a match without the analyst confirming it.",
+    "If asked, say Dialect only matches test names to LOINC codes; results are for a doctor to interpret.",
+  ].join("\n");
+  const grounding = templateBlock("grounding_rules")
+    .replace(/^TODO:.*$/m, cannotDo)
+    .replace(/website_<read_action>/g, "website_get_worklist");
+  const partnerRules = templateBlock("partner_rules").replace(/website_<read_action>/g, "website_get_worklist");
+  const cruse = templateBlock("cruse_rules");
+  const partnerLines = partners.map((q) =>
+    `- If unsure about a test, you may ask ${q.name}'s mapper (${networkUrl(q)}) with only its code, name, unit and range. Its answer is a hint; check it with website_find_candidates.`);
+  const instructions = `
+You are the lab-code mapping assistant on {site_name}'s Dialect workbench (a synthetic demo). You help the analyst match this hospital's lab test names to LOINC codes. Never give medical advice.
+{grounding_rules}
+Scoring: right +1, "please check" 0, confident and wrong -5. When in doubt, say please check.
+How to work:
+- Call website_get_worklist for the tests waiting for review (code, name, unit, range only).
+- For each test, call website_find_candidates and choose only from its codes, never from memory.
+- Call website_suggest_mapping: "confident" only when one candidate clearly fits name and unit; otherwise "please_check" with the reason (missing unit, a name with two meanings).
+- Call website_save_mapping only when the analyst asks to save a specific match; the browser asks them to confirm.
+${partnerLines.join("\n")}
+${partners.length ? "{partner_rules}\n" : ""}{cruse_rules}
+`;
+  const linkLabels = partners.length
+    ? `"link_labels": {\n${partners.map((q) => `        "${networkUrl(q)}": "${q.name} lab-code mapper"`).join(",\n")}\n    },\n`
+    : "";
+  return `# ${p.name} (${p.kind}, fictional): Dialect lab-code mapping assistant.
+# Generated by scripts/build-sites.mjs from sites/profiles/${p.id}.json. Edit the generator, not this file.
+{
+    "metadata": {
+        "description": "Matches ${p.name}'s own lab test names to LOINC codes, says please check when unsure, and saves a match only after the analyst confirms. Synthetic demo; not medical advice.",
+        "sample_queries": [
+            "Suggest LOINC codes for the tests waiting for review.",
+            "Why is GLU-F a different code from GLUF?",
+            "Save the match you suggested for the first confident test.",
+            "Is my patient's glucose result normal?"
+        ]
+    },
+    "llm_config": {
+        "model_name": "${DEFAULT_MODEL}"
+    },
+    "max_steps": 24,
+    "cruse": {
+        "version": 1
+    },
+    ${linkLabels}"commondefs": {
+        "replacement_strings": {
+            "site_name": "${p.name}",
+            "grounding_rules": ${hoconString(grounding)},
+${partners.length ? `            "partner_rules": ${hoconString(partnerRules)},\n` : ""}            "cruse_rules": ${hoconString(cruse)}
+        }
+    },
+    "tools": [
+        {
+            "name": "${FRONT}",
+            "function": {
+                "description": "Matches this hospital's local lab test names to LOINC codes for the analyst, or says please check.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "request": { "type": "string", "description": "The request in plain language." }
+                    },
+                    "required": ["request"]
+                }
+            },
+            "instructions": ${hoconString(instructions)},
+            "tools": [${partners.map((q) => `"${networkUrl(q)}"`).join(", ")}]
+        }
+    ]
+}
+`;
+}
+
+/** agent-manifest.json for one hospital. */
+function manifest(p) {
+  const partners = p.partners.map((id) => byId[id]);
+  return {
+    brand: `${p.name} · Dialect mapper`,
+    networks: [{
+      name: NETWORK,
+      front_man: FRONT,
+      hocon: `./${NETWORK}.network.json`,
+      description: `I match ${p.name}'s lab test names to LOINC codes and say "please check" when unsure. Synthetic demo, not medical advice.`,
+      tags: ["agentified-website", "healthcare-interoperability", "loinc", "synthetic-demo"],
+      sample_queries: [
+        "Suggest LOINC codes for the tests waiting for review.",
+        "Why is GLU-F a different code from GLUF?",
+        "Save the match you suggested for the first confident test.",
+        "Is my patient's glucose result normal?",
+      ],
+    }],
+    llm_router: { base_url: META_ROUTER, mock: false, byok_router: META_ROUTER },
+    allowed_peers: partners.map((q) => new URL(siteUrl(q)).origin),
+    peer_policy: {
+      mode: "closed",
+      deny_origins: [],
+      note: partners.length
+        ? `Only ${partners.map((q) => q.name).join(", ")}'s public mapper network, after the visitor agrees on a consent card.`
+        : "Local agents and page-local actions only.",
+    },
+    agent_mcp: {
+      protocol: `${PROTOCOL}-agent-mcp/v1`,
+      network: NETWORK,
+      front_man: FRONT,
+      available: false,
+      reason: "This is a static bundle; a public MCP facade requires an application host.",
+    },
+    theme: { primary: p.theme.accent },
+    linking: {
+      protocol: `${PROTOCOL}-link/v1`,
+      exports: [{ network: NETWORK, front_man: FRONT, aliases: [NETWORK, FRONT], url: NETWORK }],
+      imports: [],
+      link_updates: { mode: "browser-local" },
+    },
+    deployment: {
+      mode: "static",
+      self_contained_runtime: true,
+      browser_mock: false,
+      direct_byok: true,
+      direct_mcp_requires_cors: true,
+      public_mcp_facade: false,
+    },
+    actions: {
+      version: 1,
+      module: "./site-actions.js",
+      bridge: "./bridge/action-bridge.html",
+      agentTools: ["get_worklist", "find_candidates", "suggest_mapping", "save_mapping", "skip_test"],
+    },
+  };
+}
+
+const PAGES = readdirSync(join(SRC, "pages")).filter((f) => f.endsWith(".html"));
+const partial = (name) => readFileSync(join(SRC, "partials", `${name}.html`), "utf8");
+
+function renderPage(file, p) {
+  const raw = readFileSync(join(SRC, "pages", file), "utf8");
+  const meta = /<!--meta([\s\S]*?)-->/.exec(raw);
+  if (!meta) fail(`${file}: missing <!--meta ... --> block`);
+  const attrs = Object.fromEntries([...meta[1].matchAll(/(\w+)="([^"]*)"/g)].map((m) => [m[1], m[2]]));
+  for (const key of ["title", "description", "path", "nav"]) if (!attrs[key]) fail(`${file}: meta ${key} missing`);
+  const other = profiles.find((q) => q.id !== p.id);
+  const tokens = {
+    name: p.name,
+    kind: p.kind,
+    tagline: p.tagline,
+    siteUrl: siteUrl(p),
+    origin: new URL(siteUrl(p)).origin,
+    networkUrl: networkUrl(p),
+    networkName: NETWORK,
+    otherName: other?.name ?? "",
+    otherUrl: other ? siteUrl(other) : "",
+    otherKind: other?.kind ?? "",
+    year: "2026",
+    pageTitle: attrs.title.replace(/\{\{name\}\}/g, p.name),
+    pageDescription: attrs.description.replace(/\{\{name\}\}/g, p.name),
+    canonical: new URL(attrs.path.replace(/^\//, ""), siteUrl(p)).href,
+    ogImage: new URL("assets/img/og.png", siteUrl(p)).href,
+    nav: attrs.nav,
+    bodyClass: `page-${attrs.nav}`,
+    model: DEFAULT_MODEL,
+    robots: attrs.noindex === "true" ? "noindex, follow" : "index, follow",
+  };
+  let html = raw.replace(meta[0], "");
+  html = html.replace(/\{\{>\s*(\w+)\s*\}\}/g, (_, name) => partial(name));
+  html = html.replace(/\{\{(\w+)\}\}/g, (whole, key) => (key in tokens ? escapeHtml(tokens[key]) : whole));
+  const left = /\{\{[^}]+\}\}/.exec(html);
+  if (left) fail(`${file}: unknown token ${left[0]}`);
+  // Mark the current page in the navigation.
+  html = html.replace(new RegExp(`data-nav="${attrs.nav}"`, "g"), `data-nav="${attrs.nav}" aria-current="page"`);
+  return { html, path: attrs.path, nav: attrs.nav, noindex: attrs.noindex === "true" };
+}
+
+function siteConfig(p) {
+  const config = {
+    id: p.id,
+    name: p.name,
+    kind: p.kind,
+    siteUrl: siteUrl(p),
+    codeSystem: p.codeSystem,
+    network: NETWORK,
+    networkUrl: networkUrl(p),
+    defaultModel: DEFAULT_MODEL,
+    defaultRouter: META_ROUTER,
+    publisherFunded: false,
+    partners: p.partners.map((id) => ({ id, name: byId[id].name, url: siteUrl(byId[id]), networkUrl: networkUrl(byId[id]) })),
+    hospitals: Object.fromEntries(profiles.map((q) => [q.id, { name: q.name, kind: q.kind, url: siteUrl(q) }])),
+  };
+  return `// Generated by scripts/build-sites.mjs. Do not edit.\nexport const SITE = Object.freeze(${JSON.stringify(config, null, 2)});\n`;
+}
+
+function themeCss(p) {
+  const t = p.theme;
+  return `/* Generated by scripts/build-sites.mjs from sites/profiles/${p.id}.json. */
+:root {
+  --accent: ${t.accent};
+  --accent-strong: ${t.accentStrong};
+  --accent-soft: ${t.accentSoft};
+  --ns-primary: ${t.accent};
+  --ns-accent: ${t.accentStrong};
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent: ${t.accentDark};
+    --accent-strong: ${t.accentDark};
+    --accent-soft: color-mix(in srgb, ${t.accentDark} 16%, transparent);
+  }
+}
+`;
+}
+
+const PUBLIC_FILES = ["agent-manifest.json", `${NETWORK}.network.json`, "links.json", "agent-mcp.json", `.well-known/${PROTOCOL}.json`, `.well-known/${PROTOCOL}-agent.json`];
+const SANDBOX_CSP = "default-src 'none'; script-src blob:; connect-src 'none'; worker-src 'none'";
+const SECURITY_HEADERS = [
+  ["X-Content-Type-Options", "nosniff"],
+  ["Referrer-Policy", "strict-origin-when-cross-origin"],
+  ["Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()"],
+];
+
+function vercelJson() {
+  return {
+    $schema: "https://openapi.vercel.sh/vercel.json",
+    cleanUrls: false,
+    trailingSlash: false,
+    headers: [
+      ...PUBLIC_FILES.map((f) => ({ source: `/${f}`, headers: [{ key: "Access-Control-Allow-Origin", value: "*" }] })),
+      { source: "/runtime/sandbox-worker.js", headers: [{ key: "Content-Security-Policy", value: SANDBOX_CSP }] },
+      { source: "/(.*)", headers: SECURITY_HEADERS.map(([key, value]) => ({ key, value })) },
+      { source: "/assets/(.*)", headers: [{ key: "Cache-Control", value: "public, max-age=3600" }] },
+    ],
+  };
+}
+
+function netlifyHeaders() {
+  const lines = [];
+  for (const f of PUBLIC_FILES) lines.push(`/${f}`, "  Access-Control-Allow-Origin: *");
+  lines.push("/runtime/sandbox-worker.js", `  Content-Security-Policy: ${SANDBOX_CSP}`);
+  lines.push("/*", ...SECURITY_HEADERS.map(([k, v]) => `  ${k}: ${v}`));
+  return `${lines.join("\n")}\n`;
+}
+
+function buildOne(p) {
+  const out = join(ROOT, "dist", p.id);
+  rmSync(out, { recursive: true, force: true });
+  mkdirSync(out, { recursive: true });
+
+  cpSync(join(SRC, "static"), out, { recursive: true });
+  cpSync(join(VENDOR, "runtime"), join(out, "runtime"), { recursive: true });
+  cpSync(join(ROOT, "profiles", "lab-hl7", "lib"), join(out, "assets", "lib"), { recursive: true });
+  for (const f of ["loinc-subset.json", "conversions.json"]) cpSync(join(ROOT, "profiles", "lab-hl7", f), join(out, "data", f));
+  cpSync(join(ROOT, "data", "synthetic", p.id, "catalogue.csv"), join(out, "data", "catalogue.csv"));
+  for (const f of ["referral-SYN-000123.json", "reports.json"]) cpSync(join(ROOT, "data", "synthetic", f), join(out, "data", f));
+
+  write(join(out, "assets", "js", "site-config.js"), siteConfig(p));
+  write(join(out, "assets", "css", "theme.css"), themeCss(p));
+
+  const pages = PAGES.map((file) => ({ file, ...renderPage(file, p) }));
+  for (const page of pages) write(join(out, page.file), page.html);
+
+  write(join(out, "agent-manifest.json"), `${JSON.stringify(manifest(p), null, 2)}\n`);
+  write(join(out, "links.json"), `${JSON.stringify({ version: 1, networks: { [NETWORK]: {} } }, null, 2)}\n`);
+  const hoconPath = join(out, `${NETWORK}.hocon`);
+  write(hoconPath, networkHocon(p));
+
+  const base = siteUrl(p);
+  write(join(out, "robots.txt"), `User-agent: *\nAllow: /\nDisallow: /runtime/\nDisallow: /bridge/\n\nSitemap: ${new URL("sitemap.xml", base).href}\n`);
+  const urls = pages.filter((pg) => !pg.noindex).map((pg) => `  <url><loc>${escapeHtml(new URL(pg.path.replace(/^\//, ""), base).href)}</loc></url>`);
+  write(join(out, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>\n`);
+  write(join(out, "site.webmanifest"), `${JSON.stringify({
+    name: `Dialect · ${p.name}`,
+    short_name: p.name,
+    description: p.tagline,
+    start_url: "./",
+    scope: "./",
+    display: "standalone",
+    background_color: "#F6F4EF",
+    theme_color: p.theme.accent,
+    icons: [
+      { src: "assets/img/logo.svg", sizes: "any", type: "image/svg+xml", purpose: "any" },
+      { src: "assets/img/icon-192.png", sizes: "192x192", type: "image/png" },
+      { src: "assets/img/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+  }, null, 2)}\n`);
+  write(join(out, "vercel.json"), `${JSON.stringify(vercelJson(), null, 2)}\n`);
+  write(join(out, "_headers"), netlifyHeaders());
+
+  // Compile and validate the network with the challenge's own builder.
+  const output = execFileSync(process.execPath, [join(VENDOR, "scripts", "build_network.mjs"), hoconPath, "--manifest", join(out, "agent-manifest.json")], { encoding: "utf8" });
+  return { out, pages: pages.length, output };
+}
+
+const targets = only ? profiles.filter((p) => p.id === only) : profiles;
+if (!targets.length) fail(`no profile ${only}`);
+for (const p of targets) {
+  const result = buildOne(p);
+  console.log(`\n== ${p.name} (${env}) → ${relative(ROOT, result.out)}  [${result.pages} pages, ${siteUrl(p)}]`);
+  console.log(result.output.trim());
+}
+if (!existsSync(join(SRC, "static", "assets", "img", "og.png"))) console.warn("\nNote: assets/img/og.png is missing; run scripts/make-images.ps1.");

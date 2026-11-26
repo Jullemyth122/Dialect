@@ -1,0 +1,13 @@
+{
+  "id": "hospital-b",
+  "name": "Hospital B",
+  "kind": "provincial hospital",
+  "tagline": "A fictional provincial hospital lab, with short local codes and SI units.",
+  "codeSystem": "urn:dialect:hospital-b:lab",
+  "theme": { "accent": "#8C3F25", "accentStrong": "#6E301B", "accentSoft": "#F5E6DE", "accentDark": "#E7A88E" },
+  "urls": {
+    "local": "http://localhost:8082/",
+    "production": "https://dialect-hospital-b.vercel.app/"
+  },
+  "partners": ["hospital-a"]
+}

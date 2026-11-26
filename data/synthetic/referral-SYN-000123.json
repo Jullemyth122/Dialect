@@ -1,0 +1,34 @@
+{
+  "synthetic": true,
+  "about": "A synthetic referral packet. Fictional patient, fictional hospitals, made-up values and illustrative ranges. Not for clinical use. Each line carries the local code, and the LOINC code the sending lab attached after its analyst approved the match (HL7 v2 lets OBX-3 carry both). A null LOINC means the sending lab had not matched that test, so it must not be compared.",
+  "patient": { "id": "SYN-000123", "name": "SYNTHETIC^PATIENT", "label": "Synthetic patient SYN-000123" },
+  "referral": {
+    "from": "hospital-b",
+    "to": "hospital-a",
+    "date": "2026-11-21",
+    "reason": "Synthetic scenario: referral for review by the city hospital's clinic."
+  },
+  "results": {
+    "hospital-b": {
+      "collected": "2026-11-20",
+      "lines": [
+        { "code": "GLU-F", "name": "Fasting Glucose", "value": 5.6, "unit": "mmol/L", "range": "3.9-5.5", "flag": "H", "loinc": "14771-0" },
+        { "code": "CREA", "name": "Creat", "value": 88, "unit": "umol/L", "range": "62-106", "flag": "", "loinc": "14682-9" },
+        { "code": "K", "name": "K+", "value": 4.1, "unit": "mmol/L", "range": "3.5-5.1", "flag": "", "loinc": "2823-3" },
+        { "code": "TC", "name": "Chol Tot", "value": 5.9, "unit": "mmol/L", "range": "<5.2", "flag": "H", "loinc": "14647-2" },
+        { "code": "HGB", "name": "Hgb", "value": 14.2, "unit": "g/dL", "range": "13.0-17.0", "flag": "", "loinc": "718-7" },
+        { "code": "XLAB-77", "name": "Special chem panel 3", "value": 12, "unit": "", "range": "", "flag": "", "loinc": null }
+      ]
+    },
+    "hospital-a": {
+      "collected": "2026-08-14",
+      "lines": [
+        { "code": "GLUF", "name": "Glucose, Fasting", "value": 96, "unit": "mg/dL", "range": "70-99", "flag": "", "loinc": "1558-6" },
+        { "code": "CREAT", "name": "Creatinine, Serum", "value": 0.9, "unit": "mg/dL", "range": "0.7-1.3", "flag": "", "loinc": "2160-0" },
+        { "code": "K", "name": "Potassium", "value": 4.3, "unit": "mmol/L", "range": "3.5-5.1", "flag": "", "loinc": "2823-3" },
+        { "code": "CHOL", "name": "Cholesterol, Total", "value": 212, "unit": "mg/dL", "range": "<200", "flag": "H", "loinc": "2093-3" },
+        { "code": "HGB", "name": "Hemoglobin", "value": 14.6, "unit": "g/dL", "range": "13.5-17.5", "flag": "", "loinc": "718-7" }
+      ]
+    }
+  }
+}

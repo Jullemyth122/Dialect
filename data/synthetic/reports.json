@@ -1,0 +1,45 @@
+{
+  "synthetic": true,
+  "about": "Synthetic sample lab reports for the patient view. Fictional patients, made-up values, illustrative ranges. Flags are the lab's own marks; Dialect never computes them.",
+  "reports": [
+    {
+      "id": "SYN-000123-B",
+      "patient": "Synthetic patient SYN-000123",
+      "hospital": "hospital-b",
+      "collected": "2026-11-20",
+      "lines": [
+        { "code": "GLU-F", "name": "Fasting Glucose", "value": 5.6, "unit": "mmol/L", "range": "3.9-5.5", "flag": "H", "loinc": "14771-0" },
+        { "code": "CREA", "name": "Creat", "value": 88, "unit": "umol/L", "range": "62-106", "flag": "", "loinc": "14682-9" },
+        { "code": "K", "name": "K+", "value": 4.1, "unit": "mmol/L", "range": "3.5-5.1", "flag": "", "loinc": "2823-3" },
+        { "code": "TC", "name": "Chol Tot", "value": 5.9, "unit": "mmol/L", "range": "<5.2", "flag": "H", "loinc": "14647-2" },
+        { "code": "HGB", "name": "Hgb", "value": 14.2, "unit": "g/dL", "range": "13.0-17.0", "flag": "", "loinc": "718-7" },
+        { "code": "XLAB-77", "name": "Special chem panel 3", "value": 12, "unit": "", "range": "", "flag": "", "loinc": null }
+      ]
+    },
+    {
+      "id": "SYN-000456-A",
+      "patient": "Synthetic patient SYN-000456",
+      "hospital": "hospital-a",
+      "collected": "2026-10-02",
+      "lines": [
+        { "code": "A1C", "name": "Hemoglobin A1c", "value": 5.4, "unit": "%", "range": "4.0-5.6", "flag": "", "loinc": "4548-4" },
+        { "code": "CHOL", "name": "Cholesterol, Total", "value": 188, "unit": "mg/dL", "range": "<200", "flag": "", "loinc": "2093-3" },
+        { "code": "HDL", "name": "HDL Cholesterol", "value": 38, "unit": "mg/dL", "range": ">40", "flag": "L", "loinc": "2085-9" },
+        { "code": "TRIG", "name": "Triglycerides", "value": 142, "unit": "mg/dL", "range": "<150", "flag": "", "loinc": "2571-8" },
+        { "code": "ALT", "name": "Alanine Aminotransferase (ALT)", "value": 31, "unit": "U/L", "range": "7-56", "flag": "", "loinc": "1742-6" }
+      ]
+    },
+    {
+      "id": "SYN-000789-B",
+      "patient": "Synthetic patient SYN-000789",
+      "hospital": "hospital-b",
+      "collected": "2026-11-12",
+      "lines": [
+        { "code": "WBC", "name": "WBC ct", "value": 7.2, "unit": "10*3/uL", "range": "4.0-10.5", "flag": "", "loinc": "6690-2" },
+        { "code": "HGB", "name": "Hgb", "value": 12.4, "unit": "g/dL", "range": "13.0-17.0", "flag": "L", "loinc": "718-7" },
+        { "code": "HCT", "name": "Hct", "value": 38, "unit": "%", "range": "40-52", "flag": "L", "loinc": "4544-3" },
+        { "code": "PLT", "name": "Plt ct", "value": 260, "unit": "10*3/uL", "range": "150-450", "flag": "", "loinc": "777-3" }
+      ]
+    }
+  ]
+}

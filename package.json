@@ -1,0 +1,18 @@
+{
+  "name": "dialect",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Dialect: lab results that stay readable and comparable when they travel between hospitals. Open agentic websites for the Open Agentic Web Challenge. Synthetic data only; not medical advice.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test \"profiles/**/test/*.test.js\" \"tests/*.test.js\"",
+    "build": "node scripts/build-sites.mjs --env local",
+    "build:prod": "node scripts/build-sites.mjs --env production",
+    "serve:a": "node vendor/agentify-website/scripts/serve_site.mjs dist/hospital-a --port 8081",
+    "serve:b": "node vendor/agentify-website/scripts/serve_site.mjs dist/hospital-b --port 8082"
+  }
+}

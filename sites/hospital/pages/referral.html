@@ -1,0 +1,58 @@
+<!--meta title="Referral view · Dialect · {{name}}" description="A synthetic referred patient's lab results from two fictional hospitals, lined up by LOINC code with cited unit conversions and each lab's own flags. Unmatched tests are kept apart. Not medical advice." path="/referral.html" nav="referral" -->
+{{> head}}
+  <script type="module" src="/assets/js/referral.js"></script>
+</head>
+<body class="{{bodyClass}}">
+{{> header}}
+<main id="main">
+  <section class="page-hero" aria-labelledby="page-title">
+    <div class="container">
+      <span class="eyebrow">For doctors and nurses</span>
+      <h1 id="page-title">Referral view</h1>
+      <p class="lede">A referred patient's results from both hospitals on one table, lined up by the standard code. Each value is shown as its lab reported it, with that lab's own range and flag. Converted values use only cited factors.</p>
+      <div class="note note-advice" role="note"><p><strong>Not medical advice.</strong> Synthetic data. Not for clinical use. Dialect lines up results; it never says what they mean. That is the clinician's job.</p></div>
+    </div>
+  </section>
+
+  <div class="container stack">
+    <section class="card patient-card" aria-labelledby="patient-title" id="patient">
+      <h2 id="patient-title" class="m-0">Loading the referral…</h2>
+    </section>
+
+    <section aria-labelledby="lined-title">
+      <div class="cluster cluster-between mb-16">
+        <h2 id="lined-title" class="m-0">Lined up by LOINC code</h2>
+        <button class="button button-quiet button-small no-print" type="button" id="print">Print this referral</button>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" id="lined">
+          <caption class="visually-hidden">Results from both hospitals, one row per test</caption>
+          <thead>
+            <tr>
+              <th scope="col">Test (LOINC)</th>
+              <th scope="col" id="col-from">Referring hospital</th>
+              <th scope="col" id="col-to">This hospital</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="small muted mt-24" id="conversion-source"></p>
+    </section>
+
+    <section class="do-not-compare" aria-labelledby="dnc-title">
+      <h2 id="dnc-title">Not matched: do not compare</h2>
+      <p>The referring lab did not match these tests to a standard code, so Dialect will not line them up with anything. Ask the referring lab what they are.</p>
+      <div class="table-wrap">
+        <table class="data-table" id="unmatched">
+          <caption class="visually-hidden">Tests that were not matched</caption>
+          <thead><tr><th scope="col">Local code and name</th><th scope="col">As reported</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</main>
+{{> footer}}
+</body>
+</html>

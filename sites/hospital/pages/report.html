@@ -1,0 +1,47 @@
+<!--meta title="My lab report, explained · Dialect · {{name}}" description="A synthetic lab report explained line by line in plain words, with MedlinePlus explanations of each test, the lab's own range and flag, and questions to ask your doctor. Not medical advice." path="/report.html" nav="report" -->
+{{> head}}
+  <script type="module" src="/assets/js/report.js"></script>
+</head>
+<body class="{{bodyClass}}">
+{{> header}}
+<main id="main">
+  <section class="page-hero" aria-labelledby="page-title">
+    <div class="container">
+      <span class="eyebrow">For patients</span>
+      <h1 id="page-title">My lab report, explained</h1>
+      <p class="lede">Each test in plain words: what it is, your number with the lab's own range and mark, and questions to ask your doctor. Pick a sample report. In this version you can't upload your own.</p>
+      <div class="note note-advice" role="note"><p><strong>Not medical advice. Talk to your doctor about your results.</strong> These explanations say what a test is, never what your result means for you. Your numbers stay in this browser.</p></div>
+    </div>
+  </section>
+
+  <div class="container stack">
+    <fieldset class="no-print">
+      <legend>Choose a sample report</legend>
+      <div class="report-picker" id="picker"></div>
+    </fieldset>
+
+    <section aria-labelledby="report-title">
+      <div class="cluster cluster-between mb-16">
+        <h2 id="report-title" class="m-0">Your report</h2>
+        <button class="button button-quiet button-small no-print" type="button" id="print">Print to bring to your doctor</button>
+      </div>
+      <p class="print-only"><strong>Not medical advice. Talk to your doctor about your results.</strong> Synthetic sample from the Dialect demo.</p>
+      <ul class="lines" id="lines" aria-live="polite"><li class="line"><span class="skeleton"></span><span class="skeleton"></span></li></ul>
+    </section>
+
+    <section class="card" aria-labelledby="questions-title">
+      <h2 id="questions-title">Questions to ask your doctor</h2>
+      <ul>
+        <li>What do these results mean for me?</li>
+        <li>Are any of these results outside the lab's range, and does that matter in my case?</li>
+        <li>Do I need to repeat any test, or prepare differently next time (for example, by fasting)?</li>
+        <li>How do these compare with my earlier results?</li>
+        <li>Is there anything I should do, or stop doing, because of these results?</li>
+      </ul>
+      <p class="small muted">Test explanations: Source: MedlinePlus, National Library of Medicine. Dialect sends only each test's LOINC code to MedlinePlus to fetch them.</p>
+    </section>
+  </div>
+</main>
+{{> footer}}
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "about": "Unit conversion factors for the referral view. Only these conversions are ever shown. Factors are copied from the Labcorp 'SI Unit Conversion Table' (columns 'Conventional to SI (multiply by)' and 'SI to Conventional (multiply by)'), read 2026-11-26. No other conversion is computed.",
+  "source": {
+    "title": "SI Unit Conversion Table, Labcorp",
+    "url": "https://www.labcorp.com/resource/si-unit-conversion-table",
+    "checked": "2026-11-26"
+  },
+  "conversions": [
+    { "analyte": "glucose_fasting", "row": "Glucose, blood", "from": "mmol/L", "to": "mg/dL", "factor": 18.02 },
+    { "analyte": "glucose_fasting", "row": "Glucose, blood", "from": "mg/dL", "to": "mmol/L", "factor": 0.0555 },
+    { "analyte": "glucose", "row": "Glucose, blood", "from": "mmol/L", "to": "mg/dL", "factor": 18.02 },
+    { "analyte": "glucose", "row": "Glucose, blood", "from": "mg/dL", "to": "mmol/L", "factor": 0.0555 },
+    { "analyte": "creatinine", "row": "Creatinine, serum", "from": "umol/L", "to": "mg/dL", "factor": 0.0113 },
+    { "analyte": "creatinine", "row": "Creatinine, serum", "from": "mg/dL", "to": "umol/L", "factor": 88.4 },
+    { "analyte": "cholesterol_total", "row": "Cholesterol", "from": "mmol/L", "to": "mg/dL", "factor": 38.61 },
+    { "analyte": "cholesterol_total", "row": "Cholesterol", "from": "mg/dL", "to": "mmol/L", "factor": 0.0259 }
+  ]
+}
