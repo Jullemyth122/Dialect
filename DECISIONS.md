@@ -2,6 +2,14 @@
 
 Newest first. Each entry: date, decision, reason. "Proposed" means not yet confirmed by the developer.
 
+## 2026-11-26: Patient page laid out like a patient portal
+The developer found the patient page unclear ("how am I gonna use it") and unpolished. Changes:
+- **One report card**, laid out like a hospital patient portal. It has a header with the lab name, the collection date, the patient and "Final", then summary chips (tests, marked by the lab, not identified).
+- **Two views:** "In plain words" shows each row as an everyday name (for example, `K` becomes Potassium) with "On your report: K K+" under it. "As printed by the lab" shows the original codes in a monospace table. Switching between the two shows what Dialect does.
+- **Range bar:** it draws only the lab's own range and number, and its dot is coloured only when the lab marked the result (OBX-8). It is a drawing of the lab's numbers, not our flag; the text label "Lab's range …" stays for screen readers and print.
+- **Sidebar:** "Before your appointment" holds the questions and the print button. The print view became one compact page, and receipt-width paper stacks each row.
+- The everyday names (for example, "Fasting blood sugar (glucose)") are our wording. The standard LOINC name is shown under "What is this test?".
+
 ## 2026-11-26: Redesign: one simple path per person, light by default
 The developer found the first UI unfriendly, too dense and dark (it followed the system's dark setting). Changes:
 - **Home is "Who are you?"**: three cards (patient, doctor or nurse, lab or IT staff), one line and one button each. How it works and the developer and judge details are folded away.

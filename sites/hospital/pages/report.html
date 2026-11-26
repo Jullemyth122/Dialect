@@ -1,51 +1,63 @@
-<!--meta title="Understand my lab report · Dialect · {{name}}" description="Each test on a sample lab report in plain words: what it is (from MedlinePlus), your number with the lab's own range and mark, and questions to ask your doctor. Not medical advice." path="/report.html" nav="patient" persona="patient" -->
+<!--meta title="My lab results · Dialect · {{name}}" description="A sample lab report in plain words: each short lab code shown as the real test name, with your number, the lab's own range and mark, and what the test is from MedlinePlus. Not medical advice." path="/report.html" nav="patient" persona="patient" -->
 {{> head}}
   <script type="module" src="/assets/js/report.js"></script>
 </head>
 <body class="{{bodyClass}}">
 {{> header}}
-<main id="main" class="container narrow">
-  <section class="persona-head" aria-labelledby="page-title">
-    <span class="persona-chip"><span class="dot dot-patient" aria-hidden="true"></span>For patients</span>
-    <h1 id="page-title"><span class="no-print">Understand my lab report</span><span class="print-only">Lab results to discuss with my doctor</span></h1>
+<main id="main" class="container">
+  <section class="persona-head persona-head-tight" aria-labelledby="page-title">
+    <span class="persona-chip no-print"><span class="dot dot-patient" aria-hidden="true"></span>For patients</span>
+    <h1 id="page-title"><span class="no-print">My lab results</span><span class="print-only">Lab results to discuss with my doctor</span></h1>
+    <p class="lede">Lab reports use short codes like <b>GLU-F</b> or <b>K</b>. Dialect shows which test each one is, in plain words.</p>
     <p class="print-only print-meta">{{name}} · Dialect demo · Synthetic sample, not a real patient.</p>
-    <p class="lede">Lab reports use short codes like <b>GLU-F</b> or <b>K</b>. Dialect tells you which test each code is, in plain words.</p>
-    <ol class="howto no-print">
-      <li>Pick a sample report</li>
-      <li>See each code in plain words</li>
-      <li>Tap "What is this test?" or print it</li>
-    </ol>
-    <div class="note" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.5v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><p><strong>Not medical advice. Talk to your doctor about your results.</strong> We explain what a test is, not what your result means for you.</p></div>
   </section>
 
-  <div class="stack-l">
-    <fieldset class="no-print">
-      <legend>Pick a sample report <span class="muted">(pretend patients)</span></legend>
-      <div class="pills" id="picker"></div>
-    </fieldset>
+  <div class="portal">
+    <div class="portal-main">
+      <fieldset class="patient-pick no-print">
+        <legend>Sample patient <span class="muted">(pretend people)</span></legend>
+        <div class="pills" id="picker"></div>
+      </fieldset>
 
-    <section aria-labelledby="report-title">
-      <div class="cluster cluster-between mb-16">
-        <div>
-          <h2 id="report-title" class="m-0">Your tests</h2>
-          <p class="summary-line m-0" id="summary"></p>
+      <article class="report" aria-labelledby="report-title">
+        <header class="report-head">
+          <div class="report-id">
+            <span class="report-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4A2 2 0 0 0 19 18l-5-9V3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.5 14h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            <div>
+              <h2 id="report-title" class="report-title">Lab report</h2>
+              <p class="report-meta" id="report-meta">Loading…</p>
+            </div>
+          </div>
+          <span class="status-chip">Final</span>
+        </header>
+        <ul class="report-stats" id="stats" aria-label="Summary"></ul>
+
+        <div class="view-switch no-print" role="radiogroup" aria-label="How to show the report">
+          <input type="radio" name="view" id="view-plain" value="plain" checked><label for="view-plain">In plain words</label>
+          <input type="radio" name="view" id="view-paper" value="paper"><label for="view-paper">As printed by the lab</label>
         </div>
-        <button class="button button-soft button-s no-print" type="button" id="print">Print for my doctor</button>
-      </div>
-      <p class="print-only"><strong>Not medical advice. Talk to your doctor about your results.</strong> Marks (H, L) are the lab's own. What each test is: medlineplus.gov/lab-tests</p>
-      <ul class="tests" id="lines" aria-live="polite"><li class="empty">Loading…</li></ul>
-    </section>
 
-    <section class="card" aria-labelledby="questions-title">
-      <h2 id="questions-title">Questions to ask your doctor</h2>
-      <ul>
-        <li>What do these results mean for me?</li>
-        <li>Do any results marked by the lab matter in my case?</li>
-        <li>Do I need to repeat a test, or prepare differently next time?</li>
-        <li>How do these compare with my earlier results?</li>
-      </ul>
-      <p class="credit">Explanations: Source: MedlinePlus, National Library of Medicine. Only each test's code is sent to MedlinePlus; your numbers stay in this browser.</p>
-    </section>
+        <ul class="results" id="lines" aria-live="polite"><li class="empty">Loading…</li></ul>
+        <div class="paper" id="paper" hidden></div>
+
+        <p class="report-foot"><strong>Not medical advice.</strong> High and low marks are the lab's own; Dialect never adds one. Talk to your doctor about your results.</p>
+      </article>
+    </div>
+
+    <aside class="portal-side" aria-label="Before your appointment">
+      <section class="card side-card">
+        <h2 class="side-title">Before your appointment</h2>
+        <p class="small muted">Questions you could ask your doctor:</p>
+        <ul class="checks">
+          <li>What do these results mean for me?</li>
+          <li>Do the results the lab marked matter in my case?</li>
+          <li>Do I need to repeat a test, or prepare differently?</li>
+          <li>How do these compare with my earlier results?</li>
+        </ul>
+        <button class="button button-main button-block no-print" type="button" id="print">Print for my doctor</button>
+      </section>
+      <p class="credit side-credit">What each test is: Source: MedlinePlus, National Library of Medicine. Only the test's standard code is sent to MedlinePlus; your numbers stay in this browser.</p>
+    </aside>
   </div>
 </main>
 {{> footer}}

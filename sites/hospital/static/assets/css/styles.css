@@ -345,6 +345,88 @@ dialog.assistant-review button.assistant-decline { background: var(--surface); c
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
 
+/* Patient portal (report.html) */
+.persona-head-tight { padding-block: clamp(18px, 3vw, 32px) 14px; }
+.persona-head-tight .lede { margin-bottom: 0; max-width: 60ch; }
+.button-block { width: 100%; }
+.portal { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; padding-bottom: 40px; }
+.portal-side { position: sticky; top: 88px; display: grid; gap: 12px; }
+@media (max-width: 900px) { .portal { grid-template-columns: 1fr; } .portal-side { position: static; } }
+.patient-pick { margin-bottom: 14px; }
+.patient-pick legend { font-weight: 700; font-size: 0.9rem; margin-bottom: 8px; }
+
+.report { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-l); box-shadow: var(--shadow); padding: clamp(16px, 2.4vw, 24px); }
+.report-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.report-id { display: flex; gap: 12px; align-items: center; min-width: 0; }
+.report-icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; background: var(--p-soft); color: var(--p); flex: none; }
+.report-icon svg { width: 22px; height: 22px; }
+.report-title { font-size: 1.15rem; margin: 0; }
+.report-meta { margin: 2px 0 0; font-size: 0.86rem; color: var(--muted); }
+.status-chip { font-size: 0.75rem; font-weight: 700; color: var(--ok); background: var(--ok-soft); padding: 4px 10px; border-radius: 999px; flex: none; }
+.report-stats { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 14px 0 0; }
+.report-stats li { font-size: 0.82rem; color: var(--ink-2); background: var(--surface-2); border-radius: 999px; padding: 4px 11px; }
+.report-stats b { font-weight: 800; color: var(--ink); }
+.report-stats .stat-flag { background: var(--warn-soft); color: var(--warn); }
+.report-stats .stat-flag b { color: inherit; }
+
+.view-switch { display: inline-flex; gap: 2px; padding: 3px; margin: 18px 0 6px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; }
+.view-switch input { position: absolute; opacity: 0; pointer-events: none; }
+.view-switch label { padding: 7px 14px; border-radius: 999px; font-size: 0.86rem; font-weight: 650; color: var(--muted); cursor: pointer; }
+.view-switch input:checked + label { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgb(0 0 0 / 12%); }
+.view-switch input:focus-visible + label { box-shadow: var(--focus); }
+
+.results { list-style: none; margin: 0; padding: 0; }
+.result { padding: 16px 0 12px; border-top: 1px solid var(--line); }
+.result:first-child { border-top: 0; }
+.result-top { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+.result-name-wrap { min-width: 0; }
+.result-name { font-size: 1.02rem; margin: 0 0 2px; }
+.result-code { margin: 0; font-size: 0.8rem; color: var(--muted); }
+.result-code code { font-family: var(--mono); font-size: 0.78rem; font-weight: 700; color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--line); border-radius: 5px; padding: 0 5px; }
+.result-value { display: flex; align-items: baseline; gap: 5px; flex: none; white-space: nowrap; }
+.result-value .num { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; }
+.result-value .unit { font-size: 0.82rem; color: var(--muted); font-weight: 600; }
+.result-flag { align-self: center; margin-left: 6px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--warn); background: var(--warn-soft); border-radius: 6px; padding: 3px 7px; }
+.range { display: grid; grid-template-columns: minmax(0, 260px) auto; gap: 12px; align-items: center; margin-top: 10px; }
+.range-track { position: relative; height: 6px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); }
+.range-band { position: absolute; top: -1px; bottom: -1px; left: var(--from); right: calc(100% - var(--to)); background: var(--p-tint); border-radius: 999px; }
+.range-dot { position: absolute; top: 50%; left: var(--at); width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--ink-2); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--ink-2); }
+.result.is-flagged .range-dot { background: var(--warn); box-shadow: 0 0 0 1px var(--warn); }
+.range-text { margin: 0; font-size: 0.78rem; color: var(--muted); }
+.result-more { margin-top: 6px; }
+.result-more summary { cursor: pointer; display: inline-block; font-size: 0.84rem; font-weight: 650; color: var(--p); padding: 4px 0; list-style: none; }
+.result-more summary::-webkit-details-marker { display: none; }
+.result-more summary::after { content: " ›"; font-weight: 800; }
+.result-more[open] summary::after { content: " ⌄"; }
+.result-more .about { margin-top: 6px; padding: 12px 14px; border-radius: var(--r); background: var(--surface-2); font-size: 0.9rem; color: var(--ink-2); }
+.result-more .about p { margin: 0 0 6px; }
+.result-more .about p:last-child { margin: 0; }
+.about-title { font-weight: 700; color: var(--ink); }
+.about-std { font-size: 0.78rem; color: var(--muted); }
+.result.is-unknown .result-name { color: var(--muted); }
+.result-note { margin: 8px 0 0; font-size: 0.84rem; color: var(--ink-2); background: var(--surface-2); border: 1px dashed var(--line-strong); border-radius: var(--r-s); padding: 8px 12px; }
+
+.paper-note { font-size: 0.84rem; color: var(--muted); margin: 8px 0 10px; }
+.paper-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface-2); }
+.paper-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 0.82rem; }
+.paper-table th, .paper-table td { text-align: left; padding: 8px 12px; border-bottom: 1px dashed var(--line-strong); white-space: nowrap; }
+.paper-table th { font-weight: 700; color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.paper-table tr:last-child td { border-bottom: 0; }
+.paper-table .num { text-align: right; font-weight: 700; }
+.paper-table .flag-cell { font-weight: 800; color: var(--warn); }
+.report-foot { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: 0.8rem; color: var(--muted); }
+
+.side-title { font-size: 1.05rem; margin-bottom: 4px; }
+.checks { list-style: none; padding: 0; margin: 10px 0 16px; display: grid; gap: 8px; }
+.checks li { position: relative; padding-left: 26px; font-size: 0.9rem; }
+.checks li::before { content: ""; position: absolute; left: 0; top: 2px; width: 16px; height: 16px; border: 1.5px solid var(--line-strong); border-radius: 5px; background: var(--surface); }
+.side-credit { padding: 0 4px; }
+@media (max-width: 520px) {
+  .result-top { flex-direction: column; gap: 6px; }
+  .range { grid-template-columns: 1fr; gap: 6px; }
+  .report-head .status-chip { display: none; }
+}
+
 /* Print: a compact black-and-white summary for A4 or Letter. Explanations stay on screen
    (they are links on paper); results become one compact row per test. */
 @page { margin: 14mm 14mm 16mm; }
@@ -382,6 +464,20 @@ dialog.assistant-review button.assistant-decline { background: var(--surface); c
   .note { background: none; border: 1px solid #000; padding: 6pt 8pt; }
   a { color: #000; text-decoration: none; }
   .compare th, .compare td { padding: 3pt 6pt; }
+  .portal { display: block; padding: 0; }
+  .portal-side { position: static; margin-top: 10pt; }
+  .report { border: 0; box-shadow: none; padding: 0; }
+  .report-icon, .status-chip, .result-more, .side-credit { display: none !important; }
+  .report-stats li { background: none; border: 1px solid #999; }
+  .result { padding: 5pt 0; break-inside: avoid; }
+  .result-value .num { font-size: 12pt; }
+  .result-flag, .report-stats .stat-flag { background: none; color: #000; border: 1px solid #000; }
+  .range { grid-template-columns: 120pt auto; margin-top: 3pt; }
+  .range-track { border-color: #999; }
+  .range-band { background: #ddd; }
+  .range-dot, .result.is-flagged .range-dot { background: #000; box-shadow: none; border-color: #fff; }
+  .paper, .paper[hidden] { display: none !important; }
+  .results[hidden] { display: block !important; }
 }
 /* Very narrow paper (58/80 mm receipt printers): stack each row. */
 @media print and (max-width: 100mm) {
