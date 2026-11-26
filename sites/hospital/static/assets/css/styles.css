@@ -527,6 +527,94 @@ dialog.assistant-review button.assistant-decline { background: var(--surface); c
 .item-unit { display: block; font-size: 0.76rem; color: var(--muted); font-family: var(--mono); }
 .item-guess .plain { font-weight: 700; }
 
+/* Manual entry (lab page) */
+.tag-hand { display: inline-block; margin-left: 8px; font-family: var(--sans); font-size: 0.66rem; font-weight: 700; color: var(--p); background: var(--p-soft); border-radius: 999px; padding: 1px 7px; vertical-align: middle; }
+.add-test { border-top: 1px dashed var(--line-strong); padding-top: 10px; }
+.add-test > summary { cursor: pointer; font-weight: 700; color: var(--p); font-size: 0.92rem; list-style: none; display: inline-block; }
+.add-test > summary::-webkit-details-marker { display: none; }
+.add-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 12px; margin-top: 12px; }
+.add-form .field { flex: 1 1 130px; }
+.add-form .field-grow { flex: 2 1 240px; }
+.add-hint { flex-basis: 100%; margin: 0; }
+
+/* "Next step" link card */
+.next-step { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border-radius: var(--r-l); border: 1px solid var(--p-tint); background: var(--p-soft); color: var(--ink); text-decoration: none; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.next-step:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+.next-step b { display: block; color: var(--p); }
+.next-step small { display: block; color: var(--ink-2); font-size: 0.85rem; }
+.next-num { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; background: var(--p); color: #fff; border-radius: 999px; padding: 3px 9px; flex: none; }
+:root[data-theme="dark"] .next-num { color: #111; }
+.next-arrow { margin-left: auto; font-size: 1.3rem; font-weight: 800; color: var(--p); }
+.next-step.is-ready { box-shadow: 0 0 0 3px var(--p-tint); }
+
+/* Send results page */
+.send-card { display: grid; gap: 12px; }
+.send-step { display: flex; align-items: center; gap: 10px; font-size: 1.05rem; margin: 0; }
+.send-step span { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--p-soft); color: var(--p); font-size: 0.85rem; font-weight: 800; }
+.send-who { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: flex-end; }
+.send-who .field { min-width: 180px; }
+.field-label { font-weight: 700; font-size: 0.92rem; }
+.field-static { min-height: 44px; display: flex; align-items: center; gap: 6px; font-weight: 600; }
+.send-scroll { overflow-x: auto; }
+.send-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+.send-table th { text-align: left; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); padding: 0 8px 6px; }
+.send-table td { padding: 6px 8px; border-top: 1px solid var(--line); vertical-align: middle; }
+.send-table select, .send-table input { min-height: 40px; }
+.send-table td:first-child { min-width: 220px; }
+.value-wrap { display: flex; align-items: center; gap: 6px; }
+.value-wrap input { width: 110px; }
+.value-wrap .unit { font-size: 0.82rem; color: var(--muted); white-space: nowrap; }
+.arrive { display: grid; gap: 2px; font-family: var(--mono); font-size: 0.8rem; }
+.arrive .badge { font-family: var(--sans); justify-self: start; }
+.arrive small { font-family: var(--sans); color: var(--muted); font-size: 0.76rem; }
+.empty-cell { text-align: center; color: var(--muted); padding: 20px 8px !important; }
+.icon-button-s { width: 34px; height: 34px; font-size: 1.1rem; }
+.send-summary { padding: 10px 14px; border-radius: var(--r); background: var(--ok-soft); display: grid; gap: 4px; font-size: 0.92rem; }
+.send-summary.is-partial { background: var(--warn-soft); }
+.send-summary:empty { display: none; }
+.hl7 { margin: 0; padding: 14px 16px; border-radius: var(--r); background: #141821; color: #d7e0ee; font-family: var(--mono); font-size: 0.78rem; line-height: 1.6; overflow-x: auto; white-space: pre; }
+.send-go { gap: 12px; }
+
+/* Receive a referral file (doctor page) */
+.receive { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 12px 16px; border-radius: var(--r-l); border: 1px dashed var(--line-strong); background: var(--surface); }
+.receive-text { flex: 1 1 260px; min-width: 0; }
+.receive-title { font-size: 0.98rem; margin: 0 0 2px; }
+.receive-status { flex-basis: 100%; }
+.receive-status:empty { display: none; }
+
+/* Guide page */
+.guide-link { display: inline-block; margin-top: 6px; font-weight: 700; color: var(--accent); }
+.flow { margin: 0; display: grid; gap: 10px; }
+.flow-row { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 22px; }
+.flow-node { position: relative; display: grid; align-content: start; gap: 4px; padding: 12px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); font-size: 0.9rem; }
+.flow-node + .flow-node::before { content: "→"; position: absolute; left: -18px; top: 50%; transform: translateY(-50%); color: var(--accent); font-weight: 800; }
+.flow-where { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.flow-node code { font-family: var(--mono); font-weight: 800; font-size: 0.86rem; overflow-wrap: anywhere; }
+.flow-node small { color: var(--muted); font-size: 0.76rem; }
+@media (max-width: 760px) {
+  .flow-row { grid-template-columns: 1fr; gap: 18px; }
+  .flow-node + .flow-node::before { content: "↓"; left: 50%; top: -17px; transform: translateX(-50%); }
+}
+.two-sites { padding: 16px 18px; border-radius: var(--r-l); background: var(--surface-2); }
+.two-sites h2 { font-size: 1.05rem; }
+.site-pair { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 4px 0 10px; }
+.site-chip { display: grid; padding: 8px 14px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--line-strong); font-weight: 750; text-decoration: none; color: var(--ink); }
+.site-chip small { font-weight: 500; color: var(--muted); font-size: 0.76rem; }
+.site-chip.is-here { border-color: var(--accent); }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-l); padding: 16px 18px; display: grid; gap: 12px; justify-items: start; }
+.step-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; width: 100%; }
+.step-top h2 { font-size: 1.08rem; margin: 0; }
+.step-num { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: var(--bg); font-weight: 800; flex: none; }
+.step-who { margin-left: auto; font-size: 0.74rem; font-weight: 700; border-radius: 999px; padding: 3px 10px; }
+.who-lab { color: var(--lab); background: var(--lab-soft); }
+.who-doctor { color: var(--doctor); background: var(--doctor-soft); }
+.who-patient { color: var(--patient); background: var(--patient-soft); }
+.step-how { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; width: 100%; }
+.step-how dt { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 3px; }
+.step-how dd { margin: 0; font-size: 0.92rem; color: var(--ink-2); }
+@media (max-width: 640px) { .step-how { grid-template-columns: 1fr; } .step-who { margin-left: 0; } }
+
 /* Print: a compact black-and-white summary for A4 or Letter. Explanations stay on screen
    (they are links on paper); results become one compact row per test. */
 @page { margin: 14mm 14mm 16mm; }
@@ -584,6 +672,8 @@ dialog.assistant-review button.assistant-decline { background: var(--surface); c
   .flowsheet-legend { background: none; }
   .conv-tag { border-color: #000; color: #000; background: none; }
   .scenario, .ai-card { display: none !important; }
+  .receive, .next-step, .add-test { display: none !important; }
+  .hl7 { background: none; color: #000; border: 1px solid #000; }
 }
 /* Very narrow paper (58/80 mm receipt printers): stack each row. */
 @media print and (max-width: 100mm) {

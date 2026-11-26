@@ -88,8 +88,21 @@
         <input class="visually-hidden" type="file" id="wb-file" accept=".csv,text/csv">
         <a class="small model-link" href="/models.html">AI model: <code>{{model}}</code></a>
       </div>
+      <details class="add-test">
+        <summary>+ Add a test by hand</summary>
+        <form class="add-form" id="wb-add" novalidate>
+          <div class="field"><label for="add-code">Your lab's code</label><input id="add-code" type="text" maxlength="32" placeholder="e.g. FBS" autocomplete="off"></div>
+          <div class="field field-grow"><label for="add-name">Test name as your lab writes it</label><input id="add-name" type="text" maxlength="120" placeholder="e.g. Fasting blood sugar" autocomplete="off"></div>
+          <div class="field"><label for="add-unit">Unit</label><input id="add-unit" type="text" maxlength="24" placeholder="e.g. mg/dL" autocomplete="off"></div>
+          <div class="field"><label for="add-range">Normal range</label><input id="add-range" type="text" maxlength="40" placeholder="e.g. 70-99" autocomplete="off"></div>
+          <button class="button button-main button-s" type="submit">Add test</button>
+          <p class="small muted add-hint">Only the code, name, unit and range. Never patient names or results. Saved in this browser.</p>
+        </form>
+        <p class="status-line" id="wb-add-status" role="status" aria-live="polite"></p>
+      </details>
       <p class="status-line" id="wb-status" role="status" aria-live="polite"></p>
     </section>
+
 
     <section aria-labelledby="queue-title">
       <div class="cluster cluster-between mb-16">
@@ -104,6 +117,12 @@
       <div class="queue-head" aria-hidden="true"><span>Your lab's test</span><span>Suggested standard code</span><span>Decision</span></div>
       <ul class="queue" id="wb-rows" aria-labelledby="queue-title"><li class="empty">Loading the sample list…</li></ul>
     </section>
+
+    <a class="next-step" href="/send.html">
+      <span class="next-num" aria-hidden="true">Next</span>
+      <span><b>Send a patient's results to {{otherName}}</b><small>Your approved codes travel with each result, so {{otherName}} can read them.</small></span>
+      <span class="next-arrow" aria-hidden="true">→</span>
+    </a>
 
     <details class="fold">
       <summary>What does the AI see?</summary>

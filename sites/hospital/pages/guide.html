@@ -1,0 +1,94 @@
+<!--meta title="How it works · Dialect · {{name}}" description="Follow one lab result from Hospital B's lab to a doctor at Hospital A and to the patient: list the tests, match them to LOINC, send the result message, receive and line up. How real hospitals do each step, and where to try it." path="/guide.html" nav="guide" -->
+{{> head}}
+  <script type="module" src="/assets/js/guide.js"></script>
+</head>
+<body class="{{bodyClass}}">
+{{> header}}
+<main id="main" class="container narrow">
+  <section class="persona-head persona-head-tight" aria-labelledby="page-title">
+    <h1 id="page-title">How it works</h1>
+    <p class="lede">Follow one blood test from <b>Hospital B</b>'s lab to a doctor at <b>Hospital A</b>, and then to the patient. About 5 minutes.</p>
+  </section>
+
+  <div class="stack-l">
+    <figure class="flow" aria-labelledby="flow-cap">
+      <ol class="flow-row">
+        <li class="flow-node"><span class="flow-where">Hospital B lab</span><code>GLU-F</code><small>their own name for fasting blood sugar</small></li>
+        <li class="flow-node"><span class="flow-where">Matched once</span><code>GLU-F = 14771-0</code><small>the worldwide LOINC code</small></li>
+        <li class="flow-node"><span class="flow-where">Message sent</span><code>GLU-F + 14771-0</code><small>both codes travel with the result</small></li>
+        <li class="flow-node"><span class="flow-where">Hospital A doctor</span><b>Fasting blood sugar</b><small>lined up with A's own results, in A's units</small></li>
+        <li class="flow-node"><span class="flow-where">Patient</span><b>"Fasting blood sugar"</b><small>instead of "GLU-F"</small></li>
+      </ol>
+      <figcaption id="flow-cap" class="small muted">The idea in one line: every lab names tests differently, so each lab matches its names to one worldwide code once, and then every result can be read anywhere.</figcaption>
+    </figure>
+
+    <section class="two-sites" aria-labelledby="sites-title">
+      <h2 id="sites-title">Two separate websites, on purpose</h2>
+      <p>Each hospital is its own site with its own data. Open both in two tabs:</p>
+      <div class="site-pair">
+        <a class="site-chip" data-site="hospital-b" data-path="" href="/">Hospital B <small>sends the results</small></a>
+        <span aria-hidden="true">→</span>
+        <a class="site-chip" data-site="hospital-a" data-path="" href="/">Hospital A <small>receives them</small></a>
+      </div>
+      <p class="small muted">Only the result file you download travels between them. Hospital B's test list, its approvals and any AI key never leave Hospital B's site.</p>
+    </section>
+
+    <ol class="steps">
+      <li class="step">
+        <div class="step-top"><span class="step-num">1</span><h2>List the lab's tests</h2><span class="step-who who-lab">Lab / IT · Hospital B</span></div>
+        <dl class="step-how">
+          <div><dt>In a real hospital</dt><dd>The analyst exports the test list from the lab system (code, name, unit, normal range) or collects sample result messages, then loads it into a mapping tool such as Regenstrief's RELMA.</dd></div>
+          <div><dt>Here</dt><dd>On Hospital B's <b>Lab &amp; IT</b> page, the sample list is already loaded. You can also <b>upload a CSV</b> or <b>add a test by hand</b>.</dd></div>
+        </dl>
+        <a class="button button-line button-s" data-site="hospital-b" data-path="workbench.html" href="/workbench.html">Open Hospital B · Lab &amp; IT →</a>
+      </li>
+      <li class="step">
+        <div class="step-top"><span class="step-num">2</span><h2>Match each test to a LOINC code</h2><span class="step-who who-lab">Lab / IT · Hospital B</span></div>
+        <dl class="step-how">
+          <div><dt>In a real hospital</dt><dd>The analyst searches LOINC and picks the right code for each test, by hand, often starting with the most-used tests. It is slow, which is why AI helpers are now being built.</dd></div>
+          <div><dt>Here</dt><dd>Each test shows a suggested code. Press <b>Approve</b> if it is the same test, <b>Change</b> to pick another, or <b>Skip</b>. Optional: connect a Meta key and press <b>Suggest with AI</b>. Approve at least <b>GLU-F</b>, <b>CREA</b> and <b>K</b>.</dd></div>
+        </dl>
+        <a class="button button-line button-s" data-site="hospital-b" data-path="workbench.html" href="/workbench.html">Approve codes at Hospital B →</a>
+      </li>
+      <li class="step">
+        <div class="step-top"><span class="step-num">3</span><h2>Send a patient's results</h2><span class="step-who who-lab">Hospital B's systems</span></div>
+        <dl class="step-how">
+          <div><dt>In a real hospital</dt><dd>It's automatic. The interface engine (the software between the lab system and other hospitals) sends an HL7 result message. Each result line holds the lab's own code and the approved LOINC code side by side (field OBX-3).</dd></div>
+          <div><dt>Here</dt><dd>On Hospital B's <b>Send results</b> page, fill in a pretend patient's results (or use the sample), see the message, and <b>download the file</b>.</dd></div>
+        </dl>
+        <a class="button button-line button-s" data-site="hospital-b" data-path="send.html" href="/send.html">Open Hospital B · Send results →</a>
+      </li>
+      <li class="step">
+        <div class="step-top"><span class="step-num">4</span><h2>Receive and line up</h2><span class="step-who who-doctor">Doctor / nurse · Hospital A</span></div>
+        <dl class="step-how">
+          <div><dt>In a real hospital</dt><dd>Hospital A's system reads the LOINC codes. Results without one arrive as unmatched text the doctor has to work out.</dd></div>
+          <div><dt>Here</dt><dd>On Hospital A's <b>Doctors &amp; nurses</b> page, press <b>Open a received file</b>. Approved tests line up with A's own earlier results, converted to A's units. Tests you didn't approve land in "do not compare".</dd></div>
+        </dl>
+        <a class="button button-line button-s" data-site="hospital-a" data-path="referral.html" href="/referral.html">Open Hospital A · Doctors &amp; nurses →</a>
+      </li>
+      <li class="step">
+        <div class="step-top"><span class="step-num">5</span><h2>The patient reads their report</h2><span class="step-who who-patient">Patient</span></div>
+        <dl class="step-how">
+          <div><dt>In a real hospital</dt><dd>Patients see their results in a patient app, often with the lab's short names.</dd></div>
+          <div><dt>Here</dt><dd>The <b>Patients</b> page shows each code as a plain name, the lab's range, and what the test is (from MedlinePlus). No AI here.</dd></div>
+        </dl>
+        <a class="button button-line button-s" data-site="hospital-a" data-path="report.html" href="/report.html">Open the patient view →</a>
+      </li>
+    </ol>
+
+    <details class="fold">
+      <summary>What is real and what is pretend?</summary>
+      <div class="fold-body">
+        <ul>
+          <li><b>Real:</b> LOINC codes and names, the HL7 v2 message layout, unit conversion factors (Labcorp), test explanations (MedlinePlus), and the way labs map codes (RELMA-style review by a person).</li>
+          <li><b>Pretend:</b> both hospitals, every patient and every number.</li>
+          <li><b>Simplified:</b> the file download and upload stands in for the interface engine and network link between hospitals.</li>
+        </ul>
+        <p class="small muted">Sources: <a href="https://loinc.org/kb/faq/mapping/">LOINC mapping FAQ</a> · <a href="https://loinc.org/kb/relma/overview">RELMA overview</a> · <a href="https://digital.ahrq.gov/loinc">AHRQ on LOINC</a> · <a href="https://www.cdph.ca.gov/Programs/CID/DCDC/CDPH%20Document%20Library/CDPH-Electronic-Lab-Reporting-HL7-Specifications-Guide.pdf">CDPH lab reporting HL7 guide (OBX-3)</a></p>
+      </div>
+    </details>
+  </div>
+</main>
+{{> footer}}
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!--meta title="Send results to {{otherName}} · Dialect · {{name}}" description="For lab staff: put a synthetic referred patient's results into an HL7 result message with your lab's codes and your approved LOINC codes side by side, and download it for {{otherName}}. Synthetic data." path="/send.html" nav="lab" persona="lab" -->
+{{> head}}
+  <script type="module" src="/assets/js/send.js"></script>
+</head>
+<body class="{{bodyClass}}">
+{{> header}}
+<main id="main" class="container">
+  <section class="persona-head persona-head-tight" aria-labelledby="page-title">
+    <span class="persona-chip"><span class="dot dot-lab" aria-hidden="true"></span>For lab &amp; IT staff · step 3 of 4</span>
+    <h1 id="page-title">Send results to {{otherName}}</h1>
+    <p class="lede">A patient is referred from {{name}} to {{otherName}}. Their results go out as one message, each line carrying your lab's code and, if you approved one, the worldwide LOINC code.</p>
+  </section>
+
+  <div class="stack">
+    <details class="scenario" open>
+      <summary>How does this work in a real hospital?</summary>
+      <div class="scenario-body">
+        <div class="scenario-why">
+          <p>Nobody types this by hand in a real hospital. The <b>interface engine</b> (the software between the lab system and other hospitals) builds an <b>HL7 result message</b> automatically and adds the LOINC code from your approved matches.</p>
+          <p class="small muted">Here you fill it in yourself, so you can see exactly what travels between hospitals. Only this file goes to {{otherName}}: never your test list, your approvals or any AI key.</p>
+        </div>
+        <div class="scenario-read" aria-label="What happens to each result">
+          <p class="scenario-label">Each result line</p>
+          <ul class="read-actions">
+            <li><b>Approved code:</b> arrives as <code>GLU-F</code> + <code>14771-0</code>, so {{otherName}} can line it up.</li>
+            <li><b>Not approved yet:</b> arrives as <code>GLU-F</code> only. {{otherName}} puts it under "do not compare".</li>
+          </ul>
+        </div>
+      </div>
+    </details>
+
+    <div class="note note-warn note-slim" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20L12 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4M12 17v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><p><strong>Synthetic data. Not for clinical use. A human must approve.</strong> Use made-up numbers only.</p></div>
+
+    <section class="card send-card" aria-labelledby="who-title">
+      <h2 id="who-title" class="send-step"><span>1</span>Patient and date</h2>
+      <div class="send-who">
+        <div class="field"><span class="field-label">Patient</span><span class="field-static">SYNTHETIC, Patient · SYN-000123 <span class="muted">(pretend person)</span></span></div>
+        <div class="field"><label for="send-date">Date the samples were taken</label><input id="send-date" type="date"></div>
+        <div class="field"><span class="field-label">To</span><span class="field-static">{{otherName}}</span></div>
+      </div>
+    </section>
+
+    <section class="card send-card" aria-labelledby="lines-title">
+      <div class="cluster cluster-between">
+        <h2 id="lines-title" class="send-step"><span>2</span>Results</h2>
+        <div class="cluster">
+          <button class="button button-line button-s" type="button" id="send-sample">Fill with sample results</button>
+          <button class="button button-line button-s" type="button" id="send-add">+ Add a result</button>
+        </div>
+      </div>
+      <p class="small muted">Pick a test from your lab's list and type a made-up value. Add your own tests on the <a href="/workbench.html">Lab code mapping</a> page.</p>
+      <div class="send-scroll">
+        <table class="send-table">
+          <caption class="visually-hidden">Results to send, one row per test</caption>
+          <thead><tr><th scope="col">Test (your lab's code)</th><th scope="col">Value</th><th scope="col">Lab's mark</th><th scope="col">Will arrive as</th><th scope="col"><span class="visually-hidden">Remove</span></th></tr></thead>
+          <tbody id="send-rows"></tbody>
+        </table>
+      </div>
+      <div class="send-summary" id="send-summary" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="card send-card" aria-labelledby="msg-title">
+      <h2 id="msg-title" class="send-step"><span>3</span>The message</h2>
+      <p class="small muted">This is the HL7 v2 result message (ORU^R01). In each <code>OBX</code> line, field 3 holds the LOINC code (<code>^LN</code>) next to your lab's code (<code>^L</code>). <code>T</code> in the first line marks it as a test message.</p>
+      <pre class="hl7" id="send-hl7" tabindex="0" aria-label="HL7 message preview"></pre>
+      <div class="cluster send-go">
+        <button class="button button-main" type="button" id="send-download" disabled>Download the file for {{otherName}}</button>
+        <span class="small muted" id="send-file-note"></span>
+      </div>
+    </section>
+
+    <a class="next-step" id="send-next" href="{{otherUrl}}referral.html">
+      <span class="next-num" aria-hidden="true">Next</span>
+      <span><b>Open it at {{otherName}}</b><small>On {{otherName}}'s Doctors &amp; nurses page, choose "Open a received file" and pick the file you downloaded.</small></span>
+      <span class="next-arrow" aria-hidden="true">→</span>
+    </a>
+  </div>
+</main>
+{{> footer}}
+</body>
+</html>

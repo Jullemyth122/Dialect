@@ -24,6 +24,7 @@ class Workbench {
     this.picks = new Map();
     this.expanded = new Set();
     this.aliasKey = `dialect:${SITE.id}:alias-table:v1`;
+    this.myTestsKey = `dialect:${SITE.id}:my-tests:v1`;
     this.focusCode = null;
     this.ready = new Promise((resolve) => { this.markReady = resolve; });
   }
@@ -42,6 +43,45 @@ class Workbench {
   }
   saveAliases(map) {
     try { localStorage.setItem(this.aliasKey, JSON.stringify(map)); } catch { /* private mode: keep going */ }
+  }
+
+  // ---- Tests added by hand: kept in this browser, added to every list this page loads ----
+  myTests() {
+    try { const list = JSON.parse(localStorage.getItem(this.myTestsKey) || "[]"); return Array.isArray(list) ? list : []; } catch { return []; }
+  }
+  saveMyTests(list) {
+    try { localStorage.setItem(this.myTestsKey, JSON.stringify(list.slice(0, 100))); } catch { /* private mode */ }
+  }
+
+  /** Add one test typed by the analyst (code, name, unit, range: the same allowlist as a file). */
+  addTest({ code = "", name = "", unit = "", range = "" } = {}) {
+    code = String(code).trim().toUpperCase();
+    name = String(name).trim();
+    if (!/^[A-Z0-9][A-Z0-9._+-]{0,31}$/.test(code)) return { ok: false, reason: "Enter the test code your lab uses, like GLU-F (letters, numbers, - . _ +; up to 32)." };
+    if (!name) return { ok: false, reason: "Enter the test name as your lab writes it." };
+    if (this.row(code)) return { ok: false, reason: `${code} is already in the list.` };
+    const test = { code, name: name.slice(0, 120), unit: String(unit).trim().slice(0, 24), range: String(range).trim().slice(0, 40) };
+    const mine = this.myTests().filter((t) => t.code !== code);
+    this.saveMyTests([...mine, test]);
+    this.rows.unshift(this.newRow(test, this.aliases()));
+    this.version += 1;
+    this.filter = "review";
+    const reviewPill = document.querySelector("#f-review");
+    if (reviewPill) reviewPill.checked = true;
+    this.focusCode = code;
+    this.render();
+    announce("#wb-status", `Added ${code}. Its suggested code is at the top of the worklist.`);
+    return { ok: true, code };
+  }
+
+  newRow(record, aliases) {
+    const row = { code: record.code.slice(0, 32), name: String(record.name ?? "").slice(0, 120), unit: String(record.unit ?? "").slice(0, 24), range: String(record.range ?? "").slice(0, 40), status: "pending", suggestion: null, approved: null, byHand: Boolean(record.byHand) };
+    const saved = aliases[row.code];
+    if (saved && this.entry(saved.loinc)) {
+      row.status = "approved";
+      row.approved = { loinc: saved.loinc, by: "alias table", at: saved.at };
+    }
+    return row;
   }
 
   entry(code) { return this.subset?.codes.find((c) => c.code === code) ?? null; }
@@ -64,17 +104,12 @@ class Workbench {
     const aliases = this.aliases();
     const seen = new Set();
     const rows = [];
-    for (const record of records) {
-      const code = record.code.slice(0, 32);
+    const handTests = this.myTests().map((t) => ({ ...t, byHand: true }));
+    for (const record of [...handTests, ...records]) {
+      const code = String(record.code ?? "").slice(0, 32);
       if (!code || seen.has(code)) continue;
       seen.add(code);
-      const row = { code, name: record.name.slice(0, 120), unit: record.unit.slice(0, 24), range: record.range.slice(0, 40), status: "pending", suggestion: null, approved: null };
-      const saved = aliases[code];
-      if (saved && this.entry(saved.loinc)) {
-        row.status = "approved";
-        row.approved = { loinc: saved.loinc, by: "alias table", at: saved.at };
-      }
-      rows.push(row);
+      rows.push(this.newRow({ ...record, code }, aliases));
       if (rows.length >= MAX_ROWS) break;
     }
     this.rows = rows;
@@ -241,6 +276,14 @@ class Workbench {
     document.querySelector("#wb-conceptmap")?.addEventListener("click", () => this.exportConceptMap());
     document.querySelector("#wb-csv")?.addEventListener("click", () => this.exportCsv());
     document.querySelector("#wb-ai")?.addEventListener("click", () => this.askAi());
+    const addForm = document.querySelector("#wb-add");
+    addForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const value = (id) => document.querySelector(id)?.value ?? "";
+      const result = this.addTest({ code: value("#add-code"), name: value("#add-name"), unit: value("#add-unit"), range: value("#add-range") });
+      announce("#wb-add-status", result.ok ? `Added ${result.code}.` : result.reason);
+      if (result.ok) addForm.reset();
+    });
   }
 
   /**
@@ -345,7 +388,7 @@ class Workbench {
 
   rowItem(r) {
     const id = `i-${r.code.replace(/[^a-z0-9]/gi, "_")}`;
-    const head = h("div", {}, h("span", { class: "item-code", id }, r.code), h("span", { class: "item-name" }, r.name), h("span", { class: "item-unit" }, `Unit: ${r.unit || "none"}${r.range ? ` · Range: ${r.range}` : ""}`));
+    const head = h("div", {}, h("span", { class: "item-code", id }, r.code, r.byHand ? h("span", { class: "tag-hand" }, "added by hand") : null), h("span", { class: "item-name" }, r.name), h("span", { class: "item-unit" }, `Unit: ${r.unit || "none"}${r.range ? ` · Range: ${r.range}` : ""}`));
     const attrs = { tabindex: "-1", "data-code": r.code, "aria-labelledby": id };
 
     if (r.status === "approved" || r.status === "skipped") {

@@ -2,6 +2,14 @@
 
 Newest first. Each entry: date, decision, reason. "Proposed" means not yet confirmed by the developer.
 
+## 2026-11-26: The full flow between the two hospitals is now something you do, step by step
+The developer could not see how data gets from one hospital to the other, or how to enter data. Added, following the real workflow (LOINC mapping FAQ, RELMA, CDPH ELR HL7 guide):
+- **How it works** (`guide.html`, in the menu and on the home page): five steps (list the tests, match to LOINC, send, receive and line up, the patient reads it). Each step says who does it, how a real hospital does it, how to do it here, and links to the right hospital's site.
+- **Manual entry:** "+ Add a test by hand" on the lab page (code, name, unit, range only). These tests are saved in this browser and join every list.
+- **Send results** (`send.html`, lab staff, step 3). Pick a synthetic patient's results, or type them, and see the HL7 v2 ORU^R01 message. MSH-11 = T; OBX-3 carries the LOINC triplet next to the local one when the analyst approved a match (this site's alias table). Then download a JSON file.
+- **Open a received file** on the doctor page. It checks the file: synthetic, patient SYN-000123, from the other hospital, at most 60 lines, and only LOINC codes in our subset. It lines the file up against this hospital's own earlier results; unapproved tests go under "do not compare".
+- **The download and upload stand in for the interface engine and the network link.** Only that file moves; the test list, approvals and keys stay on the sending site.
+
 ## 2026-11-26: Staff pages explain "why and when"; the AI key box sits on the lab page
 The developer could not tell from the staff pages when this work happens or how to start the AI. Changes:
 - **A "Why and when do I do this?" box**, open by default with a hide toggle, on the lab and doctor pages. It covers:

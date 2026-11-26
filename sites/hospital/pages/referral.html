@@ -30,6 +30,16 @@
       </div>
     </details>
 
+    <section class="receive no-print" aria-labelledby="receive-title">
+      <div class="receive-text">
+        <h2 id="receive-title" class="receive-title">Received a referral file from {{otherName}}?</h2>
+        <p class="small muted m-0" id="source-line">Loading…</p>
+      </div>
+      <label class="button button-main button-s" for="receive-file">Open a received file</label>
+      <input class="visually-hidden" type="file" id="receive-file" accept=".json,application/json">
+      <p class="status-line receive-status" id="receive-status" role="status" aria-live="polite"></p>
+    </section>
+
     <div class="chart-banner" id="patient" aria-live="polite"><span class="who">Loading…</span></div>
 
     <section class="flowsheet" aria-labelledby="lined-title">
