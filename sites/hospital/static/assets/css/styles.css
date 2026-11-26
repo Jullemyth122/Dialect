@@ -207,7 +207,11 @@ details.fold > .fold-body > :last-child { margin-bottom: 0; }
 .test { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-l); overflow: hidden; }
 .test-main { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 20px; align-items: center; padding: 16px 18px; }
 .test-name { font-size: 1.05rem; font-weight: 700; margin: 0; }
-.test-paper { font-size: 0.8rem; color: var(--muted); }
+.test-paper { display: block; font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+.test-from { margin: 0 0 4px; font-size: 0.85rem; color: var(--ink-2); }
+.test-from code { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-weight: 700; font-size: 0.85rem; background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; margin: 0 2px; }
+.test-from::after { content: "  →"; color: var(--p); font-weight: 800; }
+.test .about-title { font-weight: 700; color: var(--ink); margin-bottom: 4px; }
 .test-value { text-align: right; }
 .test-value .num { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
 .test-value .unit { font-size: 0.9rem; color: var(--muted); font-weight: 600; margin-left: 4px; }
