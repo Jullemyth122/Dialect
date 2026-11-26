@@ -1,74 +1,67 @@
-<!--meta title="Choose the AI model · Dialect · {{name}}" description="Pick the AI model behind {{name}}'s mapping assistant: Meta's cheapest Muse Ember, the newest Muse Spark, the most capable Muse Wonder, or any OpenAI-compatible provider that allows browser calls. Your key stays in this browser." path="/models.html" nav="models" -->
+<!--meta title="Choose the AI model · Dialect · {{name}}" description="Pick the AI model behind {{name}}'s code-matching assistant: Meta's cheapest Muse Ember, the newest Muse Spark or the most capable Muse Wonder, or another provider. Your key stays in this browser." path="/models.html" nav="lab" persona="lab" -->
 {{> head}}
   <script type="module" src="/assets/js/models.js"></script>
 </head>
 <body class="{{bodyClass}}">
 {{> header}}
-<main id="main">
-  <section class="page-hero" aria-labelledby="page-title">
-    <div class="container">
-      <span class="eyebrow">Bring your own model</span>
-      <h1 id="page-title">Choose the AI model</h1>
-      <p class="lede">The mapping assistant works with any OpenAI-compatible provider that allows calls from a browser. Pick a preset, add your key, and save. The setup is the same one the assistant's own "AI model settings" panel uses.</p>
-      <div class="note" role="note"><p><strong>Your key stays in this browser.</strong> It is sent only to the provider you choose, never to this site's server, another hospital's site, a URL or a prompt. Use a key with a spending limit, and delete the setup when you're done.</p></div>
-    </div>
+<main id="main" class="container narrow">
+  <section class="persona-head" aria-labelledby="page-title">
+    <span class="persona-chip"><span class="dot dot-lab" aria-hidden="true"></span>For lab &amp; IT staff</span>
+    <h1 id="page-title">Choose the AI model</h1>
+    <p class="lede">Pick a model, add your key, and save. Your key stays in this browser and goes only to the provider.</p>
+    <p class="small m-0"><span class="muted">In use now:</span> <span id="current" role="status">checking…</span></p>
   </section>
 
-  <div class="container stack">
-    <section class="card" aria-labelledby="current-title">
-      <h2 id="current-title">In use now</h2>
-      <p id="current" role="status">Reading your saved setup…</p>
-    </section>
+  <form class="stack-l" id="model-form" novalidate>
+    <fieldset>
+      <legend>1. Pick a model</legend>
+      <div class="models" id="meta-models"></div>
+      <p class="hint mt-24">Meta Muse prices per million tokens (in · out), from Meta's pricing page, 26 Nov 2026. We never use "contributor" models, which let Meta train on your data.</p>
+    </fieldset>
 
-    <form class="stack" id="model-form" novalidate>
-      <section aria-labelledby="meta-title">
-        <div class="section-head">
-          <h2 id="meta-title">Meta Muse models</h2>
-          <p>This site's default provider. Prices from Meta's pricing page (Standard mode, per million tokens, checked 26 Nov 2026). We never use the "contributor" models, which let Meta train on what you send.</p>
-        </div>
-        <fieldset>
-          <legend class="visually-hidden">Meta model</legend>
-          <div class="model-grid" id="meta-models"></div>
-        </fieldset>
-      </section>
-
-      <section aria-labelledby="other-title">
-        <h2 id="other-title">Or another provider</h2>
-        <div class="settings-form">
+    <details class="fold">
+      <summary>More models and other providers</summary>
+      <div class="fold-body stack">
+        <div class="models" id="meta-more"></div>
+        <div class="form">
           <div class="field">
             <label for="provider">Provider</label>
             <select id="provider"></select>
-            <span class="field-hint">Choosing one fills in its address and a suggested model. You can change both.</span>
           </div>
           <div class="field">
-            <label for="router">Provider address (base URL)</label>
-            <input type="url" id="router" inputmode="url" autocomplete="off" spellcheck="false" required>
+            <label for="router">Provider address</label>
+            <input type="url" id="router" inputmode="url" autocomplete="off" spellcheck="false">
           </div>
           <div class="field">
-            <label for="model">Model</label>
-            <input type="text" id="model" autocomplete="off" spellcheck="false" required>
+            <label for="model">Model name</label>
+            <input type="text" id="model" autocomplete="off" spellcheck="false">
           </div>
-          <div class="field">
-            <label for="key">API key</label>
-            <input type="password" id="key" autocomplete="off" spellcheck="false" aria-describedby="key-hint" required>
-            <span class="field-hint" id="key-hint">Stored in this browser only. <span id="key-link"></span></span>
-          </div>
-          <div class="cluster">
-            <button class="button button-primary" type="submit">Save and use in this browser</button>
-            <a class="button button-quiet" href="/workbench.html#assistant">Go to the assistant</a>
-          </div>
-          <p class="status-line" id="form-status" role="status" aria-live="polite"></p>
         </div>
-      </section>
-    </form>
+      </div>
+    </details>
 
-    <section class="card card-flat" aria-labelledby="clear-title">
-      <h2 id="clear-title">Remove saved setups</h2>
-      <p>Deletes every AI setup this site saved in this browser, keys included. Then close the tab: an open tab keeps using its key until it closes.</p>
-      <p class="small muted" id="loopback-note" hidden>On this local address, the runtime also copies setups into a cookie that other local sites can read. Use a low-limit key for local tests.</p>
-      <button class="button button-quiet" type="button" id="delete-all">Delete my saved setups</button>
-    </section>
-  </div>
+    <div class="form">
+      <div class="field">
+        <label for="key">2. Your API key</label>
+        <input type="password" id="key" autocomplete="off" spellcheck="false" aria-describedby="key-hint">
+        <span class="hint" id="key-hint">Use a key with a spending limit. <span id="key-link"></span></span>
+      </div>
+      <div class="cluster">
+        <button class="button button-main" type="submit">Save and use</button>
+        <a class="button button-line" href="/workbench.html#assistant">Back to the codes</a>
+      </div>
+      <p class="status-line" id="form-status" role="status" aria-live="polite"></p>
+    </div>
+  </form>
+
+  <details class="fold mt-24">
+    <summary>Remove my saved keys</summary>
+    <div class="fold-body">
+      <p class="small">Deletes every AI setup this site saved in this browser. Then close the tab.</p>
+      <p class="small muted" id="loopback-note" hidden>On this local address, saved setups are also kept in a cookie that other local sites can read. Use a low-limit key.</p>
+      <button class="button button-line button-s" type="button" id="delete-all">Delete my saved keys</button>
+    </div>
+  </details>
 </main>
 {{> footer}}
 </body>

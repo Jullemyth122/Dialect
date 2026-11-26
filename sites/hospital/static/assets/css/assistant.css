@@ -93,3 +93,7 @@ body > dialog button { margin-right: 8px; }
   .assistant-review dl { grid-template-columns: 1fr; gap: 0; }
   .assistant-review dd { margin-bottom: 8px; }
 }
+
+/* Dialect: keep the runtime's light-only cards readable in dark mode. */
+:root[data-theme="dark"] #agent-app .ns-consent { background: var(--warn-soft); }
+:root[data-theme="dark"] #agent-app .ns-w-choice:disabled:hover { background: var(--surface-2); }

@@ -8,15 +8,16 @@ const META_ROUTER = "https://api.meta.ai/v1";
 const META_KEYS = "https://dev.meta.ai/";
 // Prices: https://dev.meta.ai/docs/pricing-rate-limits, Standard mode, checked 2026-11-26.
 const META_MODELS = [
-  { id: "muse-ember-1.0", name: "Muse Ember", tag: "Cheapest", note: "Made for high-volume tool calls. This site's default.", price: "$0.10 in · $0.50 out" },
-  { id: "muse-spark-1.3", name: "Muse Spark 1.3", tag: "Newest Spark", note: "Meta's model for agentic work at scale.", price: "$1.25 in · $4.25 out" },
-  { id: "muse-wonder-1.0", name: "Muse Wonder", tag: "Most capable", note: "Meta's most capable model; the most expensive.", price: "$4.00 in · $20.00 out" },
+  { id: "muse-ember-1.0", name: "Muse Ember", tag: "Cheapest", note: "Fast and low-cost. This site's default.", price: "$0.10 in · $0.50 out" },
+  { id: "muse-spark-1.3", name: "Muse Spark 1.3", tag: "Newest Spark", note: "Newer and smarter; costs more.", price: "$1.25 in · $4.25 out" },
+  { id: "muse-wonder-1.0", name: "Muse Wonder", tag: "Most capable", note: "Best answers; highest price.", price: "$4.00 in · $20.00 out" },
   { id: "muse-spark-1.2", name: "Muse Spark 1.2", tag: "Earlier Spark", note: "Previous Spark version.", price: "$1.25 in · $4.25 out" },
   { id: "muse-spark-1.1", name: "Muse Spark 1.1", tag: "Earlier Spark", note: "Older Spark version.", price: "$1.25 in · $4.25 out" },
 ];
 
 const els = {
   meta: document.querySelector("#meta-models"),
+  more: document.querySelector("#meta-more"),
   provider: document.querySelector("#provider"),
   router: document.querySelector("#router"),
   model: document.querySelector("#model"),
@@ -49,16 +50,16 @@ function showCurrent() {
   if (!profile) {
     els.current.textContent = SITE.publisherFunded
       ? `This site's default: ${SITE.defaultModel}, paid for by this site. No key needed.`
-      : `No setup saved. The assistant will ask for a key for ${SITE.defaultModel} (Meta Model API).`;
+      : `${SITE.defaultModel}, no key saved yet`;
     return;
   }
   let host = profile.router;
   try { host = new URL(profile.router).host; } catch { /* keep as typed */ }
-  els.current.textContent = `${profile.name}: model ${profile.model || "(none)"} at ${host || "(no address)"}, key ${profile.key ? "saved in this browser" : "not set"}.`;
+  els.current.textContent = `${profile.model || "no model"} at ${host || "no address"}, key ${profile.key ? "saved" : "not set"}`;
 }
 
 async function main() {
-  els.meta.replaceChildren(...META_MODELS.map((m, i) => {
+  const card = (m, i) => {
     const id = `meta-${i}`;
     const input = h("input", { type: "radio", name: "meta-model", id, value: m.id, checked: m.id === SITE.defaultModel });
     input.addEventListener("change", () => {
@@ -69,11 +70,13 @@ async function main() {
     });
     return h("div", { class: "model" }, input, h("label", { for: id },
       h("span", { class: "tag" }, m.tag),
-      h("span", { class: "model-name" }, m.name),
-      h("span", { class: "model-id" }, m.id),
-      h("span", {}, m.note),
-      h("span", { class: "price" }, `${m.price} per 1M tokens`)));
-  }));
+      h("span", { class: "name" }, m.name),
+      h("span", { class: "small" }, m.note),
+      h("span", { class: "price" }, m.price),
+      h("span", { class: "id" }, m.id)));
+  };
+  els.meta.replaceChildren(...META_MODELS.slice(0, 3).map(card));
+  els.more.replaceChildren(...META_MODELS.slice(3).map((m, i) => card(m, i + 3)));
 
   const list = await providers();
   els.provider.replaceChildren(...list.map((p) => h("option", { value: p.name }, p.name)));

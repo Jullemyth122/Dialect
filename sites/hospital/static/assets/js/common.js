@@ -76,7 +76,26 @@ function setupMenu() {
   });
 }
 
+// Light by default; dark only when the visitor picks it. Remembered in this browser.
+function setupTheme() {
+  const button = document.querySelector(".theme-toggle");
+  if (!button) return;
+  const root = document.documentElement;
+  const sync = () => {
+    const dark = root.dataset.theme === "dark";
+    button.setAttribute("aria-pressed", String(dark));
+    button.title = dark ? "Switch to light mode" : "Switch to dark mode";
+  };
+  button.addEventListener("click", () => {
+    root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+    try { localStorage.setItem("dialect:theme", root.dataset.theme); } catch { /* storage blocked */ }
+    sync();
+  });
+  sync();
+}
+
 if (typeof document !== "undefined") {
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", setupMenu);
-  else setupMenu();
+  const start = () => { setupMenu(); setupTheme(); };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  else start();
 }

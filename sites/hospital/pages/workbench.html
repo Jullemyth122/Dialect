@@ -1,4 +1,4 @@
-<!--meta title="Review workbench · Dialect · {{name}}" description="Match {{name}}'s local lab test names to LOINC codes. Confident matches, a please-check pile with reasons, human approval, and a FHIR ConceptMap download. Synthetic data." path="/workbench.html" nav="workbench" -->
+<!--meta title="Match our test codes · Dialect · {{name}}" description="For lab and IT staff: check the suggested LOINC code for each of {{name}}'s lab tests, approve, change or skip, and download a FHIR ConceptMap. Synthetic data." path="/workbench.html" nav="lab" persona="lab" -->
 {{> head}}
   <link rel="stylesheet" href="/assets/css/assistant.css">
   <script type="module" src="/assets/js/workbench.js"></script>
@@ -6,87 +6,82 @@
 </head>
 <body class="{{bodyClass}}">
 {{> header}}
-<main id="main">
-  <section class="page-hero" aria-labelledby="page-title">
-    <div class="container">
-      <span class="eyebrow">For the interface analyst</span>
-      <h1 id="page-title">Review workbench</h1>
-      <p class="lede">Match {{name}}'s own lab test names to LOINC codes. The assistant suggests, the page's unit check verifies, and you approve. Approved matches stay in this hospital's alias table, in this browser.</p>
-      <div class="note note-mapping" role="note"><p><strong>Synthetic data. Not for clinical use. A human must approve.</strong></p></div>
-    </div>
+<main id="main" class="container">
+  <section class="persona-head" aria-labelledby="page-title">
+    <span class="persona-chip"><span class="dot dot-lab" aria-hidden="true"></span>For lab &amp; IT staff</span>
+    <h1 id="page-title">Match our test codes</h1>
+    <p class="lede">Each of {{name}}'s tests gets a suggested standard code. You approve it, change it, or skip it.</p>
+    <ol class="howto">
+      <li>Load your test list</li>
+      <li>Approve, change or skip</li>
+      <li>Download the result</li>
+    </ol>
   </section>
 
-  <div class="container wb-layout">
-    <section aria-labelledby="tools-title">
-      <h2 id="tools-title" class="visually-hidden">Load, check and download</h2>
-      <div class="wb-tools">
-        <div class="card card-flat">
-          <h3>1. Load a test list</h3>
-          <p class="small muted">A CSV with the columns code, name, unit and range. Up to 500 tests, 200 KB.</p>
-          <div class="dropzone" id="wb-drop">
-            <p>Drop a CSV file here, or</p>
-            <div class="cluster cluster-center">
-              <label class="button button-quiet button-small" for="wb-file">Choose a file</label>
-              <input class="visually-hidden" type="file" id="wb-file" accept=".csv,text/csv">
-              <button class="button button-quiet button-small" type="button" id="wb-sample">Use the sample list</button>
-            </div>
-          </div>
-        </div>
-        <div class="card card-flat">
-          <h3>2. What is sent to the AI</h3>
-          <p class="small muted">Only these four fields per test. Result values and patient details are never read into a request.</p>
-          <div class="sent-scroll">
-            <table class="sent-preview" id="wb-sent">
-              <caption class="visually-hidden">Fields sent to the AI model, first rows</caption>
-              <thead><tr><th scope="col">Code</th><th scope="col">Name</th><th scope="col">Unit</th><th scope="col">Range</th></tr></thead>
-              <tbody></tbody>
-            </table>
-          </div>
-          <p class="small muted" id="wb-sent-count"></p>
-        </div>
-        <div class="card card-flat">
-          <h3>3. Download the approved matches</h3>
-          <p class="small muted" id="wb-download-hint">Approve at least one match to download.</p>
-          <div class="cluster">
-            <button class="button button-primary button-small" type="button" id="wb-conceptmap" disabled>FHIR ConceptMap</button>
-            <button class="button button-quiet button-small" type="button" id="wb-csv" disabled>CSV</button>
-          </div>
-        </div>
+  <div class="stack">
+    <div class="note note-warn" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20L12 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4M12 17v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><p><strong>Synthetic data. Not for clinical use. A human must approve.</strong></p></div>
+
+    <section class="card progress-card" aria-labelledby="progress-title">
+      <div>
+        <h2 id="progress-title" class="visually-hidden">Progress</h2>
+        <span class="big" id="wb-progress">0 of 0 approved</span>
+        <p class="small muted m-0" id="wb-progress-sub"></p>
       </div>
+      <div class="cluster">
+        <button class="button button-main button-s" type="button" id="wb-conceptmap" disabled>Download ConceptMap</button>
+        <button class="button button-line button-s" type="button" id="wb-csv" disabled>CSV</button>
+      </div>
+      <div class="bar" aria-hidden="true"><span id="wb-bar"></span></div>
     </section>
 
-    <section aria-labelledby="queue-title">
-      <div class="cluster cluster-between mb-16">
-        <h2 id="queue-title" class="m-0">Tests to review</h2>
-        <p class="status-line" id="wb-status" role="status" aria-live="polite"></p>
+    <div class="toolbar drop" id="wb-drop">
+      <button class="button button-line button-s" type="button" id="wb-sample">Use the sample list</button>
+      <label class="button button-line button-s" for="wb-file">Upload a CSV</label>
+      <input class="visually-hidden" type="file" id="wb-file" accept=".csv,text/csv">
+      <span class="small muted">or drop it here · columns: code, name, unit, range</span>
+      <span class="sep"></span>
+      <a class="small" href="/models.html">AI model: <code>{{model}}</code> · change</a>
+    </div>
+    <p class="status-line" id="wb-status" role="status" aria-live="polite"></p>
+
+    <details class="fold">
+      <summary>What does the AI see?</summary>
+      <div class="fold-body">
+        <p class="small">Only each test's code, name, unit and range. Never result values or patient details. <span id="wb-sent-count"></span></p>
+        <table class="sent" id="wb-sent">
+          <caption class="visually-hidden">Fields sent to the AI model, first rows</caption>
+          <thead><tr><th scope="col">Code</th><th scope="col">Name</th><th scope="col">Unit</th><th scope="col">Range</th></tr></thead>
+          <tbody></tbody>
+        </table>
       </div>
-      <fieldset class="segmented mb-20" id="wb-filter">
+    </details>
+
+    <section aria-labelledby="queue-title">
+      <h2 id="queue-title" class="visually-hidden">Tests</h2>
+      <fieldset class="pills mb-16" id="wb-filter">
         <legend class="visually-hidden">Show</legend>
-        <input type="radio" name="wb-filter" id="f-all" value="all" checked><label for="f-all">All <span class="count" data-count="all">0</span></label>
-        <input type="radio" name="wb-filter" id="f-check" value="check"><label for="f-check">Please check <span class="count" data-count="check">0</span></label>
-        <input type="radio" name="wb-filter" id="f-confident" value="confident"><label for="f-confident">Confident <span class="count" data-count="confident">0</span></label>
-        <input type="radio" name="wb-filter" id="f-pending" value="pending"><label for="f-pending">Not reviewed <span class="count" data-count="pending">0</span></label>
+        <input type="radio" name="wb-filter" id="f-review" value="review" checked><label for="f-review">To review <span class="count" data-count="review">0</span></label>
         <input type="radio" name="wb-filter" id="f-approved" value="approved"><label for="f-approved">Approved <span class="count" data-count="approved">0</span></label>
         <input type="radio" name="wb-filter" id="f-skipped" value="skipped"><label for="f-skipped">Skipped <span class="count" data-count="skipped">0</span></label>
       </fieldset>
-      <ul class="rows" id="wb-rows" aria-labelledby="queue-title"><li class="empty">Loading the sample list…</li></ul>
+      <ul class="queue" id="wb-rows" aria-labelledby="queue-title"><li class="empty">Loading the sample list…</li></ul>
     </section>
 
-    <section id="assistant" class="card assistant-shell" aria-labelledby="assistant-heading">
-      <span class="eyebrow">The agent network</span>
-      <h2 id="assistant-heading">Ask the mapping assistant</h2>
-      <p>Ask it to suggest codes for the tests waiting for review. It chooses only from each test's shortlist, says "please check" when unsure, and asks you before saving anything.</p>
-      <p class="assistant-note">Your messages and this page's test list (code, name, unit and range) go to the AI provider set in AI model settings below. Default model: <code>{{model}}</code>. <a href="/models.html">Choose another model</a>.</p>
-      <p id="assistant-status" role="status">Connecting the assistant… If this message stays, the assistant could not load. You can still use the page directly.</p>
-      <div id="agent-app">
-        <div data-ns-slot="header"></div>
-        <div class="assistant-panels">
-          <div data-ns-slot="chat"></div>
-          <div data-ns-slot="agents"></div>
+    <details class="fold assistant" id="assistant">
+      <summary>Ask the AI assistant to suggest codes</summary>
+      <div class="fold-body">
+        <p class="assistant-note">Try: "Suggest codes for the tests to review." It only picks from each test's shortlist, says "please check" when unsure, and asks you before saving. Your messages and the test list go to the AI provider you choose.</p>
+        <p id="assistant-status" role="status">Connecting the assistant… If this stays, the assistant could not load. You can still use the page.</p>
+        <div id="agent-app">
+          <div data-ns-slot="header"></div>
+          <div class="assistant-panels">
+            <div data-ns-slot="chat"></div>
+            <div data-ns-slot="agents"></div>
+          </div>
+          <div data-ns-slot="settings"></div>
         </div>
-        <div data-ns-slot="settings"></div>
       </div>
-    </section>
+    </details>
   </div>
 </main>
 {{> footer}}

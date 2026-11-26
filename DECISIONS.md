@@ -2,6 +2,14 @@
 
 Newest first. Each entry: date, decision, reason. "Proposed" means not yet confirmed by the developer.
 
+## 2026-11-26: Redesign: one simple path per person, light by default
+The developer found the first UI unfriendly, too dense and dark (it followed the system's dark setting). Changes:
+- **Home is "Who are you?"**: three cards (patient, doctor or nurse, lab or IT staff), one line and one button each. How it works and the developer and judge details are folded away.
+- **Each person has a colour and only their own information:** patient peach (simple test cards; "What is this test?" opens on tap; print for the doctor), doctor and nurse teal (patient bar, one compact table, the "do not compare" box), lab and IT indigo (progress bar, one queue with Approve / Change / Skip, the assistant in a fold-out panel).
+- **Menu:** Patients · Doctors & nurses · Lab & IT · About. The AI model page moves under Lab & IT, because only the analyst uses the AI.
+- **Light mode by default**, with a light/dark switch remembered in this browser. Sans-serif type and tighter spacing.
+- The rules are unchanged: same banners, the same privacy sentence, no medical advice, flags only as the lab sent them.
+
 ## 2026-11-26: Coding started; stack follows the challenge's own build guide
 - **Plain static HTML, CSS and JavaScript modules, no bundler; Node's built-in test runner; no npm dependencies.** Replaces the "TypeScript, Vite, Vitest" proposal of 23 Nov, which was marked "unless the spec dictates". The challenge's agentify-website skill expects a static site with its runtime copied in unchanged, a `.hocon` network compiled by its `build_network.mjs`, and `node --test`.
 - **The skill is vendored** in `vendor/agentify-website/` (commit `0c0ca45`, Apache-2.0, unchanged). Our build copies its runtime into each site and runs its network builder, which validated both networks with no warnings.

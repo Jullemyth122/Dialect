@@ -1,56 +1,44 @@
-<!--meta title="Referral view · Dialect · {{name}}" description="A synthetic referred patient's lab results from two fictional hospitals, lined up by LOINC code with cited unit conversions and each lab's own flags. Unmatched tests are kept apart. Not medical advice." path="/referral.html" nav="referral" -->
+<!--meta title="Compare a referred patient · Dialect · {{name}}" description="A synthetic referred patient's lab results from two fictional hospitals on one table, lined up by standard code, with cited unit conversions and each lab's own flags. Not medical advice." path="/referral.html" nav="doctor" persona="doctor" -->
 {{> head}}
   <script type="module" src="/assets/js/referral.js"></script>
 </head>
 <body class="{{bodyClass}}">
 {{> header}}
-<main id="main">
-  <section class="page-hero" aria-labelledby="page-title">
-    <div class="container">
-      <span class="eyebrow">For doctors and nurses</span>
-      <h1 id="page-title">Referral view</h1>
-      <p class="lede">A referred patient's results from both hospitals on one table, lined up by the standard code. Each value is shown as its lab reported it, with that lab's own range and flag. Converted values use only cited factors.</p>
-      <div class="note note-advice" role="note"><p><strong>Not medical advice.</strong> Synthetic data. Not for clinical use. Dialect lines up results; it never says what they mean. That is the clinician's job.</p></div>
-    </div>
+<main id="main" class="container">
+  <section class="persona-head" aria-labelledby="page-title">
+    <span class="persona-chip"><span class="dot dot-doctor" aria-hidden="true"></span>For doctors &amp; nurses</span>
+    <h1 id="page-title">Compare a referred patient</h1>
+    <p class="lede">Results from both hospitals, side by side. Anything we're not sure about is kept apart.</p>
+    <div class="note" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.5v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><p><strong>Not medical advice.</strong> Synthetic data, not for clinical use. Dialect lines results up; interpreting them is your call.</p></div>
   </section>
 
-  <div class="container stack">
-    <section class="card patient-card" aria-labelledby="patient-title" id="patient">
-      <h2 id="patient-title" class="m-0">Loading the referral…</h2>
-    </section>
+  <div class="stack">
+    <div class="patient-bar" id="patient" aria-live="polite"><span class="who">Loading…</span></div>
 
     <section aria-labelledby="lined-title">
       <div class="cluster cluster-between mb-16">
-        <h2 id="lined-title" class="m-0">Lined up by LOINC code</h2>
-        <button class="button button-quiet button-small no-print" type="button" id="print">Print this referral</button>
+        <h2 id="lined-title" class="m-0">Results</h2>
+        <button class="button button-soft button-s no-print" type="button" id="print">Print</button>
       </div>
-      <div class="table-wrap">
-        <table class="data-table" id="lined">
+      <div class="compare-wrap">
+        <table class="compare" id="lined">
           <caption class="visually-hidden">Results from both hospitals, one row per test</caption>
-          <thead>
-            <tr>
-              <th scope="col">Test (LOINC)</th>
-              <th scope="col" id="col-from">Referring hospital</th>
-              <th scope="col" id="col-to">This hospital</th>
-            </tr>
-          </thead>
+          <thead><tr><th scope="col">Test</th><th scope="col" id="col-old">Earlier</th><th scope="col" id="col-new">Latest</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
-      <p class="small muted mt-24" id="conversion-source"></p>
     </section>
 
-    <section class="do-not-compare" aria-labelledby="dnc-title">
-      <h2 id="dnc-title">Not matched: do not compare</h2>
-      <p>The referring lab did not match these tests to a standard code, so Dialect will not line them up with anything. Ask the referring lab what they are.</p>
-      <div class="table-wrap">
-        <table class="data-table" id="unmatched">
-          <caption class="visually-hidden">Tests that were not matched</caption>
-          <thead><tr><th scope="col">Local code and name</th><th scope="col">As reported</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
+    <section class="dnc" aria-labelledby="dnc-title">
+      <h2 id="dnc-title"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 6l12 12" stroke="currentColor" stroke-width="2"/></svg>Not matched: do not compare</h2>
+      <p class="small m-0">The sending lab didn't match these to a standard code. Ask that lab what they are.</p>
+      <ul id="unmatched"></ul>
     </section>
+
+    <details class="fold">
+      <summary>Where do the converted numbers come from?</summary>
+      <div class="fold-body"><p class="small" id="conversion-source"></p></div>
+    </details>
   </div>
 </main>
 {{> footer}}

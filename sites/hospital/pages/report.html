@@ -1,44 +1,44 @@
-<!--meta title="My lab report, explained · Dialect · {{name}}" description="A synthetic lab report explained line by line in plain words, with MedlinePlus explanations of each test, the lab's own range and flag, and questions to ask your doctor. Not medical advice." path="/report.html" nav="report" -->
+<!--meta title="Understand my lab report · Dialect · {{name}}" description="Each test on a sample lab report in plain words: what it is (from MedlinePlus), your number with the lab's own range and mark, and questions to ask your doctor. Not medical advice." path="/report.html" nav="patient" persona="patient" -->
 {{> head}}
   <script type="module" src="/assets/js/report.js"></script>
 </head>
 <body class="{{bodyClass}}">
 {{> header}}
-<main id="main">
-  <section class="page-hero" aria-labelledby="page-title">
-    <div class="container">
-      <span class="eyebrow">For patients</span>
-      <h1 id="page-title">My lab report, explained</h1>
-      <p class="lede">Each test in plain words: what it is, your number with the lab's own range and mark, and questions to ask your doctor. Pick a sample report. In this version you can't upload your own.</p>
-      <div class="note note-advice" role="note"><p><strong>Not medical advice. Talk to your doctor about your results.</strong> These explanations say what a test is, never what your result means for you. Your numbers stay in this browser.</p></div>
-    </div>
+<main id="main" class="container narrow">
+  <section class="persona-head" aria-labelledby="page-title">
+    <span class="persona-chip"><span class="dot dot-patient" aria-hidden="true"></span>For patients</span>
+    <h1 id="page-title">Understand my lab report</h1>
+    <p class="lede">Choose a sample report. Tap a test to learn what it is.</p>
+    <div class="note" role="note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.5v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><p><strong>Not medical advice. Talk to your doctor about your results.</strong> We explain what a test is, not what your result means for you.</p></div>
   </section>
 
-  <div class="container stack">
+  <div class="stack-l">
     <fieldset class="no-print">
-      <legend>Choose a sample report</legend>
-      <div class="report-picker" id="picker"></div>
+      <legend>Sample report</legend>
+      <div class="pills" id="picker"></div>
     </fieldset>
 
     <section aria-labelledby="report-title">
       <div class="cluster cluster-between mb-16">
-        <h2 id="report-title" class="m-0">Your report</h2>
-        <button class="button button-quiet button-small no-print" type="button" id="print">Print to bring to your doctor</button>
+        <div>
+          <h2 id="report-title" class="m-0">Your tests</h2>
+          <p class="summary-line m-0" id="summary"></p>
+        </div>
+        <button class="button button-soft button-s no-print" type="button" id="print">Print for my doctor</button>
       </div>
       <p class="print-only"><strong>Not medical advice. Talk to your doctor about your results.</strong> Synthetic sample from the Dialect demo.</p>
-      <ul class="lines" id="lines" aria-live="polite"><li class="line"><span class="skeleton"></span><span class="skeleton"></span></li></ul>
+      <ul class="tests" id="lines" aria-live="polite"><li class="empty">Loading…</li></ul>
     </section>
 
     <section class="card" aria-labelledby="questions-title">
       <h2 id="questions-title">Questions to ask your doctor</h2>
       <ul>
         <li>What do these results mean for me?</li>
-        <li>Are any of these results outside the lab's range, and does that matter in my case?</li>
-        <li>Do I need to repeat any test, or prepare differently next time (for example, by fasting)?</li>
+        <li>Do any results marked by the lab matter in my case?</li>
+        <li>Do I need to repeat a test, or prepare differently next time?</li>
         <li>How do these compare with my earlier results?</li>
-        <li>Is there anything I should do, or stop doing, because of these results?</li>
       </ul>
-      <p class="small muted">Test explanations: Source: MedlinePlus, National Library of Medicine. Dialect sends only each test's LOINC code to MedlinePlus to fetch them.</p>
+      <p class="credit">Explanations: Source: MedlinePlus, National Library of Medicine. Only each test's code is sent to MedlinePlus; your numbers stay in this browser.</p>
     </section>
   </div>
 </main>

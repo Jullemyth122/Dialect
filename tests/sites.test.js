@@ -36,7 +36,7 @@ for (const site of SITES) {
       assert.match(html, /<meta property="og:image" content="https?:\/\/[^"]+og\.png">/, `${where}: og:image`);
       assert.equal(all(/<h1[\s>]/g, html).length, 1, `${where}: exactly one h1`);
       assert.match(html, /<a class="skip-link" href="#main">/, `${where}: skip link`);
-      assert.match(html, /<main id="main">/, `${where}: main landmark`);
+      assert.match(html, /<main id="main"[\s>]/, `${where}: main landmark`);
       assert.doesNotMatch(html, /\{\{[^}]*\}\}/, `${where}: leftover template token`);
       assert.doesNotMatch(html, /\sstyle="/, `${where}: inline style attribute`);
       assert.match(html, /Synthetic scenario\./, `${where}: synthetic banner`);

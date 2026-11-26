@@ -222,7 +222,7 @@ function renderPage(file, p) {
     canonical: new URL(attrs.path.replace(/^\//, ""), siteUrl(p)).href,
     ogImage: new URL("assets/img/og.png", siteUrl(p)).href,
     nav: attrs.nav,
-    bodyClass: `page-${attrs.nav}`,
+    bodyClass: `page-${attrs.nav}${attrs.persona ? ` persona-${attrs.persona}` : ""}`,
     model: DEFAULT_MODEL,
     robots: attrs.noindex === "true" ? "noindex, follow" : "index, follow",
   };
@@ -264,12 +264,10 @@ function themeCss(p) {
   --ns-primary: ${t.accent};
   --ns-accent: ${t.accentStrong};
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --accent: ${t.accentDark};
-    --accent-strong: ${t.accentDark};
-    --accent-soft: color-mix(in srgb, ${t.accentDark} 16%, transparent);
-  }
+:root[data-theme="dark"] {
+  --accent: ${t.accentDark};
+  --accent-strong: ${t.accentDark};
+  --accent-soft: color-mix(in srgb, ${t.accentDark} 16%, transparent);
 }
 `;
 }

@@ -7,8 +7,7 @@
   <meta name="description" content="{{pageDescription}}">
   <link rel="canonical" href="{{canonical}}">
   <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#F6F4EF" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#121514" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#F7F7F4">
   <meta name="robots" content="{{robots}}">
   <link rel="icon" href="/assets/img/logo.svg" type="image/svg+xml">
   <link rel="icon" href="/assets/img/icon-192.png" sizes="192x192" type="image/png">
@@ -28,6 +27,7 @@
   <meta name="twitter:title" content="{{pageTitle}}">
   <meta name="twitter:description" content="{{pageDescription}}">
   <meta name="twitter:image" content="{{ogImage}}">
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem("dialect:theme")==="dark"?"dark":"light"}catch(e){document.documentElement.dataset.theme="light"}</script>
   <link rel="stylesheet" href="/assets/css/styles.css">
   <link rel="stylesheet" href="/assets/css/theme.css">
   <script type="application/ld+json">

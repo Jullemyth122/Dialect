@@ -7,8 +7,6 @@ import { parseCsv, toCsv } from "../lib/csv.js";
 import { shortlist, checkSuggestion } from "../lib/candidates.js";
 import { toConceptMap } from "../lib/conceptmap.js";
 
-const LABELS = { pending: "Not reviewed", confident: "Confident", check: "Please check", approved: "Approved", skipped: "Skipped" };
-const BADGE = { pending: "badge-pending", confident: "badge-confident", check: "badge-check", approved: "badge-approved", skipped: "badge-skipped" };
 const FIELDS = ["code", "name", "unit", "range"];
 const MAX_ROWS = 500;
 const MAX_BYTES = 200_000;
@@ -19,7 +17,9 @@ class Workbench {
     this.version = 0;
     this.subset = null;
     this.source = "";
-    this.filter = "all";
+    this.filter = "review";
+    this.picks = new Map();
+    this.expanded = new Set();
     this.aliasKey = `dialect:${SITE.id}:alias-table:v1`;
     this.focusCode = null;
     this.ready = new Promise((resolve) => { this.markReady = resolve; });
@@ -247,20 +247,22 @@ class Workbench {
     this.renderCounts();
     this.renderPreview();
     this.renderRows();
-    const approved = this.counts().approved;
-    for (const id of ["#wb-conceptmap", "#wb-csv"]) {
-      const button = document.querySelector(id);
-      if (button) button.disabled = approved === 0;
-    }
-    const hint = document.querySelector("#wb-download-hint");
-    if (hint) hint.textContent = approved ? `${approved} approved match${approved === 1 ? "" : "es"} ready to download.` : "Approve at least one match to download.";
   }
 
   renderCounts() {
-    const counts = this.counts();
-    for (const [key, value] of Object.entries(counts)) {
-      const el = document.querySelector(`[data-count="${key}"]`);
-      if (el) el.textContent = String(value);
+    const c = this.counts();
+    const review = c.pending + c.confident + c.check;
+    const set = (sel, text) => { const el = document.querySelector(sel); if (el) el.textContent = text; };
+    set('[data-count="review"]', String(review));
+    set('[data-count="approved"]', String(c.approved));
+    set('[data-count="skipped"]', String(c.skipped));
+    set("#wb-progress", `${c.approved} of ${c.all} approved`);
+    set("#wb-progress-sub", c.all ? `${c.check} need a person · ${review - c.check} to review · ${c.skipped} skipped` : "Load a test list to start.");
+    const bar = document.querySelector("#wb-bar");
+    if (bar) bar.style.width = `${c.all ? Math.round((c.approved / c.all) * 100) : 0}%`;
+    for (const id of ["#wb-conceptmap", "#wb-csv"]) {
+      const button = document.querySelector(id);
+      if (button) button.disabled = c.approved === 0;
     }
   }
 
@@ -268,75 +270,100 @@ class Workbench {
     const body = document.querySelector("#wb-sent tbody");
     if (!body) return;
     body.replaceChildren(...this.rows.slice(0, 8).map((r) => h("tr", {}, h("td", {}, r.code), h("td", {}, r.name), h("td", {}, r.unit || "—"), h("td", {}, r.range || "—"))));
-    announce("#wb-sent-count", `${this.rows.length} tests. Showing the first ${Math.min(8, this.rows.length)}.`);
+    announce("#wb-sent-count", `${this.rows.length} tests in the list; the first ${Math.min(8, this.rows.length)} are shown.`);
   }
 
   renderRows() {
     const list = document.querySelector("#wb-rows");
     if (!list) return;
-    const rows = this.rows.filter((r) => this.filter === "all" || r.status === this.filter);
+    const order = { check: 0, confident: 1, pending: 2 };
+    const rows = this.rows
+      .filter((r) => (this.filter === "review" ? r.status in order : r.status === this.filter))
+      .sort((a, b) => (order[a.status] ?? 0) - (order[b.status] ?? 0));
     if (!rows.length) {
-      list.replaceChildren(h("li", { class: "empty" }, this.rows.length ? "Nothing in this pile." : "Load a test list to start."));
+      const empty = this.filter === "review" ? (this.rows.length ? "All done. Download your matches above." : "Load a test list to start.") : "Nothing here yet.";
+      list.replaceChildren(h("li", { class: "empty" }, empty));
       return;
     }
     list.replaceChildren(...rows.map((r) => this.rowItem(r)));
     if (this.focusCode) {
-      const target = list.querySelector(`[data-code="${CSS.escape(this.focusCode)}"]`) ?? list.querySelector(".row");
-      target?.focus({ preventScroll: false });
+      const target = list.querySelector(`[data-code="${CSS.escape(this.focusCode)}"]`) ?? list.querySelector(".item");
+      target?.focus();
       this.focusCode = null;
     }
   }
 
+  /** The code shown as the suggestion: the analyst's pick, the assistant's, or the best text match. */
+  guessFor(r, candidates) {
+    const picked = this.picks.get(r.code);
+    if (picked) return { loinc: picked, kind: "picked" };
+    if (r.suggestion?.loinc) return { loinc: r.suggestion.loinc, kind: r.suggestion.confidence };
+    const best = candidates.find((c) => c.unit !== "clash");
+    return best ? { loinc: best.code, kind: "text" } : null;
+  }
+
   rowItem(r) {
-    const id = `row-${r.code.replace(/[^a-z0-9]/gi, "_")}`;
-    const test = h("div", { class: "row-test" },
-      h("span", { class: "mono", id: `${id}-code` }, r.code),
-      h("span", { class: "name" }, r.name),
-      h("span", { class: "meta" }, `${r.unit || "no unit"} · range ${r.range || "none"}`),
-      h("span", { class: `badge ${BADGE[r.status]}` }, LABELS[r.status]),
-    );
-    let middle;
-    let actions;
-    if (r.status === "approved") {
-      const entry = this.entry(r.approved.loinc);
-      middle = h("div", { class: "row-done" },
-        h("span", { class: "code" }, r.approved.loinc),
-        h("span", {}, entry?.display ?? ""),
-        h("span", { class: "small muted" }, r.approved.by === "alias table" ? "Approved earlier, from this hospital's alias table (no AI call)." : `Approved by the ${r.approved.by}.`));
-      actions = h("div", { class: "row-actions" },
-        h("button", { class: "button button-quiet button-small", type: "button", onclick: () => this.undo(r.code), "aria-describedby": `${id}-code` }, "Undo"));
-    } else {
-      const candidates = shortlist(r, this.subset, { limit: 3 });
-      const chosen = r.suggestion?.loinc ?? candidates.find((c) => c.unit !== "clash")?.code ?? null;
-      if (!candidates.length) {
-        middle = h("div", { class: "row-choice" }, h("p", { class: "row-reason" }, "No candidate in this site's LOINC list. Skip it, or ask the lab what this test is."));
-      } else {
-        const fieldset = h("fieldset", {},
-          h("legend", { class: "visually-hidden" }, `LOINC candidates for ${r.code}`),
-          ...candidates.map((c, i) => {
-            const inputId = `${id}-c${i}`;
-            return h("label", { class: `cand${c.unit === "clash" ? " is-clash" : ""}`, for: inputId },
-              h("input", { type: "radio", name: `${id}-pick`, id: inputId, value: c.code, checked: c.code === chosen }),
-              h("span", {}, h("span", { class: "code" }, c.code), " ", c.display),
-              h("span", { class: "why" }, c.reason));
-          }));
-        middle = h("div", { class: "row-choice" }, fieldset,
-          r.suggestion ? h("p", { class: "row-reason" }, h("strong", {}, r.suggestion.confidence === "confident" ? "Assistant: confident. " : "Assistant: please check. "), r.suggestion.reason) : null);
-      }
-      const approve = h("button", {
-        class: "button button-accent button-small", type: "button", disabled: !candidates.length, "aria-describedby": `${id}-code`,
-        onclick: (event) => {
-          const picked = event.currentTarget.closest(".row").querySelector("input[type=radio]:checked");
-          if (!picked) { announce("#wb-status", `Choose a code for ${r.code} first.`); return; }
-          const result = this.saveMapping({ code: r.code, loinc: picked.value }, { by: "analyst" });
-          if (!result.ok) announce("#wb-status", `${r.code}: ${result.reason}`);
-        },
-      }, "Approve");
-      const skip = h("button", { class: "button button-quiet button-small", type: "button", "aria-describedby": `${id}-code`, onclick: () => this.skipTest({ code: r.code }) }, r.status === "skipped" ? "Skipped" : "Skip");
-      if (r.status === "skipped") skip.disabled = true;
-      actions = h("div", { class: "row-actions" }, approve, skip);
+    const id = `i-${r.code.replace(/[^a-z0-9]/gi, "_")}`;
+    const head = h("div", {}, h("span", { class: "item-code", id }, r.code), h("span", { class: "item-name" }, `${r.name} · ${r.unit || "no unit"}`));
+    const attrs = { tabindex: "-1", "data-code": r.code, "aria-labelledby": id };
+
+    if (r.status === "approved" || r.status === "skipped") {
+      const entry = r.approved ? this.entry(r.approved.loinc) : null;
+      const guess = r.status === "approved"
+        ? h("div", { class: "item-guess" },
+          h("div", { class: "line1" }, h("span", { class: "badge badge-ok" }, "Approved"), h("span", { class: "loinc" }, r.approved.loinc)),
+          h("span", { class: "disp" }, entry?.display ?? ""),
+          h("span", { class: "why" }, r.approved.by === "alias table" ? "Remembered from an earlier approval (no AI call)" : `Approved by the ${r.approved.by}`))
+        : h("div", { class: "item-guess" }, h("div", { class: "line1" }, h("span", { class: "badge badge-muted" }, "Skipped")));
+      const undo = h("button", { class: "button button-line button-s", type: "button", "aria-describedby": id, onclick: () => this.undo(r.code) }, "Undo");
+      return h("li", { class: "item is-done", ...attrs }, head, guess, h("div", { class: "item-actions" }, undo));
     }
-    return h("li", { class: "row", tabindex: "-1", "data-code": r.code, "aria-labelledby": `${id}-code` }, test, middle, actions);
+
+    const candidates = shortlist(r, this.subset, { limit: 3 });
+    const guess = this.guessFor(r, candidates);
+    const entry = guess ? this.entry(guess.loinc) : null;
+    const BADGES = {
+      confident: ["badge-info", "AI: confident"],
+      check: ["badge-warn", "Needs a person"],
+      text: ["badge-muted", "Best text match"],
+      picked: ["badge-muted", "Your choice"],
+    };
+    const [badgeClass, badgeText] = BADGES[guess?.kind] ?? ["badge-warn", "No match found"];
+    const reason = r.suggestion?.reason ?? (guess ? candidates.find((c) => c.code === guess.loinc)?.reason : "Nothing in this site's code list fits. Skip it, or ask the lab what it is.");
+    const guessEl = h("div", { class: "item-guess" },
+      h("div", { class: "line1" }, h("span", { class: `badge ${badgeClass}` }, badgeText), guess ? h("span", { class: "loinc" }, guess.loinc) : null),
+      entry ? h("span", { class: "disp" }, entry.display) : null,
+      reason ? h("span", { class: "why" }, reason) : null);
+
+    const open = this.expanded.has(r.code);
+    const changeId = `${id}-change`;
+    const approve = h("button", {
+      class: "button button-main button-s", type: "button", disabled: !guess, "aria-describedby": id,
+      onclick: () => {
+        const result = this.saveMapping({ code: r.code, loinc: guess.loinc }, { by: "analyst" });
+        if (result.ok) { this.picks.delete(r.code); this.expanded.delete(r.code); }
+        else announce("#wb-status", `${r.code}: ${result.reason}`);
+      },
+    }, "Approve");
+    const change = h("button", {
+      class: "button button-line button-s", type: "button", disabled: !candidates.length, "aria-expanded": String(open), "aria-controls": changeId, "aria-describedby": id,
+      onclick: () => { if (open) this.expanded.delete(r.code); else this.expanded.add(r.code); this.focusCode = r.code; this.renderRows(); },
+    }, "Change");
+    const skip = h("button", { class: "button button-line button-s", type: "button", "aria-describedby": id, onclick: () => this.skipTest({ code: r.code }) }, "Skip");
+
+    const parts = [head, guessEl, h("div", { class: "item-actions" }, approve, change, skip)];
+    if (open) {
+      parts.push(h("fieldset", { class: "item-change", id: changeId },
+        h("legend", { class: "small" }, `Choose the code for ${r.code}`),
+        ...candidates.map((c, i) => {
+          const inputId = `${id}-c${i}`;
+          const radio = h("input", { type: "radio", name: `${id}-pick`, id: inputId, value: c.code, checked: guess?.loinc === c.code });
+          radio.addEventListener("change", () => { this.picks.set(r.code, c.code); this.focusCode = r.code; this.renderRows(); });
+          return h("label", { class: `cand${c.unit === "clash" ? " is-clash" : ""}`, for: inputId }, radio,
+            h("span", {}, h("span", { class: "c" }, c.code), c.display, h("span", { class: "w" }, c.reason)));
+        })));
+    }
+    return h("li", { class: `item${r.status === "check" ? " is-check" : ""}`, ...attrs }, ...parts);
   }
 }
 
